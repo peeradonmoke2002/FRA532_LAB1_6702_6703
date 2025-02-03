@@ -9,7 +9,7 @@ source install/setup.bash
 ```
 2) run launch file
 ```bash
-ros2 launch limo_description rsp.launch.py
+ros2 launch limo_description view_limo.launch.py
 ```
 * Note this is for development phase
 
