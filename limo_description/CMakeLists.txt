@@ -20,7 +20,10 @@ find_package(ament_cmake REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
-
+install(
+  DIRECTORY launch  meshes rviz urdf worlds models
+  DESTINATION share/${PROJECT_NAME}
+)
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
@@ -31,17 +34,5 @@ if(BUILD_TESTING)
   #set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
-
-install(
-  DIRECTORY 
-    config
-    launch
-    urdf 
-    worlds
-    meshes
-    models
-  DESTINATION 
-    share/${PROJECT_NAME}
-)
 
 ament_package()
