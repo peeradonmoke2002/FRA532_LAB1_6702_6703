@@ -5,7 +5,7 @@ um die Erstellung von Steuerscharnier des Wagens zu ermöglichen. Durch Macrofun
 
 <robot name="limo_steering_hinge" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-
+    <xacro:include filename="$(find limo_description)/urdf/inertial_macros.xacro" />
     <xacro:macro name="limo_left_steering_hinge" params="parent_prefix wheel_prefix *joint_pose">
         <link name="${wheel_prefix}">
             <inertial>
@@ -27,7 +27,20 @@ um die Erstellung von Steuerscharnier des Wagens zu ermöglichen. Durch Macrofun
                     <cylinder length="${wheel_length}" radius="${wheel_radius-0.01}" />
                 </geometry>
             </collision>
+            
         </link>
+
+        <transmission name="${wheel_prefix}_hinge_trans" type="SimpleTransmission">
+            <type>transmission_interface/SimpleTransmission</type>
+            <actuator name="${wheel_prefix}_hinge_motor">
+                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+                <mechanicalReduction>1</mechanicalReduction>
+            </actuator>
+            <joint name="${wheel_prefix}_steer_joint">
+                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            </joint>
+        </transmission>
+
 
         <joint name="${wheel_prefix}_steering" type="revolute">
             <parent link="${parent_prefix}"/>
@@ -56,6 +69,7 @@ um die Erstellung von Steuerscharnier des Wagens zu ermöglichen. Durch Macrofun
                     <cylinder length="${wheel_length}" radius="${wheel_radius}" />
                 </geometry>
             </collision>
+            <xacro:cylinder_inertial_matrix  m="${wheel_mass}" r="${wheel_radius}"  h="${wheel_length}" />
         </link>
 
         <joint name="front_left_wheel" type="continuous">
@@ -93,7 +107,7 @@ um die Erstellung von Steuerscharnier des Wagens zu ermöglichen. Durch Macrofun
             <child link="${wheel_prefix}"/>
             <xacro:insert_block name="joint_pose"/>
             <axis xyz="0 0 -1"/>
-            <limit lower="-0.523598767" upper="0.523598767" effort="5" velocity="0.5" />
+            <limit lower="-0.6" upper="0.6" effort="20" velocity="2.0"/> <!-- Increased limits -->
             <dynamics damping="1.0" friction="2.0"/>
         </joint>
 
@@ -115,6 +129,8 @@ um die Erstellung von Steuerscharnier des Wagens zu ermöglichen. Durch Macrofun
                     <cylinder length="${wheel_length}" radius="${wheel_radius}" />
                 </geometry>
             </collision>
+            <xacro:cylinder_inertial_matrix  m="${wheel_mass}" r="${wheel_radius}"  h="${wheel_length}" />
+
         </link>
 
         <joint name="front_right_wheel" type="continuous">

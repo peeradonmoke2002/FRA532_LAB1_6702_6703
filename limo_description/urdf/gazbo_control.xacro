@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="otto">
+    <gazebo>
+        <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+            <parameters>$(find limo_description)/config/example_controllers.yaml</parameters>
+        </plugin>
+    </gazebo>
+
+    <ros2_control name="GazeboSystem" type="system">
+        <hardware>
+            <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        </hardware>
+
+        <!-- Steering Joints (Position Control) -->
+        <joint name="left_steering_hinge">
+            <command_interface name="position">
+                <param name="min">-0.6</param> <!-- Increased Steering Angle -->
+                <param name="max">0.6</param>
+            </command_interface>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+            <limit effort="5" velocity="0.5"/> <!-- Added Limits -->
+            <axis xyz="0 0 1"/> <!-- Ensures Correct Steering Rotation -->
+        </joint>
+
+        <joint name="right_steering_hinge">
+            <command_interface name="position">
+                <param name="min">-0.6</param>
+                <param name="max">0.6</param>
+            </command_interface>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+            <limit effort="5" velocity="0.5"/>
+            <axis xyz="0 0 1"/> <!-- Ensures Correct Steering Rotation -->
+        </joint>
+
+        <!-- Wheel Joints (Velocity Control) -->
+        <joint name="front_left_wheel">
+            <command_interface name="velocity">
+                <param name="min">-5</param>
+                <param name="max">5</param>
+            </command_interface>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+            <limit effort="20" velocity="5"/> <!-- Added Limits -->
+        </joint>
+
+        <joint name="front_right_wheel">
+            <command_interface name="velocity">
+                <param name="min">-5</param>
+                <param name="max">5</param>
+            </command_interface>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+            <limit effort="20" velocity="5"/>
+        </joint>
+
+        <joint name="rear_left_wheel">
+            <command_interface name="velocity">
+                <param name="min">-5</param>
+                <param name="max">5</param>
+            </command_interface>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+            <limit effort="20" velocity="5"/>
+        </joint>
+
+        <joint name="rear_right_wheel">
+            <command_interface name="velocity">
+                <param name="min">-5</param>
+                <param name="max">5</param>
+            </command_interface>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+            <state_interface name="effort"/>
+            <limit effort="20" velocity="5"/>
+        </joint>
+    </ros2_control>
+
+    <!-- Base Physics -->
+    <gazebo reference="base_link">
+        <minDepth>0.0002</minDepth>
+        <kp value="1000000.0"/>
+        <kd value="100.0"/>
+    </gazebo>
+
+    <!-- Fixed Steering Joint Names in Gazebo -->
+    <gazebo reference="left_steering_hinge">
+        <friction>
+            <ode>
+                <mu>10.0</mu>
+                <mu2>10.0</mu2>
+            </ode>
+        </friction>
+        <minDepth>0.0002</minDepth>
+        <kp value="1000000.0"/>
+        <kd value="100.0"/>
+        <maxContacts value="64"/>
+    </gazebo>
+
+    <gazebo reference="right_steering_hinge">
+        <friction>
+            <ode>
+                <mu>10.0</mu>
+                <mu2>10.0</mu2>
+            </ode>
+        </friction>
+        <minDepth>0.0002</minDepth>
+        <kp value="1000000.0"/>
+        <kd value="100.0"/>
+        <maxContacts value="64"/>
+    </gazebo>
+
+    <!-- Wheels Physics -->
+    <gazebo reference="front_left_wheel">
+        <friction>
+            <ode>
+                <mu>10.0</mu>
+                <mu2>10.0</mu2>
+            </ode>
+        </friction>
+        <minDepth>0.0002</minDepth>
+        <kp value="1000000.0"/>
+        <kd value="100.0"/>
+        <maxContacts value="64"/>
+    </gazebo>
+
+    <gazebo reference="front_right_wheel">
+        <friction>
+            <ode>
+                <mu>10.0</mu>
+                <mu2>10.0</mu2>
+            </ode>
+        </friction>
+        <minDepth>0.0002</minDepth>
+        <kp value="1000000.0"/>
+        <kd value="100.0"/>
+        <maxContacts value="64"/>
+    </gazebo>
+
+    <gazebo reference="rear_left_wheel">
+        <friction>
+            <ode>
+                <mu>10.0</mu>
+                <mu2>10.0</mu2>
+            </ode>
+        </friction>
+        <minDepth>0.0002</minDepth>
+        <kp value="1000000.0"/>
+        <kd value="100.0"/>
+        <maxContacts value="64"/>
+    </gazebo>
+
+    <gazebo reference="rear_right_wheel">
+        <friction>
+            <ode>
+                <mu>10.0</mu>
+                <mu2>10.0</mu2>
+            </ode>
+        </friction>
+        <minDepth>0.0002</minDepth>
+        <kp value="1000000.0"/>
+        <kd value="100.0"/>
+        <maxContacts value="64"/>
+    </gazebo>
+
+</robot>

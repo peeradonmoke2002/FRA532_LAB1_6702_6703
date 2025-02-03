@@ -26,6 +26,7 @@ def generate_launch_description():
         rviz_file_name
     )
 
+    # Include Robot State Publisher (RSP)
     rsp = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -36,10 +37,11 @@ def generate_launch_description():
                 )
             ]
         ),
-        launch_arguments={"use_sim_time":"true"}.items()
+        launch_arguments={"use_sim_time": "true"}.items()
     )
 
 
+    # Start Gazebo
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -53,14 +55,16 @@ def generate_launch_description():
     )
 
 
+
+    # Spawn robot in Gazebo
     spawn_entity = Node(
         package="gazebo_ros",
         executable="spawn_entity.py",
         arguments=[
             "-topic", "robot_description",
-            "-entity", "limo_description"
+            "-entity", "limo"
         ],
-        output = "screen"
+        output="screen"
     )
 
     joint_state_broadcaster_spawner = Node(
@@ -70,6 +74,12 @@ def generate_launch_description():
         parameters=[{"use_sim_time": False}]
     )
 
+    # joint_state_publisher_gui_node = Node(
+    #     package="joint_state_publisher_gui",
+    #     executable="joint_state_publisher_gui",
+    #     output="screen"
+    # )
+
     velocity_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -77,41 +87,61 @@ def generate_launch_description():
         parameters=[{"use_sim_time": False}]
     )
 
+        # Steering Controller (Controls front wheels' angles)
+    steering_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["steering_controllers", "--controller-manager", "/controller_manager"],
+        parameters=[{"use_sim_time": False}]
+    )
 
+
+    # Start RViz
     rviz = Node(
         package="rviz2",
         executable="rviz2",
         arguments=[
             "-d", rviz_file_path
         ],
-        output = "screen"
+        output="screen"
     )
 
 
     launch_description = LaunchDescription()
 
-    # launch_description.add_action(
-    #     RegisterEventHandler(
-    #         event_handler=OnProcessExit(
-    #             target_action=spawn_entity,
-    #             on_exit=[joint_state_broadcaster_spawner],
-    #         )
-    #     )
-    # )
+    launch_description.add_action(
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=spawn_entity,
+                on_exit=[joint_state_broadcaster_spawner],
+            )
+        )
+    )
 
-    # launch_description.add_action(
-    #     RegisterEventHandler(
-    #         event_handler=OnProcessExit(
-    #             target_action=joint_state_broadcaster_spawner,
-    #             on_exit=[velocity_controller_spawner],
-    #         )
-    #     )
-    # )
+    launch_description.add_action(
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=joint_state_broadcaster_spawner,
+                on_exit=[velocity_controller_spawner],
+            )
+        )
+    )
+
+    launch_description.add_action(
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=joint_state_broadcaster_spawner,
+                on_exit=[steering_controller_spawner],
+            )
+        )
+    )
+
+    
 
     # Add the rest of the nodes and launch descriptions
     launch_description.add_action(rviz)
-    # launch_description.add_action(gazebo)
-    # launch_description.add_action(spawn_entity)
-    # launch_description.add_action(controller)
+    launch_description.add_action(gazebo)
+    launch_description.add_action(spawn_entity)
     launch_description.add_action(rsp)
+    
     return launch_description

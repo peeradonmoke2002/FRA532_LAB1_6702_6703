@@ -5,29 +5,17 @@
     <xacro:arg name="robot_namespace" default="/" />
     <xacro:include filename="$(find limo_description)/urdf/limo_xacro.xacro" />
     <xacro:include filename="$(find limo_description)/urdf/limo_steering_hinge.xacro" />
-    <xacro:include filename="$(find limo_description)/urdf/limo_ackerman.gazebo" />
+    <xacro:include filename="$(find limo_description)/urdf/inertial_macros.xacro" />
+    <xacro:include filename="$(find limo_description)/urdf/properties.xacro" />
+    <xacro:include filename="$(find limo_description)/urdf/gazbo_control.xacro" />
 
-    <!-- Variables -->
-    <xacro:property name="M_PI" value="3.14159"/>
 
-    <!-- Vehicle Geometries -->
-    <xacro:property name="base_x_size" value="0.13" />
-    <xacro:property name="base_y_size" value="0.12" />
-    <xacro:property name="base_z_size" value="0.10" />
-
-    <xacro:property name="wheelbase" value="0.2"/>
-    <xacro:property name="track" value="0.14"/>
-    <xacro:property name="wheel_vertical_offset" value="-0.100998" />
-    <xacro:property name="base_mass" value="2.1557"/>
-
-    <xacro:property name="wheel_length" value="0.045" />
-    <xacro:property name="wheel_radius" value="0.045" />
     <link name="base_footprint"/>
 
     <joint name="base_joint" type="fixed">
-    <parent link="base_footprint"/>
-    <child link="base_link"/>
-    <origin xyz="0.0 0.0 0.15" rpy="0 0 0"/>
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin xyz="0.0 0.0 0.15" rpy="0 0 0"/>
     </joint>
     <!-- Base link -->
     <link name="base_link">
@@ -43,6 +31,7 @@
               <box size="${base_x_size} ${base_y_size} ${base_z_size}"/>
           </geometry>
         </collision>
+        <xacro:box_inertial_matrix  m="${base_mass}" w="${base_x_size}" l="${base_y_size}" h="${base_z_size}" />
     </link>
 
     <link name="inertial_link">
@@ -73,6 +62,9 @@
         <origin xyz="0.0 0 -0.1" rpy="0 0 0"/>
     </xacro:limo_imu>
     
+
+    <!-- Front Wheel -->
+
     <xacro:limo_left_steering_hinge parent_prefix="base_link" wheel_prefix="left_steering_hinge">
         <origin xyz="${wheelbase/2} ${track/2} ${wheel_vertical_offset}" rpy="0 0  0" />
     </xacro:limo_left_steering_hinge>
@@ -81,6 +73,7 @@
         <origin xyz="${wheelbase/2} ${-track/2} ${wheel_vertical_offset}" rpy="${M_PI} 0 0" />
     </xacro:limo_right_steering_hinge>
 
+    <!-- Back Wheel -->
 
     <link name="rear_left_wheel_link">
         <inertial>
@@ -100,7 +93,9 @@
               <cylinder length="${wheel_length}" radius="${wheel_radius}" />
           </geometry>
         </collision>
+        <xacro:cylinder_inertial_matrix  m="${wheel_mass}" r="${wheel_radius}" h="${wheel_length}"/>
     </link>
+
     <joint name="rear_left_wheel" type="continuous">
         <parent link="base_link"/>
         <child link="rear_left_wheel_link"/>
@@ -126,6 +121,7 @@
                   <cylinder length="${wheel_length}" radius="${wheel_radius}" />
               </geometry>
             </collision>
+            <xacro:cylinder_inertial_matrix  m="${wheel_mass}" r="${wheel_radius}" h="${wheel_length}"/>
         </link>
 
     <joint name="rear_right_wheel" type="continuous">
