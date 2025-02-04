@@ -11,8 +11,8 @@ controller_manager:
       type: velocity_controllers/JointGroupVelocityController
 
     # Position controller for steering joints
-    steering_controllers:
-      type: position_controllers/JointGroupPositionController
+    joint_trajectory_position_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
 
 velocity_controllers:
   ros__parameters:
@@ -20,41 +20,33 @@ velocity_controllers:
     joints: 
       - rear_left_wheel
       - rear_right_wheel
+      - front_left_wheel
+      - front_right_wheel
     command_interface: 
       - velocity
     state_interface: 
-      # - position  # <--- Add this if tracking is required
       - velocity
       - effort
 
-steering_controllers:
-  ros__parameters:
-    use_sim_time: true
-    joints: 
-      - left_steering_hinge
-      - right_steering_hinge
-    command_interface: 
-      - position
-    state_interface: 
-      - position
-      - velocity
-
-# If joint_trajectory_position_controller is needed, ensure it's defined in controller_manager
 joint_trajectory_position_controller:
   ros__parameters:
     joints:
-      - left_steering_hinge
-      - right_steering_hinge
+    - left_steering_hinge
+    - right_steering_hinge
+    
     command_interfaces:
       - position
+
     state_interfaces:
       - position
       - velocity
-    state_publish_rate: 50.0  # Defaults to 50
-    action_monitor_rate: 20.0  # Defaults to 20
-    allow_partial_joints_goal: false  # Defaults to false
+
+    state_publish_rate: 50.0 # Defaults to 50
+    action_monitor_rate: 20.0 # Defaults to 20
+
+    allow_partial_joints_goal: false # Defaults to false
     open_loop_control: true
     allow_integration_in_goal_trajectories: true
     constraints:
-      stopped_velocity_tolerance: 0.01  # Defaults to 0.01
-      goal_time: 0.0  # Defaults to 0.0 (start immediately)
+      stopped_velocity_tolerance: 0.01 # Defaults to 0.01
+      goal_time: 0.0 # Defaults to 0.0 (start immediately)
