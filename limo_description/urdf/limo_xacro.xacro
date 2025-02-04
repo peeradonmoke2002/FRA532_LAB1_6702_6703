@@ -1,5 +1,13 @@
 <?xml version="1.0"?>
 <robot name="limo_xacro" xmlns:xacro="http://ros.org/wiki/xacro">
+    <material name="laser_material">
+        <color rgba="1.0 1.0 0.0 1.0"/> <!-- Yellow -->
+    </material>
+
+    <material name="imu_material">
+        <color rgba="0.0 1.0 1.0 1.0"/> <!-- Cyan -->
+    </material>
+
     <xacro:macro name="limo_wheel" params="parent_prefix wheel_prefix reflect *joint_pose visual_on:=true fixed_on:=false">
         <link name="${wheel_prefix}_wheel_link">
             <inertial>
@@ -190,21 +198,22 @@
                 </camera>
 
                 <plugin name="gazebo_ros_depth_camera_sensor" filename="libgazebo_ros_camera.so">
-
-                <ros>
-                    <namespace>/limo</namespace>
-                    <argument>limo_camera/image_raw:=limo_camera/image</argument>
-                    <argument>limo_camera/image_depth:=limo_camera/depth/camera_image_depth</argument>
-                    <argument>limo_camera/camera_info:=limo_camera/camera_info_raw</argument>
-                    <argument>limo_camera/camera_info_depth:=limo_camera/camera_info_depth</argument>
-                    <argument>limo_camera/points:=limo_camera/camera_points</argument>
-                </ros>
-                <camera_name>depth_camera_link</camera_name>
-                <frame_name>camera_depth_optical_frame</frame_name>
-                <hack_baseline>0.07</hack_baseline>
-                <min_depth>0.001</min_depth>
-
+                    <ros>
+                        <namespace>/limo</namespace>
+                        <ros-args>
+                            <remap from="limo_camera/image_raw" to="limo_camera/image"/>
+                            <remap from="limo_camera/image_depth" to="limo_camera/depth/camera_image_depth"/>
+                            <remap from="limo_camera/camera_info" to="limo_camera/camera_info_raw"/>
+                            <remap from="limo_camera/camera_info_depth" to="limo_camera/camera_info_depth"/>
+                            <remap from="limo_camera/points" to="limo_camera/camera_points"/>
+                        </ros-args>
+                    </ros>
+                    <camera_name>depth_camera_link</camera_name>
+                    <frame_name>camera_depth_optical_frame</frame_name>
+                    <hack_baseline>0.07</hack_baseline>
+                    <min_depth>0.001</min_depth>
                 </plugin>
+
             </sensor>
         </gazebo>
     </xacro:macro>

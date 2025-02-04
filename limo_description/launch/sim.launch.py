@@ -1,17 +1,9 @@
 import os
 
-from ament_index_python.packages import get_package_share_path
 from ament_index_python.packages import get_package_share_directory
-
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.conditions import IfCondition, UnlessCondition
-from launch.substitutions import Command, LaunchConfiguration
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.actions import Node
-from launch_ros.parameter_descriptions import ParameterValue
 from launch.actions import IncludeLaunchDescription, RegisterEventHandler
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch.event_handlers import OnProcessExit
 
@@ -19,50 +11,45 @@ from launch.event_handlers import OnProcessExit
 def generate_launch_description():
 
     package_name = "limo_description"
-    rviz_file_name = "limo.rviz"
-    rviz_file_path = os.path.join(
-        get_package_share_directory(package_name),
-        'rviz',
-        rviz_file_name
-    )
+    rviz_file_name = "gazebo.rviz"
+    world_file = "basic.world"
 
-    # Include Robot State Publisher (RSP)
+    spawn_x_val = "9.073500"
+    spawn_y_val = "0.0"
+    spawn_z_val = "0.0"
+    spawn_yaw_val = "1.57"
+
+    # Paths
+    rviz_file_path = os.path.join(get_package_share_directory(package_name), "rviz", rviz_file_name)
+    world_path = os.path.join(get_package_share_directory(package_name), "worlds", world_file)
+
+    # Include Robot State Publisher
     rsp = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            [
-                os.path.join(
-                    get_package_share_directory(package_name),
-                    "launch",
-                    "rsp.launch.py"
-                )
-            ]
+            os.path.join(get_package_share_directory(package_name), "launch", "rsp.launch.py")
         ),
         launch_arguments={"use_sim_time": "true"}.items()
     )
 
-
-    # Start Gazebo
+    # Launch Gazebo with a specific world
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            [
-                os.path.join(
-                    get_package_share_directory("gazebo_ros"),
-                    "launch",
-                    "gazebo.launch.py"
-                )
-            ]
-        )
+            os.path.join(get_package_share_directory("gazebo_ros"), "launch", "gazebo.launch.py")
+        ),
+        launch_arguments={"world": world_path}.items()
     )
 
-
-
-    # Spawn robot in Gazebo
+    # Spawn the robot at a specific location
     spawn_entity = Node(
         package="gazebo_ros",
         executable="spawn_entity.py",
         arguments=[
             "-topic", "robot_description",
-            "-entity", "limo"
+            "-entity", "limo",
+            "-x", spawn_x_val,
+            "-y", spawn_y_val,
+            "-z", spawn_z_val,
+            "-Y", spawn_yaw_val
         ],
         output="screen"
     )
@@ -85,12 +72,9 @@ def generate_launch_description():
     rviz = Node(
         package="rviz2",
         executable="rviz2",
-        arguments=[
-            "-d", rviz_file_path
-        ],
+        arguments=["-d", rviz_file_path],
         output="screen"
     )
-
 
     launch_description = LaunchDescription()
 
@@ -112,9 +96,10 @@ def generate_launch_description():
         )
     )
 
+    # Add launch actions
     launch_description.add_action(rviz)
     launch_description.add_action(gazebo)
     launch_description.add_action(spawn_entity)
     launch_description.add_action(rsp)
-    
+
     return launch_description
