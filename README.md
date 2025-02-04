@@ -9,14 +9,8 @@ source install/setup.bash
 ```
 2) run launch file
 ```bash
-ros2 launch limo_description rsp.launch.py
+ros2 launch limo_description sim.launch.py
 ```
-rviz & emtpy world
-
-![image](https://github.com/user-attachments/assets/7ff2a964-89a6-4e39-8077-7e307e79917f)
-
-rviz & race world
-
 ![Screenshot from 2025-02-04 22-34-33](https://github.com/user-attachments/assets/5e853149-dc23-49d1-aaf4-c46dc668d1f5)
 
 * Note this is for development phase
