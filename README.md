@@ -1,6 +1,6 @@
 # FRA532 Mobile Robot: LAB1
 
-## Testing Rviz run
+## Testing Rviz view and Gazebo run
 1) build file
 ```bash
 cd ~/[your_workspace]
@@ -11,7 +11,7 @@ source install/setup.bash
 ```bash
 ros2 launch limo_description rsp.launch.py
 ```
-![rviz_view](https://github.com/user-attachments/assets/5ac87f66-5a47-44b8-b951-aaeee29b2956)
+![image](https://github.com/user-attachments/assets/7ff2a964-89a6-4e39-8077-7e307e79917f)
 
 * Note this is for development phase
 
