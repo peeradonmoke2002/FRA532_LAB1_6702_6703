@@ -23,7 +23,7 @@ velocity_controllers:
     command_interface: 
       - velocity
     state_interface: 
-      - position  # <--- Add this if tracking is required
+      # - position  # <--- Add this if tracking is required
       - velocity
       - effort
 

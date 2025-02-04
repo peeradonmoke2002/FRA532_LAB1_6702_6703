@@ -71,7 +71,7 @@ def generate_launch_description():
         package="controller_manager",
         executable="spawner",
         arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
-        parameters=[{"use_sim_time": False}]
+        parameters=[{"use_sim_time": True}]
     )
 
     # joint_state_publisher_gui_node = Node(
@@ -84,7 +84,7 @@ def generate_launch_description():
         package="controller_manager",
         executable="spawner",
         arguments=["velocity_controllers", "--controller-manager", "/controller_manager"],
-        parameters=[{"use_sim_time": False}]
+        parameters=[{"use_sim_time": True}]
     )
 
         # Steering Controller (Controls front wheels' angles)
@@ -92,9 +92,15 @@ def generate_launch_description():
         package="controller_manager",
         executable="spawner",
         arguments=["steering_controllers", "--controller-manager", "/controller_manager"],
-        parameters=[{"use_sim_time": False}]
+        parameters=[{"use_sim_time": True}]
     )
 
+      # Add joint_state_publisher (required for visualization)
+    joint_state_publisher_gui_node = Node(
+            package="joint_state_publisher_gui",
+            executable="joint_state_publisher_gui",
+            output="screen"
+    )
 
     # Start RViz
     rviz = Node(
@@ -134,14 +140,13 @@ def generate_launch_description():
                 on_exit=[steering_controller_spawner],
             )
         )
-    )
+    )  
 
-    
-
-    # Add the rest of the nodes and launch descriptions
+    # launch_description.add_action(gazebo)
     launch_description.add_action(rviz)
-    launch_description.add_action(gazebo)
-    launch_description.add_action(spawn_entity)
+    # launch_description.add_action(gazebo)
+    # launch_description.add_action(spawn_entity)
     launch_description.add_action(rsp)
+    launch_description.add_action(joint_state_publisher_gui_node)
     
     return launch_description

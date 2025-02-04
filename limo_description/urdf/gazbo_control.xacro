@@ -82,91 +82,72 @@
         </joint>
     </ros2_control>
 
-    <!-- Base Physics -->
+    <gazebo reference="base_footprint">
+            <mu1>10</mu1>
+            <mu2>10</mu2>
+            <kp>10000000.0</kp>
+            <kd>1.0</kd>
+            <minDepth>0.01</minDepth>
+            <fdir1>1 0 0</fdir1>
+            <maxContacts value="64"/>
+        </gazebo>
+
     <gazebo reference="base_link">
-        <minDepth>0.0002</minDepth>
-        <kp value="1000000.0"/>
-        <kd value="100.0"/>
-    </gazebo>
+            <mu1>10</mu1>
+            <mu2>10</mu2>
+            <kp>10000000.0</kp>
+            <kd>1.0</kd>
+            <minDepth>0.01</minDepth>
+            <fdir1>1 0 0</fdir1>
+            <maxContacts value="64"/>
+        </gazebo>
 
-    <!-- Fixed Steering Joint Names in Gazebo -->
-    <gazebo reference="left_steering_hinge">
-        <friction>
-            <ode>
-                <mu>10.0</mu>
-                <mu2>10.0</mu2>
-            </ode>
-        </friction>
-        <minDepth>0.0002</minDepth>
-        <kp value="1000000.0"/>
-        <kd value="100.0"/>
+
+    <gazebo reference="inertial_link">
+        <mu1>10</mu1>
+        <mu2>10</mu2>
+        <kp>10000000.0</kp>
+        <kd>1.0</kd>
+        <minDepth>0.01</minDepth>
+        <fdir1>1 0 0</fdir1>
         <maxContacts value="64"/>
     </gazebo>
 
-    <gazebo reference="right_steering_hinge">
-        <friction>
-            <ode>
-                <mu>10.0</mu>
-                <mu2>10.0</mu2>
-            </ode>
-        </friction>
-        <minDepth>0.0002</minDepth>
-        <kp value="1000000.0"/>
-        <kd value="100.0"/>
+    <gazebo reference="main_steering_link">
+        <mu1>10</mu1>
+        <mu2>10</mu2>
+        <kp>10000000.0</kp>
+        <kd>1.0</kd>
+        <minDepth>0.01</minDepth>
+        <fdir1>1 0 0</fdir1>
         <maxContacts value="64"/>
     </gazebo>
 
-    <!-- Wheels Physics -->
-    <gazebo reference="front_left_wheel">
-        <friction>
-            <ode>
-                <mu>10.0</mu>
-                <mu2>10.0</mu2>
-            </ode>
-        </friction>
-        <minDepth>0.0002</minDepth>
-        <kp value="1000000.0"/>
-        <kd value="100.0"/>
-        <maxContacts value="64"/>
-    </gazebo>
 
-    <gazebo reference="front_right_wheel">
-        <friction>
-            <ode>
-                <mu>10.0</mu>
-                <mu2>10.0</mu2>
-            </ode>
-        </friction>
-        <minDepth>0.0002</minDepth>
-        <kp value="1000000.0"/>
-        <kd value="100.0"/>
-        <maxContacts value="64"/>
-    </gazebo>
 
-    <gazebo reference="rear_left_wheel">
-        <friction>
-            <ode>
-                <mu>10.0</mu>
-                <mu2>10.0</mu2>
-            </ode>
-        </friction>
-        <minDepth>0.0002</minDepth>
-        <kp value="1000000.0"/>
-        <kd value="100.0"/>
-        <maxContacts value="64"/>
+    <gazebo reference="front_left_wheel_link">
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+        <kp>1000.0</kp>
+        <kd>1000.0</kd>
     </gazebo>
-
-    <gazebo reference="rear_right_wheel">
-        <friction>
-            <ode>
-                <mu>10.0</mu>
-                <mu2>10.0</mu2>
-            </ode>
-        </friction>
-        <minDepth>0.0002</minDepth>
-        <kp value="1000000.0"/>
-        <kd value="100.0"/>
-        <maxContacts value="64"/>
+    <gazebo reference="front_right_wheel_link">
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+        <kp>1000.0</kp>
+        <kd>1000.0</kd>
+    </gazebo>
+    <gazebo reference="rear_left_wheel_link">
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+        <kp>1000.0</kp>
+        <kd>1000.0</kd>
+    </gazebo>
+    <gazebo reference="rear_right_wheel_link">
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
+        <kp>1000.0</kp>
+        <kd>1000.0</kd>
     </gazebo>
 
 </robot>
