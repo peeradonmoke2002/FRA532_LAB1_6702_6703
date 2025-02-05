@@ -15,6 +15,20 @@ ros2 launch limo_description sim.launch.py
 
 * Note this is for development phase
 
+## Testing wheel simple controller
+1) build file
+```bash
+cd ~/[your_workspace]
+colcon build
+source install/setup.bash 
+```
+2) run launch file
+```bash
+ros2 run robot_controller wheel_controller.py 
+```
+![wheel_test](https://github.com/user-attachments/assets/eef30821-475d-4d04-8a21-a4612d0a99c9)
+
+
 ## Our Team
 
 1. 67340700402 พงษ์พัฒน์ วงศ์กำแหงหาญ
