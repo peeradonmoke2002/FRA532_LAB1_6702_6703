@@ -20,6 +20,8 @@ velocity_controllers:
     joints: 
       - rear_left_wheel
       - rear_right_wheel
+      # - front_right_steering
+      # - front_left_steering
       # - front_left_wheel
       # - front_right_wheel
     command_interface: 
@@ -31,8 +33,10 @@ velocity_controllers:
 joint_trajectory_position_controller:
   ros__parameters:
     joints:
-    - left_steering_hinge
-    - right_steering_hinge
+      # - rear_left_wheel
+      # - rear_right_wheel
+      - front_right_steering
+      - front_left_steering
     
     command_interfaces:
       - position

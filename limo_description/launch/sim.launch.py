@@ -54,19 +54,28 @@ def generate_launch_description():
         output="screen"
     )
 
+    # Controller Spawners
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
-        parameters=[{"use_sim_time": False}]
+        parameters=[{"use_sim_time": True}]
+    )
+
+    joint_trajectory_position_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_trajectory_position_controller", "--controller-manager", "/controller_manager"],
+        parameters=[{"use_sim_time": True}]
     )
 
     velocity_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=["velocity_controllers", "--controller-manager", "/controller_manager"],
-        parameters=[{"use_sim_time": False}]
+        parameters=[{"use_sim_time": True}]
     )
+
 
     # Start RViz
     rviz = Node(
@@ -78,6 +87,7 @@ def generate_launch_description():
 
     launch_description = LaunchDescription()
 
+    # Start controllers in correct order
     launch_description.add_action(
         RegisterEventHandler(
             event_handler=OnProcessExit(
@@ -91,6 +101,15 @@ def generate_launch_description():
         RegisterEventHandler(
             event_handler=OnProcessExit(
                 target_action=joint_state_broadcaster_spawner,
+                on_exit=[joint_trajectory_position_controller_spawner],
+            )
+        )
+    )
+
+    launch_description.add_action(
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=joint_trajectory_position_controller_spawner,
                 on_exit=[velocity_controller_spawner],
             )
         )

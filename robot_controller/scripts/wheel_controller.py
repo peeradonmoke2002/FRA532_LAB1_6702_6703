@@ -14,7 +14,6 @@ class WheelController(Node):
 
     def timer_callback(self):
         wheel_msg = Float64MultiArray()
-        # wheel_msg.data = [0.0, 0.0, 3.0, 0.0, 3.0, 0.0] #left, right
         wheel_msg.data = [0.0, 0.0]
         self.wheel_pib.publish(wheel_msg)
 
