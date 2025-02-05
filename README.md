@@ -26,7 +26,7 @@ source install/setup.bash
 ```bash
 ros2 run robot_controller wheel_controller.py 
 ```
-![wheel_test](https://github.com/user-attachments/assets/eef30821-475d-4d04-8a21-a4612d0a99c9)
+![output](https://github.com/user-attachments/assets/5fb091b0-8f33-4949-9e40-43433b6dfec0)
 
 
 ## Our Team
