@@ -1,6 +1,16 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 
+    <xacro:macro name="sphere_inertial_matrix" params="m r">
+        <inertial>
+            <origin xyz="0.0 0.0 0.0" />
+            <mass value="${m}" />
+            <inertia ixx="${2*m*r*r/5}" ixy="0" ixz="0"
+                     iyy="${2*m*r*r/5}" iyz="0"
+                     izz="${2*m*r*r/5}" />
+        </inertial>
+    </xacro:macro>
+    <!-- Zylinder -->
     <xacro:macro name="cylinder_inertial_matrix" params="m r h">
         <inertial>
             <origin xyz="0.0 0.0 0.0" />
