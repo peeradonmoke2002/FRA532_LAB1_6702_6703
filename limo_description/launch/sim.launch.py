@@ -76,6 +76,15 @@ def generate_launch_description():
         parameters=[{"use_sim_time": True}]
     )
 
+    steering_monitor = Node(
+        package="robot_controller",
+        executable="steering_monitor.py"
+    )
+
+    ackerman_controller = Node(
+        package="robot_controller",
+        executable="ackerman_controller.py"
+    )
 
     # Start RViz
     rviz = Node(
@@ -119,6 +128,8 @@ def generate_launch_description():
     launch_description.add_action(rviz)
     launch_description.add_action(gazebo)
     launch_description.add_action(spawn_entity)
+    launch_description.add_action(ackerman_controller)
+    launch_description.add_action(steering_monitor)
     launch_description.add_action(rsp)
 
     return launch_description

@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 100  # Hz
+    update_rate: 500  # Hz
 
     # Broadcaster for publishing joint states
     joint_state_broadcaster:
@@ -20,10 +20,8 @@ velocity_controllers:
     joints: 
       - rear_left_wheel
       - rear_right_wheel
-      # - front_right_steering
-      # - front_left_steering
-      # - front_left_wheel
-      # - front_right_wheel
+
+
     command_interface: 
       - velocity
     state_interface: 

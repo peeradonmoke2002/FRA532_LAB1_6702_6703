@@ -98,24 +98,16 @@
     </ros2_control>
 
     <gazebo reference="base_footprint">
-            <mu1>10</mu1>
-            <mu2>10</mu2>
-            <kp>10000000.0</kp>
-            <kd>1.0</kd>
-            <minDepth>0.01</minDepth>
-            <fdir1>1 0 0</fdir1>
-            <maxContacts value="64"/>
-        </gazebo>
+        <minDepth>0.0002</minDepth>
+        <kp  value="1000000.0"/>
+        <kd  value="100.0"/>
+    </gazebo>
 
     <gazebo reference="base_link">
-            <mu1>10</mu1>
-            <mu2>10</mu2>
-            <kp>10000000.0</kp>
-            <kd>1.0</kd>
-            <minDepth>0.01</minDepth>
-            <fdir1>1 0 0</fdir1>
-            <maxContacts value="64"/>
-        </gazebo>
+        <minDepth>0.0002</minDepth>
+        <kp  value="1000000.0"/>
+        <kd  value="100.0"/>
+    </gazebo>
 
 
     <gazebo reference="front_left_wheel_link">
