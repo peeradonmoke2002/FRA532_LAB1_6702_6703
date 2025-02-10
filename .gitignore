@@ -1,4 +1,4 @@
 # ignore backup files
 /limo_description/urdf_backup/*
 /limo_description/urdf_backup3/*
-/robot_controller/scripts/backups/*
+/robot_controller/scripts/backup/*
