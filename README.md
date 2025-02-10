@@ -14,16 +14,18 @@
 Converting wheel velocity and steering to robot twist (linear velocity, angular velocity)
 
 #### Steering Angle Calculation
+
+From the geometric relationship, we have:
+
 $$
-\[
 \tan(\delta) = \frac{L}{R}
-\]
 $$
+
 Using the velocity equation \( v = \Omega_z R \), where \( v \) represents the velocity magnitude, we can express the steering angle as:
 
-\[
+$$
 \delta = \arctan \left( \frac{L \Omega_z}{v} \right)
-\]
+$$
 
 where:
 - \( \delta \) is the steering angle,
@@ -31,6 +33,9 @@ where:
 - \( R \) is the turning radius,
 - \( \Omega_z \) is the angular velocity,
 - \( v \) is the linear velocity of the vehicle.
+
+These equations describe the relationship between the steering angle and the vehicle's motion.
+
 
 
 ### No Slip condition constraints
