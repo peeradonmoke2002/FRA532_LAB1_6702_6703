@@ -15,16 +15,16 @@ Converting wheel velocity and steering to robot twist (linear velocity, angular 
 
 #### Steering Angle Calculation
 
-Based on the velocity equation $ v = \Omega_z R $, where $ v $ represents the velocity magnitude, we can derive the steering angle as:
+Based on the velocity equation $$\ v = \Omega_z R \$$ where $$\ v \$$ represents the velocity magnitude, we can derive the steering angle as:
 
 $$
 \delta = \arctan \left( \frac{L \Omega_z}{v} \right)
 $$
 
 where:
-- $ \delta $ is the steering angle,
-- $ \Omega_z $ is the angular velocity,
-- $ v $ is the linear velocity of the vehicle.
+- $$\ \delta \$$ is the steering angle,
+- $$\ \Omega_z \$$ is the angular velocity,
+- $$\ v \$$ is the linear velocity of the vehicle.
 
 In this repository, we prefer to represent steering for both left and right turns so that when applying steering to this model, the same approach can be used for both directions.
 
@@ -32,13 +32,13 @@ In this repository, we prefer to represent steering for both left and right turn
 
 In this repository, we prefer to control the velocity of the left and right rear wheels by converting a twist message into rear wheel speed using the following formula:
 
-$$
-\text{wheel\_speed} = \frac{v}{r}
-$$
+$$\
+\text{wheel}\_{speed} = \frac{v}{r}
+\$$
 
 where:
-- $ v $ is the linear velocity,
-- $ r $ is the wheel radius.
+- $$\ v \$$ is the linear velocity,
+- $$\ r \$$ is the wheel radius.
 
 Additionally, we prefer to represent steering for both left and right turns so that the same approach can be applied consistently when controlling this model.
 
