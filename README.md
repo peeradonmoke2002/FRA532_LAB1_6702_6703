@@ -1,4 +1,7 @@
 # FRA532 Mobile Robot: LAB1
+## Table of Contents
+- Forward Kinematics(#Forward Kinematics)
+- Inverse Kinematics(#Inverse Kinematics)
 
 ## Forward Kinematics
 
