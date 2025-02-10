@@ -1,32 +1,21 @@
 # FRA532 Mobile Robot: LAB1
 
-## Testing Rviz view and Gazebo run
-1) build file
-```bash
-cd ~/[your_workspace]
-colcon build
-source install/setup.bash 
-```
-2) run launch file
-```bash
-ros2 launch limo_description sim.launch.py
-```
-![Screenshot from 2025-02-04 22-34-33](https://github.com/user-attachments/assets/5e853149-dc23-49d1-aaf4-c46dc668d1f5)
+## Forward Kinematics
 
-* Note this is for development phase
+### Basic model
 
-## Testing wheel simple controller
-1) build file
-```bash
-cd ~/[your_workspace]
-colcon build
-source install/setup.bash 
-```
-2) run launch file
-```bash
-ros2 run robot_controller wheel_controller.py 
-```
-![output](https://github.com/user-attachments/assets/5fb091b0-8f33-4949-9e40-43433b6dfec0)
+### No Slip condition constraints
+
+
+## Inverse Kinematics
+
+### Yaw Rate
+
+
+### Single-track model
+
+
+### Double-track model
 
 
 ## Our Team
