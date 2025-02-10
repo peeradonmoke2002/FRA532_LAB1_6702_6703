@@ -1,16 +1,16 @@
 # FRA532 Mobile Robot: LAB1
 ## Table of Contents
-- Forward Kinematics(#Forward Kinematics)
-- Inverse Kinematics(#Inverse Kinematics)
+- Forward Kinematics(#Forward_Kinematics)
+- Inverse Kinematics(#Inverse_Kinematics)
 
-## Forward Kinematics
+## Forward_Kinematics
 
 ### Basic model
 
 ### No Slip condition constraints
 
 
-## Inverse Kinematics
+## Inverse_Kinematics
 
 ### Yaw Rate
 
