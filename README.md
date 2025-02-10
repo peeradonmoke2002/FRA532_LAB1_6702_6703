@@ -1,7 +1,7 @@
 # FRA532 Mobile Robot: LAB1
 ## Table of Contents
 - [Forward Kinematics](#forward-kinematics)
-  - [Basic model](#basic-model)
+  - [Bicycle model](#bicycle-model)
   - [No Slip condition constraints](#no-slip-condition-constraints)
 - [Inverse Kinematics](#inverse-kinematics)
   - [Yaw Rate](#yaw-rate)
@@ -10,7 +10,27 @@
 
 ## Forward Kinematics
 
-### Basic model
+### Bicycle model
+Converting wheel velocity and steering to robot twist (linear velocity, angular velocity)
+
+Steering Angle Calculation
+\[
+\tan(\delta) = \frac{L}{R}
+\]
+
+Using the velocity equation \( v = \Omega_z R \), where \( v \) represents the velocity magnitude, we can express the steering angle as:
+
+\[
+\delta = \arctan \left( \frac{L \Omega_z}{v} \right)
+\]
+
+where:
+- \( \delta \) is the steering angle,
+- \( L \) is the wheelbase (distance between front and rear axles),
+- \( R \) is the turning radius,
+- \( \Omega_z \) is the angular velocity,
+- \( v \) is the linear velocity of the vehicle.
+
 
 ### No Slip condition constraints
 
@@ -26,3 +46,6 @@
 
 1. 67340700402 พงษ์พัฒน์ วงศ์กำแหงหาญ
 2. 67340700403 พีรดนย์ เรืองแก้ว
+
+## Reference
+https://thomasfermi.github.io/Algorithms-for-Automated-Driving/Control/BicycleModel.html
