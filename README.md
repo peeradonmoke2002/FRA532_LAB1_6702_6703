@@ -15,28 +15,32 @@ Converting wheel velocity and steering to robot twist (linear velocity, angular 
 
 #### Steering Angle Calculation
 
-From the geometric relationship, we have:
-
-https://quicklatex.com/cache3/01/ql_cf9749a75145c6d99c28506638e35001_l3.png
-
-
-
-Using the velocity equation \( v = \Omega_z R \), where \( v \) represents the velocity magnitude, we can express the steering angle as:
+Based on the velocity equation $ v = \Omega_z R $, where $ v $ represents the velocity magnitude, we can derive the steering angle as:
 
 $$
 \delta = \arctan \left( \frac{L \Omega_z}{v} \right)
 $$
 
 where:
-- \( \delta \) is the steering angle,
-- \( L \) is the wheelbase (distance between front and rear axles),
-- \( R \) is the turning radius,
-- \( \Omega_z \) is the angular velocity,
-- \( v \) is the linear velocity of the vehicle.
+- $ \delta $ is the steering angle,
+- $ \Omega_z $ is the angular velocity,
+- $ v $ is the linear velocity of the vehicle.
 
-These equations describe the relationship between the steering angle and the vehicle's motion.
+In this repository, we prefer to represent steering for both left and right turns so that when applying steering to this model, the same approach can be used for both directions.
 
+#### Rear Wheel Speed Calculation
 
+In this repository, we prefer to control the velocity of the left and right rear wheels by converting a twist message into rear wheel speed using the following formula:
+
+$$
+\text{wheel\_speed} = \frac{v}{r}
+$$
+
+where:
+- $ v $ is the linear velocity,
+- $ r $ is the wheel radius.
+
+Additionally, we prefer to represent steering for both left and right turns so that the same approach can be applied consistently when controlling this model.
 
 ### No Slip condition constraints
 
