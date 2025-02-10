@@ -1,25 +1,21 @@
 # FRA532 Mobile Robot: LAB1
 ## Table of Contents
-- Forward Kinematics(#Forward_Kinematics)
-- Inverse Kinematics(#Inverse_Kinematics)
+- [Forward Kinematics](#forward_kinematics)
+- [Inverse Kinematics](#inverse_kinematics)
 
-## Forward_Kinematics
+## Forward Kinematics
 
 ### Basic model
 
 ### No Slip condition constraints
 
-
-## Inverse_Kinematics
+## Inverse Kinematics
 
 ### Yaw Rate
 
-
 ### Single-track model
 
-
 ### Double-track model
-
 
 ## Our Team
 
