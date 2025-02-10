@@ -27,8 +27,8 @@
 
         <joint name="front_right_wheel">
             <command_interface name="velocity">
-                <param name="min">-10</param>
-                <param name="max">10</param>
+                <param name="min">-20</param>
+                <param name="max">20</param>
               </command_interface>
               <state_interface name="position">
                 <param name="initial_value">0.0</param>
@@ -41,8 +41,8 @@
 
         <joint name="rear_left_wheel">
             <command_interface name="velocity">
-                <param name="min">-10</param>
-                <param name="max">10</param>
+                <param name="min">-20</param>
+                <param name="max">20</param>
               </command_interface>
               <state_interface name="position">
                 <param name="initial_value">0.0</param>
@@ -55,8 +55,8 @@
 
         <joint name="rear_right_wheel">
             <command_interface name="velocity">
-                <param name="min">-10</param>
-                <param name="max">10</param>
+                <param name="min">-20</param>
+                <param name="max">20</param>
               </command_interface>
               <state_interface name="position">
                 <param name="initial_value">0.0</param>
@@ -95,6 +95,21 @@
               </state_interface>
               <state_interface name="effort"/>
         </joint>
+<!-- 
+        <joint name="main_steering">
+            <command_interface name="velocity"/>
+            <command_interface name="position">
+                <param name="min">-0.523598767</param>
+                <param name="max">0.523598767</param>
+              </command_interface>
+              <state_interface name="position">
+                <param name="initial_value">0.0</param>
+              </state_interface>
+              <state_interface name="velocity">
+              </state_interface>
+              <state_interface name="effort"/>
+        </joint> -->
+
     </ros2_control>
 
     <gazebo reference="base_footprint">
@@ -108,6 +123,13 @@
         <kp  value="1000000.0"/>
         <kd  value="100.0"/>
     </gazebo>
+<!-- 
+    <gazebo reference="main_steering_link">
+        <minDepth>0.0002</minDepth>
+        <kp  value="1000000.0"/>
+        <kd  value="100.0"/>
+    </gazebo> -->
+        
 
 
     <gazebo reference="front_left_wheel_link">

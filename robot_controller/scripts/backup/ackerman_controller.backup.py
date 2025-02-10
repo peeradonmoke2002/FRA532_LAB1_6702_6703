@@ -25,8 +25,7 @@ class SteeringController(Node):
         self.wheel_base = 0.2         # Distance between front and rear axles (meters)
         self.track_width = 0.14       # Distance between left and right wheels (meters)
         self.max_steering_angle = 0.523598767  # 30 degrees in radians
-        self.wheel_radius = 0.05      # Rear wheel radius (meters)
-        
+        self.wheel_radius = 0.045      # 4.5 cm
         # Create publisher for steering commands
         self.pub_steering = self.create_publisher(
             JointTrajectory,

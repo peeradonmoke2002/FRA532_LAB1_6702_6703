@@ -83,7 +83,13 @@ def generate_launch_description():
 
     ackerman_controller = Node(
         package="robot_controller",
-        executable="ackerman_controller.py"
+        executable="ackerman_controller_basic_model.py"
+        # executable="ackerman_controller_no_slip.py"
+    )
+
+    ackerman_yaw_rate_odom = Node(
+        package="robot_controller",
+        executable="ackerman_yaw_rate_odom.py"
     )
 
     # Start RViz
@@ -129,6 +135,7 @@ def generate_launch_description():
     launch_description.add_action(gazebo)
     launch_description.add_action(spawn_entity)
     launch_description.add_action(ackerman_controller)
+    launch_description.add_action(ackerman_yaw_rate_odom)
     launch_description.add_action(steering_monitor)
     launch_description.add_action(rsp)
 

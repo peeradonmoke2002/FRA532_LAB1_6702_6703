@@ -35,6 +35,7 @@ joint_trajectory_position_controller:
       # - rear_right_wheel
       - front_right_steering
       - front_left_steering
+      # - main_steering
     
     command_interfaces:
       - position
