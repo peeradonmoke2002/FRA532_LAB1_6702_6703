@@ -18,7 +18,7 @@ Converting wheel velocity and steering to robot twist (linear velocity, angular 
 From the geometric relationship, we have:
 
 $$
-\tan(\delta) = \frac{L}{R}
+\displaystyle \tan(\delta) = \frac{L}{R}
 $$
 
 Using the velocity equation \( v = \Omega_z R \), where \( v \) represents the velocity magnitude, we can express the steering angle as:
