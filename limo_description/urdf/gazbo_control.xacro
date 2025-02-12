@@ -27,8 +27,8 @@
 
         <joint name="front_right_wheel">
             <command_interface name="velocity">
-                <param name="min">-20</param>
-                <param name="max">20</param>
+                <param name="min">-10</param>
+                <param name="max">10</param>
               </command_interface>
               <state_interface name="position">
                 <param name="initial_value">0.0</param>
@@ -41,8 +41,8 @@
 
         <joint name="rear_left_wheel">
             <command_interface name="velocity">
-                <param name="min">-20</param>
-                <param name="max">20</param>
+                <param name="min">-10</param>
+                <param name="max">10</param>
               </command_interface>
               <state_interface name="position">
                 <param name="initial_value">0.0</param>
@@ -55,8 +55,8 @@
 
         <joint name="rear_right_wheel">
             <command_interface name="velocity">
-                <param name="min">-20</param>
-                <param name="max">20</param>
+                <param name="min">-10</param>
+                <param name="max">10</param>
               </command_interface>
               <state_interface name="position">
                 <param name="initial_value">0.0</param>
@@ -71,8 +71,8 @@
         <joint name="front_left_steering">
             <command_interface name="velocity"/>
             <command_interface name="position">
-                <param name="min">-0.523598767</param>
-                <param name="max">0.523598767</param>
+                <param name="min">-0.698132</param>
+                <param name="max">0.698132</param>
               </command_interface>
               <state_interface name="position">
                 <param name="initial_value">0.0</param>
@@ -85,8 +85,8 @@
         <joint name="front_right_steering">
             <command_interface name="velocity"/>
             <command_interface name="position">
-                <param name="min">-0.523598767</param>
-                <param name="max">0.523598767</param>
+                <param name="min">-0.698132</param>
+                <param name="max">0.698132</param>
               </command_interface>
               <state_interface name="position">
                 <param name="initial_value">0.0</param>

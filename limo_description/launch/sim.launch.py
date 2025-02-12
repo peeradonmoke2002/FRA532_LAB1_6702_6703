@@ -83,8 +83,8 @@ def generate_launch_description():
 
     ackerman_controller = Node(
         package="robot_controller",
-        executable="ackerman_controller_basic_model.py"
-        # executable="ackerman_controller_no_slip.py"
+        # executable="ackerman_controller_basic_model.py"
+        executable="ackerman_controller_no_slip.py"
     )
 
     ackerman_yaw_rate_odom = Node(

@@ -279,8 +279,7 @@
             <child link="${frame_prefix}_link"/>
             <parent link="${parent_prefix}"/>
         </joint>
-        <gazebo reference="${frame_prefix}_link">
-            <material>Gazebo/Yellow</material>
+        <gazebo reference="imu_link">
             <gravity>true</gravity>
             <sensor name="twr_imu" type="imu">
             <always_on>true</always_on>

@@ -6,6 +6,7 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Float64MultiArray
+from rclpy.duration import Duration
 import numpy as np
 
 class BicycleController(Node):
@@ -51,7 +52,7 @@ class BicycleController(Node):
         point = JointTrajectoryPoint()
         point.positions = [float(steering), float(steering)]
         # Set a small time-from-start, e.g., 0.1 seconds.
-        from rclpy.duration import Duration
+
         point.time_from_start = Duration(seconds=0.1).to_msg()
         traj_msg.points.append(point)
         self.pub_steering.publish(traj_msg)

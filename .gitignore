@@ -1,2 +1,4 @@
 # ignore backup files
 /robot_controller/scripts/backup/*
+# ignore vscode files
+.vscode/*
