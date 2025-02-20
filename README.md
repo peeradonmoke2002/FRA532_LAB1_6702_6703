@@ -24,6 +24,10 @@ PID it separate to steering and speed
 The formula of the PID controller is 
 
 $$ u(t) = K_p e(t) + K_I \int_0^t e(t) \,dt + K_d \frac{de}{dt} $$
+## result 
+![Image Description]([https://github.com/your-username/your-repo/blob/main/path-to-your-image.png](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result/PID/PID_path.png))
+
+
 
 ## Pure Pursuit Controller
 
