@@ -57,7 +57,9 @@ Additionally, we prefer to represent steering for both left and right turns so t
 ## Table of Contents
 -[PID Controller](#PID Controller)
 -[Pure Pursuit Controller](#Pure Pursuit Controller)
+## PID Controller
 
+## Pure Pursuit Controller
 
 ## Our Team
 
