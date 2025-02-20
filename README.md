@@ -26,7 +26,11 @@ The formula of the PID controller is
 $$ u(t) = K_p e(t) + K_I \int_0^t e(t) \,dt + K_d \frac{de}{dt} $$
 ## result 
 ![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result/PID/PID_path.png)
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result/PID/PID_speed.png)
 
+
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result/purepursuit/purepursuit_path.png)
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result/purepursuit/purepursuit_speed.png)
 
 
 ## Pure Pursuit Controller
