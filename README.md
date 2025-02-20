@@ -53,34 +53,6 @@ Additionally, we prefer to represent steering for both left and right turns so t
 ### Double-track model
 
 
-# FRA532 Mobile Robot: LAB1.2
-
-## Table of Contents
-- [PID Controller](#pid-controller)
-- [Pure Pursuit Controller](#pure-pursuit-controller)
-
-## PID Controller
-PID it separate to steering and speed 
-
-| Parameter | Description |
-|-----------|------------|
-| `Kp_steer` | Improves robot response to direction changes. |
-| `Ki_steer` | Helps correct long-term drift in steering. |
-| `Kd_steer` | Dampens sudden steering adjustments to reduce oscillation. |
-
-| Parameter | Description |
-|-----------|------------|
-| `Kp_speed` | Controls speed response to target velocity. |
-| `Ki_speed` | Corrects long-term speed drift. |
-| `Kd_speed` | Smooths speed changes for stability. |
-
-The formula of the PID controller is 
-
-$$ u(t) = K_p e(t) + K_I \int_0^t e(t) \,dt + K_d \frac{de}{dt} $$
-
-## Pure Pursuit Controller
-
-
 
 ## Our Team
 
