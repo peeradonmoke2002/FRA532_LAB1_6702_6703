@@ -1,4 +1,4 @@
-# FRA532 Mobile Robot: LAB1
+# FRA532 Mobile Robot: LAB1.1
 ## Table of Contents
 - [Forward Kinematics](#forward-kinematics)
   - [Bicycle model](#bicycle-model)
@@ -51,6 +51,8 @@ Additionally, we prefer to represent steering for both left and right turns so t
 ### Single-track model
 
 ### Double-track model
+
+
 
 ## Our Team
 
