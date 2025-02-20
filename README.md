@@ -66,57 +66,13 @@ kp_steer = Make robot better respon
 ki_steer = Helps correct long-term drift in steering
 kd_steer = Helps smooth out steering adjustments by damping fast changes in error
 
-kp_speed = 
-ki_speed = 
-kd_speed =
+kp_speed =  Controls speed response to target
+ki_speed = Corrects long-term speed drift
+kd_speed = Smooths speed changes
 
 The formula of the PID controller is 
-<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
-  <mi>u</mi>
-  <mo stretchy="false">(</mo>
-  <mi>t</mi>
-  <mo stretchy="false">)</mo>
-  <mo>=</mo>
-  <msub>
-    <mi>K</mi>
-    <mi>p</mi>
-  </msub>
-  <mi>e</mi>
-  <mo stretchy="false">(</mo>
-  <mi>t</mi>
-  <mo stretchy="false">)</mo>
-  <mo>+</mo>
-  <msub>
-    <mi>K</mi>
-    <mi>I</mi>
-  </msub>
-  <msubsup>
-    <mo data-mjx-texclass="OP">&#x222B;</mo>
-    <mn>0</mn>
-    <mi>t</mi>
-  </msubsup>
-  <mi>e</mi>
-  <mo stretchy="false">(</mo>
-  <mi>t</mi>
-  <mo stretchy="false">)</mo>
-  <mi>d</mi>
-  <mi>t</mi>
-  <mo>+</mo>
-  <msub>
-    <mi>K</mi>
-    <mi>d</mi>
-  </msub>
-  <mfrac>
-    <mrow>
-      <mi>d</mi>
-      <mi>e</mi>
-    </mrow>
-    <mrow>
-      <mi>d</mi>
-      <mi>t</mi>
-    </mrow>
-  </mfrac>
-</math>
+
+$$ u(t) = K_p e(t) + K_I \int_0^t e(t) \,dt + K_d \frac{de}{dt} $$
 
 ## Pure Pursuit Controller
 
