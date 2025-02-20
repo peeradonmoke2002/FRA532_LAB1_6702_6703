@@ -62,13 +62,17 @@ Additionally, we prefer to represent steering for both left and right turns so t
 ## PID Controller
 PID it separate to steering and speed 
 
-kp_steer = Make robot better respon
-ki_steer = Helps correct long-term drift in steering
-kd_steer = Helps smooth out steering adjustments by damping fast changes in error
+| Parameter | Description |
+|-----------|------------|
+| `Kp_steer` | Improves robot response to direction changes. |
+| `Ki_steer` | Helps correct long-term drift in steering. |
+| `Kd_steer` | Dampens sudden steering adjustments to reduce oscillation. |
 
-kp_speed =  Controls speed response to target
-ki_speed = Corrects long-term speed drift
-kd_speed = Smooths speed changes
+| Parameter | Description |
+|-----------|------------|
+| `Kp_speed` | Controls speed response to target velocity. |
+| `Ki_speed` | Corrects long-term speed drift. |
+| `Kd_speed` | Smooths speed changes for stability. |
 
 The formula of the PID controller is 
 
