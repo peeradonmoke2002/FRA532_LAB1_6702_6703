@@ -24,13 +24,24 @@ PID it separate to steering and speed
 The formula of the PID controller is 
 
 $$ u(t) = K_p e(t) + K_I \int_0^t e(t) \,dt + K_d \frac{de}{dt} $$
-## result 
-![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result/PID/PID_path.png)
-![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result/PID/PID_speed.png)
 
+## 📍 PID Controller Results
 
-![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result/purepursuit/purepursuit_path.png)
-![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result/purepursuit/purepursuit_speed.png)
+### Path Tracking
+![PID Path](https://raw.githubusercontent.com/peeradonmoke2002/FRA532_LAB1_6702_6703/Path-Tracking-Controller/robot_controller/result/PID/PID_path.png)
+
+### Speed Profile
+![PID Speed](https://raw.githubusercontent.com/peeradonmoke2002/FRA532_LAB1_6702_6703/Path-Tracking-Controller/robot_controller/result/PID/PID_speed.png)
+
+---
+
+## 📍 Pure Pursuit Controller Results
+
+### Path Tracking
+![Pure Pursuit Path](https://raw.githubusercontent.com/peeradonmoke2002/FRA532_LAB1_6702_6703/Path-Tracking-Controller/robot_controller/result/purepursuit/purepursuit_path.png)
+
+### Speed Profile
+![Pure Pursuit Speed](https://raw.githubusercontent.com/peeradonmoke2002/FRA532_LAB1_6702_6703/Path-Tracking-Controller/robot_controller/result/purepursuit/purepursuit_speed.png)
 
 
 ## Pure Pursuit Controller
