@@ -60,10 +60,10 @@ Additionally, we prefer to represent steering for both left and right turns so t
 - [Pure Pursuit Controller](#pure-pursuit-controller)
 
 ## PID Controller
-This section describes the implementation of the PID controller.
+
 
 ## Pure Pursuit Controller
-This section explains the pure pursuit path tracking algorithm.
+
 
 
 ## Our Team
