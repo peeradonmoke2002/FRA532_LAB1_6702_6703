@@ -6,6 +6,18 @@
         </plugin>
     </gazebo>
 
+    <!-- <gazebo>
+      <plugin name="ground_truth_plugin" filename="libgazebo_ros_p3d.so">
+        <ros>
+          <namespace>/ground_truth</namespace>
+          <remapping>odom:=pose</remapping>
+        </ros>
+        <body_name>base_footprint</body_name>
+        <frameName>world</frameName>
+        <updateRate>100.0</updateRate>
+      </plugin>
+    </gazebo> -->
+
     <ros2_control name="GazeboSystem" type="system">
         <hardware>
             <plugin>gazebo_ros2_control/GazeboSystem</plugin>

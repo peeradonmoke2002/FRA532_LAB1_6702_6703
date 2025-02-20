@@ -146,7 +146,7 @@
       <ros>
         <namespace>/gazebo</namespace>
       </ros>
-      <update_rate>5.0</update_rate>
+      <update_rate>500.0</update_rate>
     </plugin>
 
     <gui fullscreen='0'>

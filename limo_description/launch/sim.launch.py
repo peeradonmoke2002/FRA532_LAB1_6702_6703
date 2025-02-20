@@ -6,6 +6,8 @@ from launch.actions import IncludeLaunchDescription, RegisterEventHandler
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch.event_handlers import OnProcessExit
+from launch.substitutions import LaunchConfiguration
+import launch_ros.actions
 
 
 def generate_launch_description():
@@ -83,8 +85,8 @@ def generate_launch_description():
 
     ackerman_controller = Node(
         package="robot_controller",
-        # executable="ackerman_controller_basic_model.py"
-        executable="ackerman_controller_no_slip.py"
+        executable="ackerman_controller_basic_model.py"
+        # executable="ackerman_controller_no_slip.py"
     )
 
     ackerman_yaw_rate_odom = Node(
@@ -129,14 +131,24 @@ def generate_launch_description():
             )
         )
     )
+    #    # Static Transform Publisher (world -> odom)
+    # static_tf = launch_ros.actions.Node(
+    #     package="tf2_ros",
+    #     executable="static_transform_publisher",
+    #     arguments=["0", "0", "0", "0", "0", "0", "world", "odom"],
+    #     output="screen"
+    # )
+
+
 
     # Add launch actions
     launch_description.add_action(rviz)
     launch_description.add_action(gazebo)
     launch_description.add_action(spawn_entity)
-    launch_description.add_action(ackerman_controller)
-    launch_description.add_action(ackerman_yaw_rate_odom)
-    launch_description.add_action(steering_monitor)
+    # launch_description.add_action(ackerman_controller)
+    # launch_description.add_action(ackerman_yaw_rate_odom)
+    # launch_description.add_action(steering_monitor)
     launch_description.add_action(rsp)
+    # launch_description.add_action(static_tf)
 
     return launch_description

@@ -21,7 +21,6 @@ class YawrateOdom(Node):
         # Robot parameters
         self.wheel_base = 0.2         # meters
         self.track_width = 0.14       # meters
-        self.max_steering_angle = 0.523598767  # 30 degrees in radians
         self.wheel_radius = 0.045     # meters
 
         # Publishers and timer
@@ -51,6 +50,7 @@ class YawrateOdom(Node):
 
         # Odometry state variables
         self.relative_yaw = 0.0  # Change in yaw from the initial IMU reading
+        self.absolute_yaw = 0.0  # Absolute yaw for integrating the robot’s position
         self.wheelspeed = 0.0
         self.wheel_omega = np.array([0.0, 0.0])
         self.last_callback_time = self.get_clock().now()
@@ -58,7 +58,7 @@ class YawrateOdom(Node):
 
     def joint_state_callback(self, msg):
         # Extract rear wheel velocities (assumed indices 2 and 4)
-        self.wheel_omega = np.array([msg.velocity[2], msg.velocity[4]])
+        self.wheel_omega = np.array([msg.velocity[4], msg.velocity[2]])
         # Extract steering angles (assumed indices 3 and 5, if needed later)
         self.steering_angles = np.array([msg.position[3], msg.position[5]])
 
@@ -66,6 +66,7 @@ class YawrateOdom(Node):
         # Convert average wheel angular speed to linear speed
         wheelspeed = ((wheel_omega[0] + wheel_omega[1]) / 2.0) * self.wheel_radius
         return wheelspeed
+    
 
     def feedback_imu(self, msg):
         # Extract orientation from the IMU and convert to Euler yaw
@@ -81,17 +82,14 @@ class YawrateOdom(Node):
 
     def timer_callback(self):
         self.wheelspeed = self.get_wheel_speed(self.wheel_omega)
-        # Compute the absolute yaw: initial spawn yaw + change from IMU
-        absolute_yaw = self.robot_position[2] + self.relative_yaw
-
-        # IMPORTANT: Use the absolute yaw for integrating the robot’s position.
-        vx = self.wheelspeed * math.cos(absolute_yaw)
-        vy = self.wheelspeed * math.sin(absolute_yaw)
-
+        self.absolute_yaw = self.robot_position[2] + self.relative_yaw
+        vx = self.wheelspeed * math.cos(self.absolute_yaw)
+        vy = self.wheelspeed * math.sin(self.absolute_yaw)
+        # Update the robot’s position
         self.robot_position[0] += vx * self.dt_loop
         self.robot_position[1] += vy * self.dt_loop
 
-        quaternion = tf_transformations.quaternion_from_euler(0.0, 0.0, absolute_yaw)
+        quaternion = tf_transformations.quaternion_from_euler(0.0, 0.0, self.absolute_yaw)
 
         # Create and populate the Odometry message
         odom_msg = Odometry()
@@ -113,9 +111,8 @@ class YawrateOdom(Node):
         )
         odom_msg.pose.covariance = self.pose_cov.flatten()
 
-        odom_msg.twist.twist.linear = Vector3(x=vx, y=vy, z=0.0)
-        # You can compute and include the angular velocity if desired.
-        odom_msg.twist.twist.angular = Vector3(x=0.0, y=0.0, z=0.0)
+        odom_msg.twist.twist.linear = Vector3(x=vx, y=0.0, z=0.0)
+        odom_msg.twist.twist.angular = Vector3(x=0.0, y=0.0, z=self.absolute_yaw)
         odom_msg.twist.covariance = self.twist_cov.flatten()
 
         self.publisher.publish(odom_msg)
@@ -132,6 +129,8 @@ class YawrateOdom(Node):
         transform.transform.rotation = odom_msg.pose.pose.orientation
 
         self.tf_br.sendTransform(transform)
+
+        print('x: ', self.robot_position[0], 'y: ', self.robot_position[1], 'z', quaternion[2], 'w', quaternion[3])
 
 def main(args=None):
     rclpy.init(args=args)

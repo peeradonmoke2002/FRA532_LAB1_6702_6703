@@ -70,8 +70,7 @@ class AckermannController(Node):
                                 (self.wheel_base + 0.5 * self.track_width * tan_steer))
         right_angle = np.arctan((self.wheel_base * tan_steer) / 
                                 (self.wheel_base - 0.5 * self.track_width * tan_steer))
-        # left_angle = np.clip(left_angle, -self.max_steering_angle, self.max_steering_angle)
-        # right_angle = np.clip(right_angle, -self.max_steering_angle, self.max_steering_angle)
+
         return left_angle, right_angle
 
 
@@ -96,14 +95,11 @@ class AckermannController(Node):
             left_angle = outside_angle    
             right_angle = inside_angle  
 
-            if turn_sign > 0:
-                wheel_speed_left = self.cmd_vel[0] * (2 - (self.track_width / r_ICR)) / (2 * self.wheel_radius)
-                wheel_speed_right = self.cmd_vel[0] * (2 + (self.track_width / r_ICR)) / (2 * self.wheel_radius)
-            else:
-                wheel_speed_left = self.cmd_vel[0] * (2 + (self.track_width / r_ICR)) / (2 * self.wheel_radius)
-                wheel_speed_right = self.cmd_vel[0] * (2 - (self.track_width / r_ICR)) / (2 * self.wheel_radius)
+
+
         
             self.publish_steering(left_angle, right_angle)
+            print(left_angle,right_angle)
 
         wheel_speed_msg = Float64MultiArray()
         wheel_speed_msg.data = [wheel_speed_left, wheel_speed_right]
@@ -123,6 +119,12 @@ if __name__ == '__main__':
 
 
 
+            # if turn_sign > 0:
+            #     wheel_speed_left = self.cmd_vel[0] * (2 - (self.track_width / r_ICR)) / (2 * self.wheel_radius)
+            #     wheel_speed_right = self.cmd_vel[0] * (2 + (self.track_width / r_ICR)) / (2 * self.wheel_radius)
+            # else:
+            #     wheel_speed_left = self.cmd_vel[0] * (2 + (self.track_width / r_ICR)) / (2 * self.wheel_radius)
+            #     wheel_speed_right = self.cmd_vel[0] * (2 - (self.track_width / r_ICR)) / (2 * self.wheel_radius)
 
 
 

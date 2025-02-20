@@ -150,7 +150,7 @@
             </plugin>
             </sensor>
         </gazebo>
-    </xacro:macro>
+    </xacro:macro> 
 
     <xacro:macro name="limo_depth_camera" params="parent_prefix frame_prefix *joint_pose">
         <link name='${frame_prefix}_link'>
