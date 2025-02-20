@@ -71,8 +71,8 @@
         <joint name="front_left_steering">
             <command_interface name="velocity"/>
             <command_interface name="position">
-                <param name="min">-0.523598767</param>
-                <param name="max">0.523598767</param>
+                <param name="min">-0.698132</param>
+                <param name="max">0.698132</param>
               </command_interface>
               <state_interface name="position">
                 <param name="initial_value">0.0</param>
@@ -85,6 +85,20 @@
         <joint name="front_right_steering">
             <command_interface name="velocity"/>
             <command_interface name="position">
+                <param name="min">-0.698132</param>
+                <param name="max">0.698132</param>
+              </command_interface>
+              <state_interface name="position">
+                <param name="initial_value">0.0</param>
+              </state_interface>
+              <state_interface name="velocity">
+              </state_interface>
+              <state_interface name="effort"/>
+        </joint>
+<!-- 
+        <joint name="main_steering">
+            <command_interface name="velocity"/>
+            <command_interface name="position">
                 <param name="min">-0.523598767</param>
                 <param name="max">0.523598767</param>
               </command_interface>
@@ -94,28 +108,28 @@
               <state_interface name="velocity">
               </state_interface>
               <state_interface name="effort"/>
-        </joint>
+        </joint> -->
+
     </ros2_control>
 
     <gazebo reference="base_footprint">
-            <mu1>10</mu1>
-            <mu2>10</mu2>
-            <kp>10000000.0</kp>
-            <kd>1.0</kd>
-            <minDepth>0.01</minDepth>
-            <fdir1>1 0 0</fdir1>
-            <maxContacts value="64"/>
-        </gazebo>
+        <minDepth>0.0002</minDepth>
+        <kp  value="1000000.0"/>
+        <kd  value="100.0"/>
+    </gazebo>
 
     <gazebo reference="base_link">
-            <mu1>10</mu1>
-            <mu2>10</mu2>
-            <kp>10000000.0</kp>
-            <kd>1.0</kd>
-            <minDepth>0.01</minDepth>
-            <fdir1>1 0 0</fdir1>
-            <maxContacts value="64"/>
-        </gazebo>
+        <minDepth>0.0002</minDepth>
+        <kp  value="1000000.0"/>
+        <kd  value="100.0"/>
+    </gazebo>
+<!-- 
+    <gazebo reference="main_steering_link">
+        <minDepth>0.0002</minDepth>
+        <kp  value="1000000.0"/>
+        <kd  value="100.0"/>
+    </gazebo> -->
+        
 
 
     <gazebo reference="front_left_wheel_link">
@@ -123,28 +137,28 @@
         <mu2>10.0</mu2>
         <minDepth>0.0002</minDepth>
         <kp  value="1000000.0"/>
-        <kd  value="100.0"/>
+
     </gazebo>
     <gazebo reference="front_right_wheel_link">
         <mu1>10.0</mu1>
         <mu2>10.0</mu2>
         <minDepth>0.0002</minDepth>
         <kp  value="1000000.0"/>
-        <kd  value="100.0"/>
+
     </gazebo>
     <gazebo reference="rear_left_wheel_link">
         <mu1>10.0</mu1>
         <mu2>10.0</mu2>
         <minDepth>0.0002</minDepth>
         <kp  value="1000000.0"/>
-        <kd  value="100.0"/>
+
     </gazebo>
     <gazebo reference="rear_right_wheel_link">
         <mu1>10.0</mu1>
         <mu2>10.0</mu2>
         <minDepth>0.0002</minDepth>
         <kp  value="1000000.0"/>
-        <kd  value="100.0"/>
+
     </gazebo>
 
 </robot>

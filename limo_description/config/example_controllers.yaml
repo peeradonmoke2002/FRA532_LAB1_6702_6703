@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 100  # Hz
+    update_rate: 2000 # Hz
 
     # Broadcaster for publishing joint states
     joint_state_broadcaster:
@@ -28,11 +28,29 @@ velocity_controllers:
       - velocity
       - effort
 
+joint_state_publisher:
+  ros__parameters:
+    source_list:
+      - /joint_trajectory_position_controller/state
+    joints:
+    - front_left_steering
+    - front_right_steering
+    
+    command_interfaces:
+      - position
+
+    state_interfaces:
+      - position
+      - velocity
+      - effort
+
+
+
 joint_trajectory_position_controller:
   ros__parameters:
     joints:
-    - left_steering_hinge
-    - right_steering_hinge
+    - front_left_steering
+    - front_right_steering
     
     command_interfaces:
       - position
@@ -41,8 +59,15 @@ joint_trajectory_position_controller:
       - position
       - velocity
 
-    state_publish_rate: 50.0 # Defaults to 50
-    action_monitor_rate: 20.0 # Defaults to 20
+
+robot_state_publisher:
+  ros__parameters:
+    use_sim_time: true
+    publish_frequency: 2000  # Hz
+
+
+    state_publish_rate: 2000 # Defaults to 50
+    action_monitor_rate: 2000 # Defaults to 20
 
     allow_partial_joints_goal: false # Defaults to false
     open_loop_control: true
@@ -50,3 +75,15 @@ joint_trajectory_position_controller:
     constraints:
       stopped_velocity_tolerance: 0.01 # Defaults to 0.01
       goal_time: 0.0 # Defaults to 0.0 (start immediately)
+
+# odom:
+#   ros__parameters:
+#     use_sim_time: true
+#     odometry_frame: "base_link"  # 🔹 Set odom frame to base_link
+#     base_frame: "base_link"
+
+#     publish_odom: true
+#     publish_odom_tf: false  # 🔹 Prevents publishing odom → base_link transform
+
+#     max_speed: 2.0
+#     max_steer: 0.5236

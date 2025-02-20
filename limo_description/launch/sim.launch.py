@@ -13,11 +13,16 @@ def generate_launch_description():
     package_name = "limo_description"
     rviz_file_name = "gazebo.rviz"
     world_file = "basic.world"
-
+    #Pose: x=-4.711, y=9.611, yaw=153.92° 
     spawn_x_val = "9.073500"
     spawn_y_val = "0.0"
     spawn_z_val = "0.0"
     spawn_yaw_val = "1.57"
+
+    # spawn_x_val = "-4.633837776338229"
+    # spawn_y_val = "9.687033850999052"
+    # spawn_z_val = "0.0"
+    # spawn_yaw_val = "2.6799560258356285"
 
     # Paths
     rviz_file_path = os.path.join(get_package_share_directory(package_name), "rviz", rviz_file_name)
@@ -54,6 +59,9 @@ def generate_launch_description():
         output="screen"
     )
 
+
+
+
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -67,6 +75,24 @@ def generate_launch_description():
         arguments=["velocity_controllers", "--controller-manager", "/controller_manager"],
         parameters=[{"use_sim_time": False}]
     )
+
+    joint_trajectory_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_trajectory_position_controller", "--controller-manager", "/controller_manager"],
+        parameters=[{"use_sim_time": False}]
+    )
+
+    # slam_toolbox_node = Node(
+    #         package='slam_toolbox',
+    #         executable='sync_slam_toolbox_node',  # Use the correct executable
+    #         name='slam_toolbox',
+    #         output='screen',
+    #         parameters=[{'use_sim_time': True}],
+    #         remappings=[('/scan', '/laser/scan')]  # Remap laser scan topic if needed
+    #     )
+
+
 
     # Start RViz
     rviz = Node(
@@ -96,10 +122,22 @@ def generate_launch_description():
         )
     )
 
+    launch_description.add_action(
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=velocity_controller_spawner,
+                on_exit=[joint_trajectory_controller_spawner],
+            )
+        )
+    )
+
+
     # Add launch actions
     launch_description.add_action(rviz)
     launch_description.add_action(gazebo)
     launch_description.add_action(spawn_entity)
     launch_description.add_action(rsp)
+    # launch_description.add_action(slam_toolbox_node)
+
 
     return launch_description
