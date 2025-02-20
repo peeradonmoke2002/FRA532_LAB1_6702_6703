@@ -1,32 +1,32 @@
 # FRA532 Mobile Robot: LAB1
 
-## Testing Rviz view and Gazebo run
-1) build file
-```bash
-cd ~/[your_workspace]
-colcon build
-source install/setup.bash 
-```
-2) run launch file
-```bash
-ros2 launch limo_description sim.launch.py
-```
-![Screenshot from 2025-02-04 22-34-33](https://github.com/user-attachments/assets/5e853149-dc23-49d1-aaf4-c46dc668d1f5)
+# FRA532 Mobile Robot: LAB1.2
 
-* Note this is for development phase
+## Table of Contents
+- [PID Controller](#pid-controller)
+- [Pure Pursuit Controller](#pure-pursuit-controller)
 
-## Testing wheel simple controller
-1) build file
-```bash
-cd ~/[your_workspace]
-colcon build
-source install/setup.bash 
-```
-2) run launch file
-```bash
-ros2 run robot_controller wheel_controller.py 
-```
-![output](https://github.com/user-attachments/assets/5fb091b0-8f33-4949-9e40-43433b6dfec0)
+## PID Controller
+PID it separate to steering and speed 
+
+| Parameter | Description |
+|-----------|------------|
+| `Kp_steer` | Improves robot response to direction changes. |
+| `Ki_steer` | Helps correct long-term drift in steering. |
+| `Kd_steer` | Dampens sudden steering adjustments to reduce oscillation. |
+
+| Parameter | Description |
+|-----------|------------|
+| `Kp_speed` | Controls speed response to target velocity. |
+| `Ki_speed` | Corrects long-term speed drift. |
+| `Kd_speed` | Smooths speed changes for stability. |
+
+The formula of the PID controller is 
+
+$$ u(t) = K_p e(t) + K_I \int_0^t e(t) \,dt + K_d \frac{de}{dt} $$
+
+## Pure Pursuit Controller
+
 
 
 ## Our Team
