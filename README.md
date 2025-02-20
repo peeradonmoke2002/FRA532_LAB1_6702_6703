@@ -60,7 +60,63 @@ Additionally, we prefer to represent steering for both left and right turns so t
 - [Pure Pursuit Controller](#pure-pursuit-controller)
 
 ## PID Controller
+PID it separate to steering and speed 
 
+kp_steer = Make robot better respon
+ki_steer = Helps correct long-term drift in steering
+kd_steer = Helps smooth out steering adjustments by damping fast changes in error
+
+kp_speed = 
+ki_speed = 
+kd_speed =
+
+The formula of the PID controller is 
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mi>u</mi>
+  <mo stretchy="false">(</mo>
+  <mi>t</mi>
+  <mo stretchy="false">)</mo>
+  <mo>=</mo>
+  <msub>
+    <mi>K</mi>
+    <mi>p</mi>
+  </msub>
+  <mi>e</mi>
+  <mo stretchy="false">(</mo>
+  <mi>t</mi>
+  <mo stretchy="false">)</mo>
+  <mo>+</mo>
+  <msub>
+    <mi>K</mi>
+    <mi>I</mi>
+  </msub>
+  <msubsup>
+    <mo data-mjx-texclass="OP">&#x222B;</mo>
+    <mn>0</mn>
+    <mi>t</mi>
+  </msubsup>
+  <mi>e</mi>
+  <mo stretchy="false">(</mo>
+  <mi>t</mi>
+  <mo stretchy="false">)</mo>
+  <mi>d</mi>
+  <mi>t</mi>
+  <mo>+</mo>
+  <msub>
+    <mi>K</mi>
+    <mi>d</mi>
+  </msub>
+  <mfrac>
+    <mrow>
+      <mi>d</mi>
+      <mi>e</mi>
+    </mrow>
+    <mrow>
+      <mi>d</mi>
+      <mi>t</mi>
+    </mrow>
+  </mfrac>
+</math>
 
 ## Pure Pursuit Controller
 
