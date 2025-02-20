@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import JointState
@@ -12,26 +14,26 @@ class KinematicOdometryNode(Node):
         super().__init__("kinematic_odometry")
 
         # 🚗 Vehicle Parameters
-        self.WHEEL_BASE = 0.2  # ฐานล้อหน้า-หลัง (m)
-        self.TRACK_WIDTH = 0.13  # ระยะห่างล้อซ้าย-ขวา (m)
-        self.WHEEL_RADIUS = 0.04815  # รัศมีล้อ (m)
-        self.DT = 0.05  # คาบเวลา (s)
+        self.WHEEL_BASE = 0.2  # Distance between front and rear axles (meters)
+        self.TRACK_WIDTH = 0.13  # Distance between left and right wheels (meters)
+        self.WHEEL_RADIUS = 0.04815  # Wheel radius (meters)
+        self.DT = 0.05  # Time step for updates (seconds)
 
         # 🔄 Scaling Factors
-        self.ODO_SCALE = 0.90  # ปรับค่าความเร็ว
-        self.YAW_SCALE = 1.7  # ปรับค่าความเร็วการหมุน
+        self.ODO_SCALE = 0.90  # Scaling factor for velocity correction
+        self.YAW_SCALE = 1.7  # Scaling factor for yaw rate correction
 
         # 🌍 Initial Pose & State Variables
-        self.x = 9.073500
-        self.y = 0.0
-        self.theta = 1.57  # (90 องศา)
+        self.x = 9.073500  # Initial X position
+        self.y = 0.0  # Initial Y position
+        self.theta = 1.57  # Initial heading (90 degrees)
         self.beta = 0.0  # Side-slip angle
-        self.v = 0.0
+        self.v = 0.0  # Linear velocity
         self.omega = 0.0  # Yaw rate (rad/s)
-        self.filtered_omega = 0.2  # Filtered yaw rate
+        self.filtered_omega = 0.2  # Filtered yaw rate (smoothed)
 
         # 🔄 Low-Pass Filter Parameter
-        self.alpha = 0.7  # ค่า smoothing
+        self.alpha = 0.7  # Smoothing factor for filtering
 
         # 🚀 ROS 2 Subscriptions and Publishers
         self.sub = self.create_subscription(JointState, "/joint_states", self.joint_state_callback, 10)
@@ -47,7 +49,7 @@ class KinematicOdometryNode(Node):
 
     def joint_state_callback(self, msg: JointState):
         try:
-            # 🔗 ดึงค่าจาก Joint States
+            # 🔗 Extract indexes for wheel joints
             idx_rl = msg.name.index("rear_left_wheel")
             idx_rr = msg.name.index("rear_right_wheel")
             idx_fl = msg.name.index("front_left_wheel")
@@ -55,29 +57,29 @@ class KinematicOdometryNode(Node):
             idx_fl_steer = msg.name.index("front_left_steering")
             idx_fr_steer = msg.name.index("front_right_steering")
 
-            # 🏎️ ดึงค่าความเร็วล้อ (rad/s → m/s)
+            # 🏎️ Extract wheel speeds (Convert from rad/s to m/s)
             v_rl = msg.velocity[idx_rl] * self.WHEEL_RADIUS
             v_rr = msg.velocity[idx_rr] * self.WHEEL_RADIUS
             v_fl = msg.velocity[idx_fl] * self.WHEEL_RADIUS
             v_fr = msg.velocity[idx_fr] * self.WHEEL_RADIUS
 
-            # 🔄 ดึงค่ามุมเลี้ยวของล้อหน้า (radians)
+            # 🔄 Extract front wheel steering angles (radians)
             delta_fl = msg.position[idx_fl_steer]
             delta_fr = msg.position[idx_fr_steer]
 
-            # ✅ กำหนดตำแหน่งล้อ (Wheel Contact Points)
+            # ✅ Define wheel contact points (positions relative to the vehicle frame)
             r_fl = np.array([ self.TRACK_WIDTH / 2, self.WHEEL_BASE / 2])
             r_fr = np.array([-self.TRACK_WIDTH / 2, self.WHEEL_BASE / 2])
             r_rl = np.array([ self.TRACK_WIDTH / 2, -self.WHEEL_BASE / 2])
             r_rr = np.array([-self.TRACK_WIDTH / 2, -self.WHEEL_BASE / 2])
 
-            # ✅ คำนวณความเร็วของยานพาหนะจากล้อทั้งหมด
+            # ✅ Compute vehicle velocity using all wheel velocities
             v1 = v_fl * np.cos(delta_fl) + v_fr * np.cos(delta_fr)
             v2 = v_rl + v_rr
-            v_k = (v1 + v2) / 4
-            self.v = v_k * self.ODO_SCALE
+            v_k = (v1 + v2) / 4  # Average velocity
+            self.v = v_k * self.ODO_SCALE  # Apply scaling correction
 
-            # ✅ คำนวณ Yaw Rate (ใช้สมการเต็มจากเอกสาร)
+            # ✅ Compute Yaw Rate using a full equation (from reference document)
             omega_k = (
                 (r_fl[0] * v2 * np.sin(delta_fl) - r_fl[1] * v2 * np.cos(delta_fl)) -
                 (r_fr[0] * v1 * np.sin(delta_fr) - r_fr[1] * v1 * np.cos(delta_fr))
@@ -86,12 +88,12 @@ class KinematicOdometryNode(Node):
                 (r_fr[0] * np.sin(delta_fr) * np.cos(delta_fl - self.beta) + r_fr[1] * np.cos(delta_fr) * np.cos(delta_fl - self.beta))
             )
 
-            omega_k *= self.YAW_SCALE
+            omega_k *= self.YAW_SCALE  # Apply yaw rate scaling
 
-            # ✅ ใช้ Exponential Moving Average (EMA) Filter
+            # ✅ Apply Exponential Moving Average (EMA) Filter for smooth yaw rate
             self.filtered_omega = self.alpha * omega_k + (1 - self.alpha) * self.filtered_omega
 
-            # ✅ คำนวณ Side-Slip Angle (β)
+            # ✅ Compute Side-Slip Angle (β)
             self.beta = np.arctan2(self.WHEEL_BASE * self.filtered_omega, self.v)
 
             self.get_logger().info(f"✅ Filtered Yaw Rate (ω): {self.filtered_omega:.4f} rad/s, Linear Vel (v_k): {self.v:.4f} m/s")
@@ -100,12 +102,12 @@ class KinematicOdometryNode(Node):
             self.get_logger().warn(f"⚠️ Joint name not found: {e}")
 
     def publish_odometry(self):
-        # 📍 อัปเดตตำแหน่ง
+        # 📍 Update position using motion model
         self.x += self.v * self.DT * np.cos(self.beta + self.theta + (self.filtered_omega * self.DT / 2))
         self.y += self.v * self.DT * np.sin(self.beta + self.theta + (self.filtered_omega * self.DT / 2))
-        self.theta += self.filtered_omega * self.DT
+        self.theta += self.filtered_omega * self.DT  # Update heading
 
-        # ✅ Convert yaw to quaternion
+        # ✅ Convert yaw to quaternion for ROS messages
         quaternion = tf_transformations.quaternion_from_euler(0.0, 0.0, self.theta)
 
         # ✅ Publish Odometry Message
