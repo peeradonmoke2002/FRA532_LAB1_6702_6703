@@ -54,12 +54,17 @@ Additionally, we prefer to represent steering for both left and right turns so t
 
 
 # FRA532 Mobile Robot: LAB1.2
+
 ## Table of Contents
--[PID Controller](#PID Controller)
--[Pure Pursuit Controller](#Pure Pursuit Controller)
+- [PID Controller](#pid-controller)
+- [Pure Pursuit Controller](#pure-pursuit-controller)
+
 ## PID Controller
+This section describes the implementation of the PID controller.
 
 ## Pure Pursuit Controller
+This section explains the pure pursuit path tracking algorithm.
+
 
 ## Our Team
 
