@@ -11,7 +11,7 @@ import math
 import casadi as ca
 import matplotlib.pyplot as plt
 
-# MPC parameters
+# MPC parametersss
 DT = 0.15      # time step [s]
 N =   15        # horizon length (timesteps in horizon)
 WB = 0.2       # [m] wheelbase of the robot
