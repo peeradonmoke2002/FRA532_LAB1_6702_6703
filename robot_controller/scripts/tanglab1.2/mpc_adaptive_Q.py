@@ -136,12 +136,12 @@ class MPCPathFollower(Node):
         Control inputs: [a, delta]
         """
         current_pos = [self.x, self.y]
-        # 1) สร้าง reference trajectory (N+1 ขั้นตอนใน horizon)
+        # 1) create reference trajectory (N+1 in horizon)
         ref_traj = self.get_reference_trajectory(current_pos, horizon=N+1, min_distance=0.1)
 
         
 
-        # 2) คำนวณ reference yaw จาก waypoints
+        # 2) cal reference yaw form waypoints
         ref_yaw = []
         for j in range(len(ref_traj)-1):
             dy = ref_traj[j+1, 1] - ref_traj[j, 1]
@@ -156,9 +156,9 @@ class MPCPathFollower(Node):
         # 3) Reference speed
         ref_speed = self.target_speed
 
-        # 4) ค่าประมาณเริ่มต้นของ velocity และ steering
+        # 4) estimate velocity & steering
         v_nom = np.full(N, self.v)
-        u_nom = np.zeros(N)  # สำหรับ steering
+        u_nom = np.zeros(N)  # for steering
 
         # ค่า nominal สำหรับ state trajectory (ใช้สำหรับ linearization)
         x_nom = np.full(N+1, self.x)
@@ -168,7 +168,7 @@ class MPCPathFollower(Node):
         # === Adaptive Part ===
         # คำนวณ error ระหว่างตำแหน่งปัจจุบันกับ waypoint ถัดไป (ที่ index 0)
         error = np.linalg.norm(np.array([self.x, self.y]) - np.array([ref_traj[0, 0], ref_traj[0, 1]]))
-        threshold = 1.0  # กำหนด threshold สำหรับ error (หน่วย: m)
+        threshold = 1.0  # define threshold สำหรับ error (หน่วย: m)
         adaptive_gain = max(1.0, error / threshold)
         # ปรับ Q โดย scaling ด้วย adaptive_gain (เพิ่ม weight เมื่อ error สูง)
         Q_adapt = Q * adaptive_gain
@@ -178,11 +178,11 @@ class MPCPathFollower(Node):
         max_iter = 5
         tol = 1e-3
 
-        sol = None  # กำหนด sol ให้มี scope นอก loop
+        sol = None  # define sol ให้มี scope นอก loop
         for it in range(max_iter):
             opti = ca.Opti()
 
-            # กำหนดตัวแปร decision
+            # define ตัวแปร decision
             x_var   = opti.variable(N+1)
             y_var   = opti.variable(N+1)
             yaw_var = opti.variable(N+1)
@@ -386,7 +386,7 @@ class MPCPathFollower(Node):
         self.pub_wheel_spd.publish(wheel_msg)
 
     def update_plot(self):
-        # ตัวอย่างการ plotting (ปิดการใช้งานถ้าไม่ต้องการ)
+        
         # self.ax.clear()
         # self.ax.plot(self.waypoints[:, 0], self.waypoints[:, 1], 'go-', label="Planned Path")
         # self.ax.plot(self.robot_x, self.robot_y, 'r.-', label="Actual Path")
