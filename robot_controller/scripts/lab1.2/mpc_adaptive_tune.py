@@ -26,7 +26,6 @@ class MPCPathFollower(Node):
     def __init__(self):
         super().__init__('mpc_path_follower')
         self.create_subscription(ModelStates, '/gazebo/model_states', self.gazebo_callback, 10)
-
         self.waypoints = self.load_path('/home/tang/ros2_lab1_m/src/FRA532_LAB1_6702_6703/robot_controller/data/path.yaml')
         self.get_logger().info("✅ Path loaded successfully.")
         self.pub_steering = self.create_publisher(JointTrajectory, '/joint_trajectory_position_controller/joint_trajectory', 10)
@@ -103,7 +102,7 @@ class MPCPathFollower(Node):
 
             # ✅ Skip waypoint if impossible to reach
             if self.should_skip_waypoint(current_pos, [wp_x, wp_y]):
-                self.get_logger().info(f"🚀 Skipping waypoint {i} at ({wp_x:.2f}, {wp_y:.2f})")
+                # self.get_logger().info(f"🚀 Skipping waypoint {i} at ({wp_x:.2f}, {wp_y:.2f})")
                 continue  
 
             ref_traj.append([wp_x, wp_y, wp_yaw])

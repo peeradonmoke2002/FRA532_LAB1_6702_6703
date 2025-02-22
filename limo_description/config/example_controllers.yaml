@@ -66,8 +66,8 @@ robot_state_publisher:
     publish_frequency: 2000  # Hz
 
 
-    state_publish_rate: 2000 # Defaults to 50
-    action_monitor_rate: 2000 # Defaults to 20
+    state_publish_rate: 50 # Defaults to 50
+    action_monitor_rate: 20 # Defaults to 20
 
     allow_partial_joints_goal: false # Defaults to false
     open_loop_control: true
