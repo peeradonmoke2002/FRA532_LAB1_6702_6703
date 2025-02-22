@@ -57,7 +57,7 @@ class SpeedPlot(Node):
         self.ax.clear()
         self.ax.set_xlabel("Time (s)")
         self.ax.set_ylabel("Speed (m/s)")
-        self.ax.set_title("Real-Time Speed Plot")
+        self.ax.set_title("Real-Time Speed Plot MPC")
         self.ax.grid()
 
         if len(self.speeds) > 1:

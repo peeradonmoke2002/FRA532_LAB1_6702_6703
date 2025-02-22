@@ -60,7 +60,7 @@ class RealtimePathPlot(Node):
         self.ax.clear()
         self.ax.set_xlabel("X Position (m)")
         self.ax.set_ylabel("Y Position (m)")
-        self.ax.set_title("PID control")
+        self.ax.set_title("MPC control")
         self.ax.grid()
 
         # ✅ Plot planned path (Green line)
