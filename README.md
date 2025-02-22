@@ -57,10 +57,10 @@ $$ u(t) = K_p e(t) + K_I \int_0^t e(t) \,dt + K_d \frac{de}{dt} $$
 ## MPC Controller Results
 
 ### Path Tracking
-![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result_img/MPC/MPC_path.png)
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result_img/MPC/mpc_path.png)
 
 ### Speed Profile
-![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result_img/MPC/MPC_speed.png)
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result_img/MPC/mpc_speed.png)
 ## Our Team
 
 1. 67340700402 พงษ์พัฒน์ วงศ์กำแหงหาญ
