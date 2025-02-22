@@ -26,19 +26,22 @@ class MPCPathFollower(Node):
     def __init__(self):
         super().__init__('mpc_path_follower')
         self.create_subscription(ModelStates, '/gazebo/model_states', self.gazebo_callback, 10)
+
         self.waypoints = self.load_path('/home/tang/ros2_lab1_m/src/FRA532_LAB1_6702_6703/robot_controller/data/path.yaml')
         self.get_logger().info("✅ Path loaded successfully.")
         self.pub_steering = self.create_publisher(JointTrajectory, '/joint_trajectory_position_controller/joint_trajectory', 10)
         self.pub_wheel_spd = self.create_publisher(Float64MultiArray, '/velocity_controllers/commands', 10)
         
+        # Robot state
         self.x = 0
         self.y = 0
         self.yaw = 0
         self.v = 0.0
-        self.target_speed = 25  
+        self.target_speed = 25  # [m/s]
+        
         # Maximum steering angle (radians)
         self.max_steering_angle = 0.5
-        self.heading = 0.0
+
         # For plotting (optional)
         self.robot_x = []
         self.robot_y = []
@@ -72,7 +75,6 @@ class MPCPathFollower(Node):
         return (angle + np.pi) % (2 * np.pi) - np.pi
 
     def get_reference_trajectory(self, current_pos, horizon, min_distance=0.2):
-        heading = np.array([math.cos(self.yaw), math.sin(self.yaw)])
         ref_traj = []
         
         lookahead_distance = 1.5  # ✅ Increase lookahead distance
@@ -119,7 +121,6 @@ class MPCPathFollower(Node):
             self.get_logger().info(f"🎯 Next Waypoint: x={next_wp_x:.3f}, y={next_wp_y:.3f}, θ={math.degrees(next_wp_yaw):.2f}°")
 
         return np.array(ref_traj)
-
 
 
     def mpc_control(self):
@@ -302,13 +303,13 @@ class MPCPathFollower(Node):
                 tan_val = math.tan(delta_nom_k) if abs(delta_nom_k) < 1.4 else math.tan(1.4)
                 yaw_nom[k+1] = yaw_nom[k] + (DT / WB) * (v_nom[k] * tan_val)
 
-            # ตรวจสอบการบรรจบของ nominal inputs
+            # check nominal inputs
             if (np.linalg.norm(v_nom_new - v_nom) < tol) and (np.linalg.norm(delta_nom_new - u_nom) < tol):
                 v_nom = v_nom_new
                 u_nom = delta_nom_new
                 break
 
-            # อัปเดต nominal values สำหรับ iteration ถัดไป
+            # update nominal values for next iteration 
             v_nom = v_nom_new
             u_nom = delta_nom_new
 
@@ -337,7 +338,7 @@ class MPCPathFollower(Node):
         self.y = pose.position.y
         self.yaw = self.quaternion_to_euler(pose.orientation)
         
-        # แสดงระยะทางไปยัง waypoint ถัดไป
+        # show next waypoint 
         idx = self.search_nearest_index()
         dist = np.hypot(self.waypoints[idx, 0] - self.x,
                         self.waypoints[idx, 1] - self.y)
@@ -356,7 +357,7 @@ class MPCPathFollower(Node):
             f"🔄 Steering: {math.degrees(steering_cmd):.2f}° | 🚀 Speed: {self.v:.2f} m/s"
         )
         
-        #  plotting
+        # สำหรับ plotting
         self.robot_x.append(self.x)
         self.robot_y.append(self.y)
         self.update_plot()
