@@ -6,6 +6,7 @@ from launch.actions import IncludeLaunchDescription, RegisterEventHandler
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch.event_handlers import OnProcessExit
+from launch_ros.actions import Node
 
 
 def generate_launch_description():
@@ -36,7 +37,8 @@ def generate_launch_description():
     # Paths
     rviz_file_path = os.path.join(get_package_share_directory(package_name), "rviz", rviz_file_name)
     world_path = os.path.join(get_package_share_directory(package_name), "worlds", world_file)
-
+    # Path to EKF configuration file
+    ekf_config_path = os.path.join(get_package_share_directory(package_name), "config", "ekf.yaml")
     # Include Robot State Publisher
     rsp = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -139,6 +141,17 @@ def generate_launch_description():
             )
         )
     )
+        
+
+    ekf_localization = Node(
+        package="robot_localization",
+        executable="ekf_node",
+        name="ekf_localization",
+        output="screen",
+        parameters=[{'use_sim_time': True}, ekf_config_path]
+    )
+
+
 
 
     # Add launch actions
@@ -147,6 +160,7 @@ def generate_launch_description():
     launch_description.add_action(spawn_entity)
     launch_description.add_action(rsp)
     # launch_description.add_action(slam_toolbox_node)
+    launch_description.add_action(ekf_localization)
 
 
     return launch_description
