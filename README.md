@@ -30,7 +30,7 @@ The formula of the PID controller is
 
 $$ u(t) = K_p e(t) + K_I \int_0^t e(t) \,dt + K_d \frac{de}{dt} $$
 
-## 📍 PID Controller Results
+## PID Controller Results
 ### Path Tracking
 ![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result_img/PID/PID_path.png)
 
@@ -42,14 +42,25 @@ $$ u(t) = K_p e(t) + K_I \int_0^t e(t) \,dt + K_d \frac{de}{dt} $$
 ## Pure Pursuit Controller
 
 
-## 📍 Pure Pursuit Controller Results
+## Pure Pursuit Controller Results
 
 ### Path Tracking
 
 ![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result_img/purepursuit/purepursuit_path.png)
-![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result_img/purepursuit/purepursuit_speed.png)
-### Speed Profile
 
+### Speed Profile
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result_img/purepursuit/purepursuit_speed.png)
+
+
+## MPC Controller
+
+## MPC Controller Results
+
+### Path Tracking
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result_img/MPC/MPC_path.png)
+
+### Speed Profile
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result_img/MPC/MPC_speed.png)
 ## Our Team
 
 1. 67340700402 พงษ์พัฒน์ วงศ์กำแหงหาญ
