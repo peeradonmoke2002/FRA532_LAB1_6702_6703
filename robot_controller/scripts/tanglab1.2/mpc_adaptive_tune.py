@@ -130,8 +130,8 @@ class MPCPathFollower(Node):
 
     def mpc_control(self):
         """
-        คำนวณคำสั่งควบคุมผ่าน MPC โดยใช้การ linearization แบบ iterative
-        พร้อมกับปรับตัว (adaptive) โดยปรับ weight ใน cost function (Q) ตาม error ของการ tracking
+        Compute control commands via MPC using iterative linearization.
+        along with adjustment (adaptive) by adjusting the weight in the cost function (Q) according to the tracking error
         Model state: [x, y, yaw, v]
         Control inputs: [a, delta]
         """
@@ -222,7 +222,7 @@ class MPCPathFollower(Node):
                 penalty = big_lambda * (ca.fmax(0, ca.fabs(delta_var[k]) - self.max_steering_angle)**2)
                 cost += penalty
 
-                # Linearized dynamics: ใช้ค่า nominal ของ state ที่ timestep ปัจจุบัน
+                # Linearized dynamics: n use nominal ของ state ที่ timestep ปัจจุบัน
                 if it == 0:
                     yaw_nom_k = self.yaw
                 else:
@@ -233,7 +233,7 @@ class MPCPathFollower(Node):
                 cos_yaw = math.cos(yaw_nom_k)
                 sin_yaw = math.sin(yaw_nom_k)
 
-                # Linearized dynamics สำหรับ x
+                # Linearized dynamics for x
                 linearized_x = x_var[k] + DT * (
                     v_nom_k * cos_yaw +
                     cos_yaw * (v_var[k] - v_nom_k) -
