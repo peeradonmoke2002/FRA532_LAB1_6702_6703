@@ -14,15 +14,24 @@ def generate_launch_description():
     rviz_file_name = "gazebo.rviz"
     world_file = "basic.world"
     #Pose: x=-4.711, y=9.611, yaw=153.92° 
+
+    #deafult
     spawn_x_val = "9.073500"
     spawn_y_val = "0.0"
     spawn_z_val = "0.0"
     spawn_yaw_val = "1.57"
 
+    #curve1
     # spawn_x_val = "-4.633837776338229"
     # spawn_y_val = "9.687033850999052"
     # spawn_z_val = "0.0"
     # spawn_yaw_val = "2.6799560258356285"
+
+    #curve2
+    # spawn_x_val = "-9.625820"
+    # spawn_y_val = "0.152707"
+    # spawn_z_val = "0.0"
+    # spawn_yaw_val = "-1.558429"
 
     # Paths
     rviz_file_path = os.path.join(get_package_share_directory(package_name), "rviz", rviz_file_name)

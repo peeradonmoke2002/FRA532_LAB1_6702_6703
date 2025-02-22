@@ -2,102 +2,87 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import JointState
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Quaternion, TransformStamped, Pose, Point, Vector3
-import numpy as np
+from geometry_msgs.msg import TransformStamped, Vector3, Quaternion, Pose, Point
 import tf_transformations
-import tf2_ros
+import numpy as np
 
-class KinematicOdometryNode(Node):
+from tf2_ros import TransformBroadcaster
+
+class SingleTrackModelNode(Node):
     def __init__(self):
-        super().__init__("kinematic_odometry")
+        super().__init__('single_track_model_node')
 
-        # 🚗 Vehicle Parameters
-        self.WHEEL_BASE = 0.2  # Distance between front and rear axles (m)
-        self.TRACK_WIDTH = 0.13  # Distance between left and right wheels (m)
-        self.WHEEL_RADIUS = 0.04815  # Wheel radius (m)
-        self.DT = 0.1  # Time step (s)
+        # ✅ Subscribe to /joint_states for wheel velocities & steering angles
+        self.joint_sub = self.create_subscription(JointState, '/joint_states', self.joint_state_callback, 10)
+        self.get_logger().info("✅ Subscribed to /joint_states")
 
-        # 🔄 Odometry Scaling
-        self.ODO_SCALE = 0.95  # Empirical scaling factor for odometry correction
+        # ✅ Publish odometry
+        self.odom_pub = self.create_publisher(Odometry, '/odom', 10)
 
-        # 🌍 Initial Pose and Motion Variables
-        self.x = 0.0
-        self.y = 0.0
-        self.theta = 0.0
-        self.beta = 0.0  # Side-slip angle
-        self.v = 0.0
-        self.omega = 0.0  # Raw yaw rate (rad/s)
-        self.filtered_omega = 0.0  # Filtered yaw rate (rad/s)
+        # ✅ TF broadcaster for odom → base_footprint
+        self.tf_br = TransformBroadcaster(self)
 
-        # 🔄 Filter Parameters
-        self.alpha = 0.1  # Smoothing factor for EMA filter (adjust for better stability)
+        # 🚗 Vehicle parameters
+        self.x, self.y, self.theta = 9.073500, 0.0,  1.57   # Position and heading
+        self.wheelbase = 0.2  # Distance between front and rear axles (m)
+        self.wheel_radius = 0.04815  # Wheel radius (m)
 
-        # 🚀 ROS 2 Subscriptions and Publishers
-        self.sub = self.create_subscription(JointState, "/joint_states", self.joint_state_callback, 10)
-        self.odom_pub = self.create_publisher(Odometry, "/odom", 10)
+        # Wheel velocities (rear wheels)
+        self.wheel_omega = np.array([0.0, 0.0])  # [RL, RR]
 
-        # ⏳ Timer for Odometry Publishing
-        self.timer = self.create_timer(self.DT, self.publish_odometry)
+        # Steering angles (front wheels)
+        self.steering_angles = np.array([0.0, 0.0])  # [FL, FR]
 
-        # ✅ TF Broadcaster for odom → base_footprint
-        self.tf_br = tf2_ros.TransformBroadcaster(self)
+        # 🔄 Timer for state update (10 Hz)
+        self.timer = self.create_timer(0.05, self.update_state)
 
-        self.get_logger().info("✅ Kinematic Odometry Node Started!")
+    def joint_state_callback(self, msg):
+        """Extract rear wheel velocities and front steering angles from /joint_states"""
+        # ✅ Use only REAR wheels to calculate speed
+        self.wheel_omega = np.array([msg.velocity[4], msg.velocity[2]]) * self.wheel_radius
 
-    def joint_state_callback(self, msg: JointState):
-        try:
-            # 🔗 Extract Joint Indices
-            idx_rl = msg.name.index("rear_left_wheel")
-            idx_rr = msg.name.index("rear_right_wheel")
-            idx_fl = msg.name.index("front_left_wheel")
-            idx_fr = msg.name.index("front_right_wheel")
-            idx_fl_steer = msg.name.index("front_left_steering")
-            idx_fr_steer = msg.name.index("front_right_steering")
+        # ✅ Use only FRONT wheels for steering
+        self.steering_angles = np.array([msg.position[3], msg.position[5]])
 
-            # 🏎️ Extract Wheel Velocities (Convert rad/s → m/s)
-            v_rl = msg.velocity[idx_rl] * self.WHEEL_RADIUS
-            v_rr = msg.velocity[idx_rr] * self.WHEEL_RADIUS
-            v_fl = msg.velocity[idx_fl] * self.WHEEL_RADIUS
-            v_fr = msg.velocity[idx_fr] * self.WHEEL_RADIUS
+    def compute_yaw_rate(self, v, delta_F):
+        """Compute yaw rate ω using kinematic single-track model"""
+        return (v / self.wheelbase) * np.tan(delta_F)
 
-            # 🔄 Extract Steering Angles (Radians)
-            delta_fl = msg.position[idx_fl_steer]
-            delta_fr = msg.position[idx_fr_steer]
+    def update_state(self):
+        delta_t = 0.035  # Time step
+        ODO_SCALE = 0.95  
 
-            # ✅ Compute Vehicle Linear Velocity (Use Rear Wheels with Scaling)
-            v_k = np.mean([v_rl, v_rr]) * self.ODO_SCALE
-            self.v = v_k
+        # ✅ Compute vehicle speed from rear wheels
+        v_k = np.mean(self.wheel_omega) * ODO_SCALE
 
-            # ✅ Compute Yaw Rate (ω_k) using Front Steering Angles
-            if abs(delta_fl) > 1e-4 or abs(delta_fr) > 1e-4:  # Avoid division by zero
-                omega_k = (v_fl * np.tan(delta_fl) + v_fr * np.tan(delta_fr)) / self.WHEEL_BASE
-            else:
-                omega_k = 0.0  # No steering input, no rotation
+        # ✅ Compute steering angle from front wheels
+        delta_F = np.mean(self.steering_angles)  
 
-            # ✅ Apply Exponential Moving Average (EMA) Filter to Yaw Rate
-            self.filtered_omega = self.alpha * omega_k + (1 - self.alpha) * self.filtered_omega
+        # ✅ Compute yaw rate
+        omega_k = self.compute_yaw_rate(v_k, delta_F)
 
-            # ✅ Compute Side-Slip Angle (β)
-            if abs(self.v) > 0.01:
-                self.beta = np.arctan((self.WHEEL_BASE / 2) * self.filtered_omega / self.v)
-            else:
-                self.beta = 0.0
+        # ✅ Apply Exponential Moving Average (EMA) for omega_k smoothing
+        alpha = 0.4  # Adjust this for more or less smoothing
+        self.omega_k = alpha * omega_k + (1 - alpha) * getattr(self, 'omega_k', omega_k)
 
-            self.get_logger().info(f"✅ Filtered Yaw Rate (ω): {self.filtered_omega:.4f} rad/s, Linear Vel (v_k): {self.v:.4f} m/s")
+        # ✅ Apply Complementary Filter to smooth theta update
+        alpha_theta = 1.02  # More weight on previous estimate
+        theta_next = alpha_theta * (self.theta + self.omega_k * delta_t) + (1 - alpha_theta) * self.theta
+        theta_next = (theta_next + np.pi) % (2 * np.pi) - np.pi  # Normalize to [-π, π]
 
-        except ValueError as e:
-            self.get_logger().warn(f"⚠️ Joint name not found: {e}")
+        # ✅ Update position
+        x_next = self.x + v_k * delta_t * np.cos(self.theta + (self.omega_k * delta_t / 2))
+        y_next = self.y + v_k * delta_t * np.sin(self.theta + (self.omega_k * delta_t / 2))
 
-    def publish_odometry(self):
-        # 📍 Update Pose Using Filtered Yaw Rate (ω_k)
-        self.x += self.v * self.DT * np.cos(self.beta + self.theta + (self.filtered_omega * self.DT / 2))
-        self.y += self.v * self.DT * np.sin(self.beta + self.theta + (self.filtered_omega * self.DT / 2))
-        self.theta += self.filtered_omega * self.DT
+        # ✅ Update state variables
+        self.x, self.y, self.theta = x_next, y_next, theta_next
+
+
 
         # ✅ Convert yaw to quaternion
         quaternion = tf_transformations.quaternion_from_euler(0.0, 0.0, self.theta)
 
-        # ✅ Publish Odometry Message
+        # ✅ Publish Odometry message
         odom_msg = Odometry()
         odom_msg.header.stamp = self.get_clock().now().to_msg()
         odom_msg.header.frame_id = 'odom'
@@ -111,12 +96,12 @@ class KinematicOdometryNode(Node):
                 w=quaternion[3]
             )
         )
-        odom_msg.twist.twist.linear = Vector3(x=self.v, y=0.0, z=0.0)
-        odom_msg.twist.twist.angular = Vector3(x=0.0, y=0.0, z=self.filtered_omega)
+        odom_msg.twist.twist.linear = Vector3(x=v_k, y=0.0, z=0.0)
+        odom_msg.twist.twist.angular = Vector3(x=0.0, y=0.0, z=omega_k)
 
         self.odom_pub.publish(odom_msg)
 
-        # ✅ Publish Transform (odom → base_footprint)
+        # ✅ Publish transform (odom → base_footprint)
         transform = TransformStamped()
         transform.header.stamp = odom_msg.header.stamp
         transform.header.frame_id = 'odom'
@@ -128,14 +113,14 @@ class KinematicOdometryNode(Node):
 
         self.tf_br.sendTransform(transform)
 
-        self.get_logger().info(f"📡 Odometry Published → X: {self.x:.3f}, Y: {self.y:.3f}, Theta: {np.degrees(self.theta):.3f}°, v_k: {self.v:.3f} m/s, ω_k: {self.filtered_omega:.3f} rad/s")
+        self.get_logger().info(f"📡 Odometry → X: {self.x:.3f}, Y: {self.y:.3f}, Theta: {np.degrees(self.theta):.3f}°, v: {v_k:.3f} m/s, ω: {omega_k:.3f} rad/s")
 
 def main(args=None):
     rclpy.init(args=args)
-    node = KinematicOdometryNode()
+    node = SingleTrackModelNode()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

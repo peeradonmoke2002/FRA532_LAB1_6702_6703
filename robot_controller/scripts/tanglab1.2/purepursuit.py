@@ -131,7 +131,7 @@ class PurePursuitROS(Node):
         self.v += acceleration * 0.1  # Faster speed update
 
         # ✅ Ensure speed is limited to prevent instability
-        self.v = min(self.v, 15.5)  # ✅ Max speed set to 5.5 m/s
+        self.v = min(self.v, 15.5)  # ✅ Max speed set to 15.5 m/s
 
         # ✅ Publish control commands
         self.publish_steering(steering_cmd)

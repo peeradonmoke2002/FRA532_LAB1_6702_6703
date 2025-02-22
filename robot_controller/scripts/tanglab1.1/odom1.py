@@ -50,16 +50,16 @@ class SingleTrackModelNode(Node):
 
     def update_state(self):
         """Update the vehicle state using the single-track model"""
-        delta_t = 0.05  # Time step (s)
-        ODO_SCALE = 1.055 
+        delta_t = 0.035  # Time step (s)
+  
         # ✅ Compute vehicle speed from rear wheels
-        v_k = np.mean(self.wheel_omega)* ODO_SCALE
+        v_k = np.mean(self.wheel_omega)
 
         # ✅ Compute steering angle from front wheels
         delta_F = np.mean(self.steering_angles)
 
         # ✅ Compute yaw rate using kinematics
-        omega_k = self.compute_yaw_rate(v_k, delta_F) /1.595026
+        omega_k = self.compute_yaw_rate(v_k, delta_F) 
 
         # ✅ Update position using kinematic equations
         x_next = self.x + v_k * delta_t * np.cos(self.theta + (omega_k * delta_t / 2))

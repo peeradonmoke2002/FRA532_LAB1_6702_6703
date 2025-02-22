@@ -41,7 +41,7 @@ class OdomGazeboPlotter(Node):
         self.ax.legend()
         self.ax.set_xlabel("X Position")
         self.ax.set_ylabel("Y Position")
-        self.ax.set_title("Odometry vs Gazebo Position")
+        self.ax.set_title("Odometry vs Gazebo Position | single_model_noslip_with_traction_control")
         self.ax.grid(True)
 
     def odom_callback(self, msg):

@@ -11,16 +11,16 @@ import math
 import casadi as ca
 import matplotlib.pyplot as plt
 
-# MPC parameters
+# MPC parametersss
 DT = 0.15      # time step [s]
-N =   15        # horizon length (timesteps in horizon)
+N =   10        # horizon length (timesteps in horizon)
 WB = 0.2       # [m] wheelbase of the robot
 
 # 🎯 MANUAL MPC PARAMETERS (Using Optimized Values)
-Q = np.diag([10.0, 10.0, 4.0, 2.0])   # State error penalty
+Q = np.diag([10.0, 10.0, 6.0, 2.0])   # State error penalty
 Qf = Q                                 # Terminal cost
-R = np.diag([5.0, 3.03436065])         # Control effort penalty
-Rd = np.diag([0.2, 10.1])       # Smooth control transitions
+R = np.diag([3.0, 1.73436065])         # Control effort penalty
+Rd = np.diag([0.2, 30.1])       # Smooth control transitions
 
 class MPCPathFollower(Node):
     def __init__(self):
@@ -40,7 +40,7 @@ class MPCPathFollower(Node):
         self.y = 0
         self.yaw = 0
         self.v = 0.0
-        self.target_speed = 15  # [m/s]
+        self.target_speed = 25  # [m/s]
         
         # Maximum steering angle (radians)
         self.max_steering_angle = 0.5

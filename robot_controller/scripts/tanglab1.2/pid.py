@@ -18,11 +18,11 @@ class PIDBicycleController(Node):
         # ✅ Robot parameters
         self.wheel_base = 0.2  # Distance between front and rear axles (meters)
         self.wheel_radius = 0.045  # Rear wheel radius (meters)
-        self.max_steering_angle = 0.523598767 / 3  # Limit steering angle
+        self.max_steering_angle = 0.523598767 / 2  # Limit steering angle
 
         # ✅ PID Gains (Tunable)
-        self.kp_steer = 0.2  # Increased for better response
-        self.ki_steer = 0.05  # Small integral gain to reduce steady-state error
+        self.kp_steer = 0.15  # Increased for better response
+        self.ki_steer = 0.01  # Small integral gain to reduce steady-state error
         self.kd_steer = 0.005  # Increased to reduce overshoot
         self.kp_speed = 20.5  # Increased speed gain
         self.ki_speed = 10.05
