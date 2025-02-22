@@ -26,22 +26,16 @@ class MPCPathFollower(Node):
     def __init__(self):
         super().__init__('mpc_path_follower')
         self.create_subscription(ModelStates, '/gazebo/model_states', self.gazebo_callback, 10)
-        
-        # Load waypoints from YAML
         self.waypoints = self.load_path('/home/tang/ros2_lab1_m/src/FRA532_LAB1_6702_6703/robot_controller/data/path.yaml')
         self.get_logger().info("✅ Path loaded successfully.")
-        
-        # ROS2 Publishers
         self.pub_steering = self.create_publisher(JointTrajectory, '/joint_trajectory_position_controller/joint_trajectory', 10)
         self.pub_wheel_spd = self.create_publisher(Float64MultiArray, '/velocity_controllers/commands', 10)
         
-        # Robot state
         self.x = 0
         self.y = 0
         self.yaw = 0
         self.v = 0.0
-        self.target_speed = 25  # [m/s]
-        
+        self.target_speed = 25  
         # Maximum steering angle (radians)
         self.max_steering_angle = 0.5
         self.heading = 0.0
@@ -362,7 +356,7 @@ class MPCPathFollower(Node):
             f"🔄 Steering: {math.degrees(steering_cmd):.2f}° | 🚀 Speed: {self.v:.2f} m/s"
         )
         
-        # สำหรับ plotting
+        #  plotting
         self.robot_x.append(self.x)
         self.robot_y.append(self.y)
         self.update_plot()
