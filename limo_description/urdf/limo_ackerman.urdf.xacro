@@ -103,7 +103,7 @@
     <!-- Back Wheel -->
 
 
-    <xacro:limo_wheel parent_prefix="base_link" wheel_prefix="rear_left" reflect="1" >
+    <xacro:limo_wheel parent_prefix="base_link" wheel_prefix="rear_left" reflect="1"  >
         <origin xyz="${-wheelbase/2} ${track/2} ${wheel_vertical_offset}" rpy="0 0 0" />
     </xacro:limo_wheel>
 

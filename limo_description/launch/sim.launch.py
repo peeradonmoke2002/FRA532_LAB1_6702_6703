@@ -143,13 +143,13 @@ def generate_launch_description():
     )
         
 
-    # ekf_localization = Node(
-    #     package="robot_localization",
-    #     executable="ekf_node",
-    #     name="ekf_localization",
-    #     output="screen",
-    #     parameters=[{'use_sim_time': True}, ekf_config_path]
-    # )
+    ekf_localization = Node(
+        package="robot_localization",
+        executable="ekf_node",
+        name="ekf_localization",
+        output="screen",
+        parameters=[{'use_sim_time': True}, ekf_config_path]
+    )
 
 
 
@@ -160,7 +160,7 @@ def generate_launch_description():
     launch_description.add_action(spawn_entity)
     launch_description.add_action(rsp)
     # launch_description.add_action(slam_toolbox_node)
-    # launch_description.add_action(ekf_localization)
+    launch_description.add_action(ekf_localization)
 
 
     return launch_description
