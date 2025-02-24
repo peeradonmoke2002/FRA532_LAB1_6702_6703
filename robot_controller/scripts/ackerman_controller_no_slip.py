@@ -94,12 +94,12 @@ class AckermannController(Node):
             inside_angle, outside_angle = self.compute_ackermann_angles(self.steer_angle_center)
             left_angle = outside_angle    
             right_angle = inside_angle  
-
-
-
         
             self.publish_steering(left_angle, right_angle)
-            print(left_angle,right_angle)
+
+
+
+            # print(left_angle,right_angle)
 
         wheel_speed_msg = Float64MultiArray()
         wheel_speed_msg.data = [wheel_speed_left, wheel_speed_right]

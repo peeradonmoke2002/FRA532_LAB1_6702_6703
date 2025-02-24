@@ -12,7 +12,7 @@ import numpy as np
 class BicycleController(Node):
     def __init__(self):
         super().__init__('bicycle_controller')
-        self.dt_loop = 1/50.0  # Loop time in seconds
+        self.dt_loop = 1/100.0  # Loop time in seconds
         
         # Robot parameters (bicycle model)
         self.wheel_base = 0.2         # L: Distance between front and rear axles (meters)
@@ -68,17 +68,24 @@ class BicycleController(Node):
         else:
             # From w = v/L * tan(delta)  =>  delta = arctan(L*w / v)
             self.steering_angle = np.arctan(self.wheel_base * w / v)
-            self.steering_angle = np.clip(self.steering_angle, -self.max_steering_angle, self.max_steering_angle)
+            # self.steering_angle = np.clip(self.steering_angle, -self.max_steering_angle, self.max_steering_angle)
             self.wheel_speed = v / self.wheel_radius
         
         # Publish the steering command.
         self.publish_steering(self.steering_angle)
+        # print(self.steering_angle)
         
         # Publish the wheel speed command.
         wheel_msg = Float64MultiArray()
         # Assuming a differential drive controller where both wheels are commanded identically.
         wheel_msg.data = [self.wheel_speed, self.wheel_speed]
         self.pub_wheel_spd.publish(wheel_msg)
+
+
+        speed_avg = self.cmd_vel[0]  # Use the forward speed directly
+        theta = speed_avg * np.tan(self.steering_angle ) / self.wheel_base
+        # print(f"theta (deg): {theta * (180/np.pi)}")
+        
         
         # (Optional) Log info for debugging.
         # self.get_logger().info(f"v = {v:.3f}, w = {w:.3f}, delta = {self.steering_angle:.3f}, wheel_speed = {self.wheel_speed:.3f}")

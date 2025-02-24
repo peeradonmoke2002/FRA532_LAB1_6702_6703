@@ -23,10 +23,7 @@ class SingleTrackOdom(Node):
         self.track_width = 0.14  # Distance between left and right wheels (meters)
         self.wheel_radius = 0.045  # Rear wheel radius (meters)
         self.BETA = 0.0  # Side-slip angle
-
-        self.r_rl = [0.0, -0.07]  # Rear Left
-        self.r_rr = [0.0, 0.07]  # Rear Right
-
+        
         # Initialize Pose and Velocity
         self.x_curr = 0.0
         self.y_curr = 0.0
@@ -55,7 +52,7 @@ class SingleTrackOdom(Node):
         self.odom_pub = self.create_publisher(Odometry, '/odom', 10)
 
         # Timer for Odometry Updates
-        self.dt_loop = 1 / 100  # 50 Hz update rate
+        self.dt_loop = 1 / 100  
         self.timer = self.create_timer(self.dt_loop, self.timer_callback)
 
         self.prev_time = self.get_clock().now()

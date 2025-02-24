@@ -48,7 +48,7 @@ class OdomRecorderNode(Node):
         timestamp = self.get_timestamp()
         x, y, z = msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z
         qx, qy, qz, qw = msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z, msg.pose.pose.orientation.w
-        self.get_logger().info(f"[ODOM] Position: ({x}, {y}, {z})")
+        # self.get_logger().info(f"[ODOM] Position: ({x}, {y}, {z})")
         
         self.odom_csv_writer.writerow([timestamp, x, y, z, qx, qy, qz, qw])
         self.odom_csv_file.flush()  # Ensure data is written immediately
@@ -65,7 +65,7 @@ class OdomRecorderNode(Node):
             x, y, z = pose.position.x, pose.position.y, pose.position.z
             qx, qy, qz, qw = pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w
             
-            self.get_logger().info(f"[GAZEBO] 'limo' Position: ({x}, {y}, {z})")
+            # self.get_logger().info(f"[GAZEBO] 'limo' Position: ({x}, {y}, {z})")
             
             self.gt_csv_writer.writerow([timestamp, x, y, z, qx, qy, qz, qw])
             self.gt_csv_file.flush()  # Ensure data is written immediately

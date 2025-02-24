@@ -20,8 +20,8 @@ class DoubleTrackOdom(Node):
         self.wheel_base = 0.2  # Distance between front and rear axles (meters)
         self.track_width = 0.14  # Distance between left and right wheels (meters)
         self.wheel_radius = 0.045  # Rear wheel radius (meters)
-        self.r_rl = [0.0, -0.07]  # Rear Left
-        self.r_rr = [0.0, 0.07]  # Rear Right
+        self.r_rl = [-self.wheel_base/2, self.track_width/2]  # Rear Left x and y
+        self.r_rr = [-self.wheel_base/2, -self.track_width/2]  # Rear Right x and y
 
         # turn side slip angle
         self.BETA = 0.0
@@ -50,7 +50,7 @@ class DoubleTrackOdom(Node):
         self.create_subscription(JointState, '/joint_states', self.joint_state_callback, 10)
         self.odom_pub = self.create_publisher(Odometry, '/odom', 10)
 
-        self.dt_loop = 1 / 100  # 500 Hz update rate
+        self.dt_loop = 1 / 100  # 100 Hz update rate
         self.timer = self.create_timer(self.dt_loop, self.timer_callback)
         self.prev_time = self.get_clock().now()
 
@@ -70,43 +70,46 @@ class DoubleTrackOdom(Node):
 
             left_wheel_index = msg.name.index('rear_left_wheel')
             right_wheel_index = msg.name.index('rear_right_wheel')
+            steering_left_index = msg.name.index('front_left_steering')
+            steering_right_index = msg.name.index('front_right_steering')
 
             self.v_rl = msg.velocity[left_wheel_index] * self.wheel_radius
             self.v_rr = msg.velocity[right_wheel_index] * self.wheel_radius
 
-            self.delta_fl = -msg.position[msg.name.index('front_left_steering')]
-            self.delta_fr = msg.position[msg.name.index('front_right_steering')]
-            
+            self.delta_fl = msg.position[steering_left_index]
+            self.delta_fr = msg.position[steering_right_index]
+
 
 
     # Equation (5) for computing vehicle velocity (v)
-    def compute_vehicle_velocity(self, v_rl, v_rr, delta_fl, delta_fr, beta, r1_x, r1_y, r2_x, r2_y):
+    def compute_vehicle_velocity(self, v_rl, v_rr, delta_fl, delta_fr, beta, rl_x, rl_y, rr_x, rr_y):
         """Compute vehicle velocity components (v) using Equation (5)."""
-        A1 = r1_x * v_rr * np.sin(delta_fl)
-        A2 = r1_y * v_rr * np.cos(delta_fl)
-        A3 = r2_x * v_rl * np.sin(delta_fr)
-        A4 = r2_y * v_rl * np.cos(delta_fr)
+        A1 = rl_x * v_rr * np.sin(delta_fl)
+        A2 = rl_y * v_rr * np.cos(delta_fl)
+        A3 = rr_x * v_rl * np.sin(delta_fr)
+        A4 = rr_y * v_rl * np.cos(delta_fr)
 
-        B1 = r1_x * np.sin(delta_fl) * np.cos(delta_fr - beta)
-        B2 = r1_y * np.cos(delta_fl) * np.cos(delta_fr - beta)
-        B3 = r2_x * np.sin(delta_fr) * np.cos(delta_fl - beta)
-        B4 = r2_y * np.cos(delta_fr) * np.cos(delta_fl - beta)
+        B1 = rl_x * np.sin(delta_fl) * np.cos(delta_fr - beta)
+        B2 = rl_y * np.cos(delta_fl) * np.cos(delta_fr - beta)
+        B3 = rr_x * np.sin(delta_fr) * np.cos(delta_fl - beta)
+        B4 = rr_y * np.cos(delta_fr) * np.cos(delta_fl - beta)
 
         v = (A1 - A2 - A3 + A4) / (B1 - B2 - B3 + B4)
         return v
 
     # Equation (6) for computing yaw rate (ω)
-    def compute_yaw_rate(self, v_rl, v_rr, delta_fl, delta_fr, beta, r1_x, r1_y, r2_x, r2_y):
+    def compute_yaw_rate(self, v_rl, v_rr, delta_fl, delta_fr, beta, rl_x, rl_y, rr_x, rr_y):
         """Compute yaw rate (ω) using Equation (6)."""
         C1 = v_rl * np.cos(delta_fr - beta)
         C2 = v_rr * np.cos(delta_fl - beta)
 
-        B1 = r1_x * np.sin(delta_fl) * np.cos(delta_fr - beta)
-        B2 = r1_y * np.cos(delta_fl) * np.cos(delta_fr - beta)
-        B3 = r2_x * np.sin(delta_fr) * np.cos(delta_fl - beta)
-        B4 = r2_y * np.cos(delta_fr) * np.cos(delta_fl - beta)
+        B1 = rl_x * np.sin(delta_fl) * np.cos(delta_fr - beta)
+        B2 = rl_y * np.cos(delta_fl) * np.cos(delta_fr - beta)
+        B3 = rr_x * np.sin(delta_fr) * np.cos(delta_fl - beta)
+        B4 = rr_y * np.cos(delta_fr) * np.cos(delta_fl - beta)
 
         w = (C1 - C2) / (B1 - B2 - B3 + B4)
+        
         return w
     
 
@@ -119,16 +122,31 @@ class DoubleTrackOdom(Node):
         self.theta_curr = self.theta_prev + self.w_prev * dt
         self.quat = tf_transformations.quaternion_from_euler(0.0, 0.0, self.theta_curr)
 
-        self.v_curr = self.compute_vehicle_velocity(self.v_rl, self.v_rr,
-                                            self.delta_fl, self.delta_fr,
-                                            self.BETA,
-                                            self.r_rl[0], self.r_rl[1],
-                                            self.r_rr[0], self.r_rr[1])
+        # self.v_curr = self.compute_vehicle_velocity(self.v_rl, self.v_rr,
+        #                                     self.delta_fl, self.delta_fr,
+        #                                     self.BETA,
+        #                                     self.r_rl[0], self.r_rl[1],
+        #                                     self.r_rr[0], self.r_rr[1])
+        
+        self.v_curr = (self.v_rl + self.v_rr) / 2
+
         self.w_curr = self.compute_yaw_rate(self.v_rl, self.v_rr,
                                     self.delta_fl, self.delta_fr,
                                     self.BETA,
                                     self.r_rl[0], self.r_rl[1],
                                     self.r_rr[0], self.r_rr[1])
+
+        # self.w_curr = (self.v_rr - self.v_rl) / (self.r_rr[1] - self.r_rl[1])
+
+
+
+        avg_steer = (self.delta_fl + self.delta_fr) / 2.0
+        expected_sign = np.sign(avg_steer)
+        #print(f"expected_sign: {expected_sign} and estmate sign {np.sign(self.w_curr)}")
+        # if np.sign(self.w_curr) != expected_sign:
+        #     # self.w_curr = -self.w_curr
+        #     print("wrong sign!!!")
+        
         
         # self.v_curr = (self.v_rl + self.v_rr) / 2
         # self.w_curr = (self.v_rr - self.v_rl) / (self.r_rr[1] - self.r_rl[1])
@@ -172,6 +190,9 @@ class DoubleTrackOdom(Node):
 
         print('x:', self.x_curr, 'y:', self.y_curr, 'yaw rate:', self.w_curr)
         # print("speed left: ", self.v_rl, "speed right: ", self.v_rr, "yaw rate: ", self.w_curr)
+
+        # heading_deg = self.theta_prev * (180/np.pi)
+        # self.get_logger().info(f"Heading: {heading_deg:.1f} deg")
 
 
 
