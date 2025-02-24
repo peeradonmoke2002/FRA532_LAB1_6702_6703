@@ -76,7 +76,7 @@ class MPCPathFollower(Node):
     def get_reference_trajectory(self, current_pos, horizon, min_distance=0.2):
         ref_traj = []
         
-        lookahead_distance = 1.5  # ✅ Increase lookahead distance
+       
 
         for i, wp in enumerate(self.waypoints):
             wp_x, wp_y = wp[0], wp[1]
@@ -159,7 +159,7 @@ class MPCPathFollower(Node):
         y_nom = np.full(N+1, self.y)
         yaw_nom = np.full(N+1, self.yaw)
 
-        # === Adaptive Part ===
+        # === Adaptive Part === for next loop   
         # คำนวณ error ระหว่างตำแหน่งปัจจุบันกับ waypoint ถัดไป (ที่ index 0)
         error = np.linalg.norm(np.array([self.x, self.y]) - np.array([ref_traj[0, 0], ref_traj[0, 1]]))
         threshold = 1.0  # กำหนด threshold สำหรับ error (หน่วย: m)

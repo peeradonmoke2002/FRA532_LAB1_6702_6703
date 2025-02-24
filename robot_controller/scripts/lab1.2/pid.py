@@ -21,7 +21,7 @@ class PIDBicycleController(Node):
         self.max_steering_angle = 0.523598767 / 2  # Limit steering angle
 
         # ✅ PID Gains (Tunable)
-        self.kp_steer = 0.15  # Increased for better response
+        self.kp_steer = 0.25  # Increased for better response
         self.ki_steer = 0.01  # Small integral gain to reduce steady-state error
         self.kd_steer = 0.005  # Increased to reduce overshoot
         self.kp_speed = 20.5  # Increased speed gain

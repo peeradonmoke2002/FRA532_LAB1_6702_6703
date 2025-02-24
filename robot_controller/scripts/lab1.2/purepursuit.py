@@ -37,7 +37,7 @@ class PurePursuitROS(Node):
         self.y = 0.0
         self.yaw = 0.0
         self.v = 0.0
-        self.target_speed = 0.5  # [m/s] Target speed
+        self.target_speed = 0.5  
         self.old_nearest_point_index = None
 
         # ✅ Setup real-time plotting
@@ -163,15 +163,16 @@ class PurePursuitROS(Node):
         self.pub_wheel_spd.publish(wheel_msg)
 
     def update_plot(self):
-        """ Update real-time plot """
-        self.ax.clear()
-        self.ax.plot(self.waypoints[:, 0], self.waypoints[:, 1], 'go-', label="Planned Path")
-        self.ax.plot(self.robot_x, self.robot_y, 'r.-', label="Actual Path")
-        self.ax.scatter(self.robot_x[-1], self.robot_y[-1], c='purple', marker='x', label="Current Position")
-        self.ax.set_title("Pure Pursuit Controller")
-        self.ax.legend()
-        plt.draw()
-        plt.pause(0.1)
+        # """ Update real-time plot """
+        # self.ax.clear()
+        # self.ax.plot(self.waypoints[:, 0], self.waypoints[:, 1], 'go-', label="Planned Path")
+        # self.ax.plot(self.robot_x, self.robot_y, 'r.-', label="Actual Path")
+        # self.ax.scatter(self.robot_x[-1], self.robot_y[-1], c='purple', marker='x', label="Current Position")
+        # self.ax.set_title("Pure Pursuit Controller")
+        # self.ax.legend()
+        # plt.draw()
+        # plt.pause(0.1)
+        pass
 
 def main():
     rclpy.init()
