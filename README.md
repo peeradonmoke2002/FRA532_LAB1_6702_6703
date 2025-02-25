@@ -1,56 +1,35 @@
 # FRA532 Mobile Robot: LAB1.1
 ## Table of Contents
-- [Forward Kinematics](#forward-kinematics)
-  - [Bicycle model](#bicycle-model)
-  - [No Slip condition constraints](#no-slip-condition-constraints)
+- [Installation](#Installation)
 - [Inverse Kinematics](#inverse-kinematics)
-  - [Yaw Rate](#yaw-rate)
-  - [Single-track model](#single-track-model)
-  - [Double-track model](#double-track-model)
+- [Forward Kinematics](#forward-kinematics)
 
-## Forward Kinematics
 
-### Bicycle model
-Converting wheel velocity and steering to robot twist (linear velocity, angular velocity)
+## Installation
 
-#### Steering Angle Calculation
+```bash
+cd ~/[your_workspace]/src
+git clone https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703.git
+```
+### Testing Rviz view and Gazebo run
+1) build file
 
-Based on the velocity equation $$\ v = \Omega_z R \$$ where $$\ v \$$ represents the velocity magnitude, we can derive the steering angle as:
+```bash
+cd ~/[your_workspace]
+colcon build
+source install/setup.bash 
+```
 
-$$
-\delta = \arctan \left( \frac{L \Omega_z}{v} \right)
-$$
-
-where:
-- $$\ \delta \$$ is the steering angle,
-- $$\ \Omega_z \$$ is the angular velocity,
-- $$\ v \$$ is the linear velocity of the vehicle.
-
-In this repository, we prefer to represent steering for both left and right turns so that when applying steering to this model, the same approach can be used for both directions.
-
-#### Rear Wheel Speed Calculation
-
-In this repository, we prefer to control the velocity of the left and right rear wheels by converting a twist message into rear wheel speed using the following formula:
-
-$$\
-\text{wheel}\_{speed} = \frac{v}{r}
-\$$
-
-where:
-- $$\ v \$$ is the linear velocity,
-- $$\ r \$$ is the wheel radius.
-
-Additionally, we prefer to represent steering for both left and right turns so that the same approach can be applied consistently when controlling this model.
-
-### No Slip condition constraints
+2) run launch file
+```bash
+ros2 launch limo_description sim.launch.py
+```
 
 ## Inverse Kinematics
+## Forward Kinematics
 
-### Yaw Rate
 
-### Single-track model
 
-### Double-track model
 
 
 
