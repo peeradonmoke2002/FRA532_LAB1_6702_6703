@@ -30,9 +30,8 @@ install(PROGRAMS
   scripts/dummy_script.py
   scripts/ackerman_controller_basic_model.py
   scripts/ackerman_controller_no_slip.py
-  scripts/steering_monitor.py
-  scripts/ackerman_yaw_rate_odom_double_track.py
-  scripts/ackerman_yaw_rate_odom_single_track.py
+  scripts/ackerman_odom_double_track.py
+  scripts/ackerman_odom_single_track.py
   scripts/ackerman_yaw_rate_odom.py
   DESTINATION lib/${PROJECT_NAME}
 )
@@ -54,6 +53,7 @@ install(TARGETS
 ################ INSTALL LAUNCH, ETC #################
 install(DIRECTORY
   # add directories here
+  launch
   DESTINATION share/${PROJECT_NAME})
 
 ament_package()

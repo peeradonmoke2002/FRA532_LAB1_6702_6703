@@ -22,7 +22,6 @@ class SingleTrackOdom(Node):
         self.wheel_base = 0.2  # Distance between front and rear axles (meters)
         self.track_width = 0.14  # Distance between left and right wheels (meters)
         self.wheel_radius = 0.045  # Rear wheel radius (meters)
-        self.BETA = 0.0  # Side-slip angle
         
         # Initialize Pose and Velocity
         self.x_curr = 0.0
@@ -49,13 +48,11 @@ class SingleTrackOdom(Node):
 
         # Joint States Subscriber (Wheel velocities and steering angles)
         self.create_subscription(JointState, '/joint_states', self.joint_state_callback, 10)
-        self.odom_pub = self.create_publisher(Odometry, '/odom', 10)
+        self.odom_pub = self.create_publisher(Odometry, 'single_track/odom', 10)
 
         # Timer for Odometry Updates
         self.dt_loop = 1 / 100  
         self.timer = self.create_timer(self.dt_loop, self.timer_callback)
-
-        self.prev_time = self.get_clock().now()
 
         self.v_rl = 0.0
         self.v_rr = 0.0
@@ -63,40 +60,25 @@ class SingleTrackOdom(Node):
         self.delta_fr = 0.0
         self.delta_avg = 0.0
 
+        self.prev_time = self.get_clock().now()
+
 
     def joint_state_callback(self, msg):
-        """Callback to process joint states (wheel velocities and steering angles)."""
         if ('rear_left_wheel' in msg.name and 'rear_right_wheel' in msg.name and
             'front_left_steering' in msg.name and 'front_right_steering' in msg.name):
 
             left_wheel_index = msg.name.index('rear_left_wheel')
             right_wheel_index = msg.name.index('rear_right_wheel')
+            left_steering_index = msg.name.index('front_left_steering')
+            right_steering_index = msg.name.index('front_left_steering')
 
             # Get rear wheel velocities (convert encoder rate to linear velocity)
             self.v_rl = msg.velocity[left_wheel_index] * self.wheel_radius
             self.v_rr = msg.velocity[right_wheel_index] * self.wheel_radius
 
             # Extract measured steering angles (if needed)
-            self.delta_fl = msg.position[msg.name.index('front_left_steering')]
-            self.delta_fr = msg.position[msg.name.index('front_right_steering')]
-
-            # Obtain sign from the measured steering angles
-            # fl_sign = np.sign(delta_fl)
-            # fr_sign = np.sign(delta_fr)
-
-            # # If both signs are non-zero, assign a fixed steering angle magnitude;
-            # # otherwise, set to zero.
-            # if fl_sign != 0 and fr_sign != 0:
-            #     self.delta_fl = 0.523598767 * fl_sign   # ~30° in radians with proper sign
-            #     self.delta_fr = 0.523598767 * fr_sign
-
-            # else:
-            #     self.delta_fl = 0.0
-            #     self.delta_fr = 0.0
-
-    def compute_yaw_rate(self, v, delta_F):
-        """Compute yaw rate ω using kinematic single-track model"""
-        return (v / self.wheel_base) * np.tan(delta_F)
+            self.delta_fl = msg.position[left_steering_index]
+            self.delta_fr = msg.position[right_steering_index]
 
 
 
@@ -104,19 +86,14 @@ class SingleTrackOdom(Node):
         # Compute elapsed time dt (in seconds)
         dt = (self.get_clock().now() - self.prev_time).to_msg().nanosec * 1.0e-9
 
-        # Integrate the pose using previous state values (midpoint method)
-        self.x_curr = self.x_prev + self.v_prev * dt * np.cos(self.BETA + self.theta_prev + (self.w_prev * dt / 2))
-        self.y_curr = self.y_prev + self.v_prev * dt * np.sin(self.BETA + self.theta_prev + (self.w_prev * dt / 2))
+        self.x_curr = self.x_prev + self.v_prev * dt * np.cos(self.theta_prev + (self.w_prev * dt / 2))
+        self.y_curr = self.y_prev + self.v_prev * dt * np.sin(self.theta_prev + (self.w_prev * dt / 2))
         self.theta_curr = self.theta_prev + self.w_prev * dt
         self.quat = tf_transformations.quaternion_from_euler(0.0, 0.0, self.theta_curr)
 
-        # Update sensor-based velocity using the bicycle (single-track) model:
-        # Forward velocity is the average of the rear wheel speeds.
         self.v_curr = (self.v_rl + self.v_rr) / 2.0
-        # Effective steering angle as the average of the front steering angles.
-        delta_avg = np.mean([self.delta_fl, self.delta_fr])
-        # Compute yaw rate: ω = (v / L) * tan(δ_avg)
-        self.w_curr = self.compute_yaw_rate(self.v_curr, delta_avg)
+        delta_avg = (self.delta_fl + self.delta_fr) / 2.0
+        self.w_curr = (self.v_curr / self.wheel_base) * np.tan(delta_avg)
 
         # Compute twist (linear velocity in world frame)
         vx = self.v_curr * np.cos(self.theta_curr)
@@ -135,7 +112,7 @@ class SingleTrackOdom(Node):
             w=self.quat[3]
         )
         odom_msg.pose.covariance = self.pose_cov.flatten()
-        odom_msg.twist.twist.linear = Vector3(x=vx, y=0.0, z=0.0)
+        odom_msg.twist.twist.linear = Vector3(x=self.v_curr, y=0.0, z=0.0)
         odom_msg.twist.twist.angular = Vector3(x=0.0, y=0.0, z=self.w_curr)
         odom_msg.twist.covariance = self.twist_cov.flatten()
         self.odom_pub.publish(odom_msg)
@@ -153,7 +130,8 @@ class SingleTrackOdom(Node):
             z=self.quat[2],
             w=self.quat[3]
         )
-        self.publish_transform.sendTransform(transform)
+        # uncomment for testing for all models !!
+        # self.publish_transform.sendTransform(transform)
 
         # Update previous state for the next iteration
         self.prev_time = self.get_clock().now()
@@ -163,7 +141,7 @@ class SingleTrackOdom(Node):
         self.w_prev = self.w_curr
         self.theta_prev = self.theta_curr
 
-        print('x:', self.x_curr, 'y:', self.y_curr, 'yaw rate:', self.w_curr)
+        # print('x:', self.x_curr, 'y:', self.y_curr, 'yaw rate:', self.w_curr)
 
 
 

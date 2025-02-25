@@ -102,10 +102,6 @@ class PurePursuit(Node):
             self.get_logger().warn("Model 'limo' not found in ModelStates.")
 
     def publish_steering(self, steering: float):
-        """
-        Publish a steering command as a JointTrajectory message.
-        The same steering angle is applied to both front steering joints.
-        """
         traj_msg = JointTrajectory()
         traj_msg.joint_names = ['front_left_steering', 'front_right_steering']
         
@@ -170,38 +166,18 @@ class PurePursuit(Node):
             curvature = 2 * transform_y / (distance**2)
         # Compute the steering angle using a bicycle model.
         steering_angle = math.atan(self.wheel_base * curvature)
-        # Optionally, apply a gain if desired (gain commented out below).
-        # K = 0.6
-        # steering_angle *= K
-
         
         # Publish the computed steering command.
         self.publish_steering(steering_angle)
 
         # Publish the forward wheel speed command using Float64MultiArray.
-        forward_velocity = min(0.5, distance)/self.wheel_radius
+        forward_velocity = min(5.5, distance)/self.wheel_radius
         speed_msg = Float64MultiArray()
         speed_msg.data = [forward_velocity, forward_velocity]
         self.pub_wheel_spd.publish(speed_msg)
 
-        # Update the real-time plot.
-        # self.update_plot()
 
-    def update_plot(self):
-        """Update real-time plot of planned and actual paths."""
-        self.ax.clear()
-        # Plot planned path.
-        self.ax.plot(self.waypoints[:, 0], self.waypoints[:, 1], 'go-', label="Planned Path")
-        # Plot actual path if available.
-        if len(self.robot_path) > 0:
-            robot_path = np.array(self.robot_path)
-            self.ax.plot(robot_path[:, 0], robot_path[:, 1], 'r.-', label="Actual Path")
-            # Mark the current position (last point in the path).
-            self.ax.scatter(robot_path[-1, 0], robot_path[-1, 1], c='purple', marker='x', label="Current Position")
-        self.ax.set_title("Pure Pursuit Controller")
-        self.ax.legend()
-        plt.draw()
-        plt.pause(0.1)
+
         
 
 def main(args=None):

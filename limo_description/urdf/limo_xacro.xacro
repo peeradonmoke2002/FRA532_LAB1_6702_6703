@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <robot name="limo_xacro" xmlns:xacro="http://ros.org/wiki/xacro">
 
-    <!-- <xacro:macro name="limo_wheel" params="parent_prefix wheel_prefix reflect *joint_pose visual_on:=true fixed_on:=false">
+    <xacro:macro name="limo_wheel" params="parent_prefix wheel_prefix reflect *joint_pose visual_on:=true fixed_on:=false">
         <link name="${wheel_prefix}_wheel_link">
-            <inertial>
+            <!-- <inertial>
                 <origin xyz="0 ${wheel_length/2} 0" rpy="1.57 0 0" />
                 <mass value="0.5" />
                 <inertia ixx="0.00033749999999999996" ixy="0" ixz="0" iyy="0.00033749999999999996" iyz="0" izz="0.00050625" />
-            </inertial>
+            </inertial> -->
             <xacro:if value="${visual_on}">
                 <visual>
                     <origin xyz="0 0 0" rpy="0 0 0" />
@@ -22,10 +22,10 @@
                   <cylinder length="${wheel_length}" radius="${wheel_radius}" />
               </geometry>
             </collision>
-        </link> -->
+            <xacro:cylinder_inertial_matrix  m="${wheel_mass}" r="${wheel_radius}"  h="${wheel_length}" />
+        </link>
 
-        <!-- Conditionally set the joint type -->
-        <!-- <xacro:if value="${fixed_on}">
+        <xacro:if value="${fixed_on}">
             <joint name="${wheel_prefix}_wheel" type="fixed">
                 <parent link="${parent_prefix}"/>
                 <child link="${wheel_prefix}_wheel_link"/>
@@ -44,20 +44,20 @@
 
 
            
-    </xacro:macro> -->
+    </xacro:macro>
 
 
-    <xacro:macro name="limo_wheel" params="parent_prefix wheel_prefix reflect *joint_pose">
+    <!-- <xacro:macro name="limo_wheel" params="parent_prefix wheel_prefix reflect *joint_pose">
         <link name="${wheel_prefix}_wheel_link">
-            <!-- <inertial>
+            <inertial>
                 <origin xyz="0 0 0" />
                 <mass value="0.5" />
                 <inertia ixx="0.01055" ixy="0" ixz="0" iyy="0.00075" iyz="0" izz="0.01055" />
-            </inertial> -->
+            </inertial>
             <visual>
                 <origin xyz="0 0 0" rpy="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find limo_description)/meshes/limo_optimal_wheels.dae" />
+                    <mesh filename="file://$(find limo_description)/meshes/limo_wheel.dae" />
                 </geometry>
             </visual>
             <collision>
@@ -75,7 +75,7 @@
             <xacro:insert_block name="joint_pose"/>
             <axis xyz="0 ${reflect*1} 0"/>
         </joint>
-    </xacro:macro>
+    </xacro:macro> -->
 
 
     <xacro:macro name="limo_laser" params="parent_prefix frame_prefix *joint_pose">

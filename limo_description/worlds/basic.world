@@ -6,7 +6,7 @@
 
     <scene>
         <background>
-            <color>0 0 0 1</color>
+            <color>0 178 178 1</color>
         </background>
     </scene>
 
@@ -142,11 +142,11 @@
     </light>
 
 
-        <plugin name="gazebo_ros_state" filename="libgazebo_ros_state.so">
+    <plugin name="gazebo_ros_state" filename="libgazebo_ros_state.so">
       <ros>
         <namespace>/gazebo</namespace>
       </ros>
-      <update_rate>500.0</update_rate>
+      <update_rate>100.0</update_rate>
     </plugin>
 
     <gui fullscreen='0'>

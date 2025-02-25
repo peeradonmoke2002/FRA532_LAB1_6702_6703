@@ -17,7 +17,7 @@ class BicycleController(Node):
         # Robot parameters (bicycle model)
         self.wheel_base = 0.2         # L: Distance between front and rear axles (meters)
         self.wheel_radius = 0.045     # r: Rear wheel radius (meters)
-        self.max_steering_angle = 0.523598767  # Maximum steering angle (30 degrees in radians)
+        self.max_steering_angle = np.deg2rad(30)  # Maximum steering angle (30 degrees in radians)
         
         # Command variables
         self.cmd_vel = [0.0, 0.0]     # [linear velocity (v), angular velocity (w)] from /cmd_vel
@@ -26,8 +26,8 @@ class BicycleController(Node):
         
         # Publishers
         self.pub_steering = self.create_publisher(
-            JointTrajectory,
-            '/joint_trajectory_position_controller/joint_trajectory',
+            Float64MultiArray,
+            "/position_controllers/commands",
             10
         )
         self.pub_wheel_spd = self.create_publisher(
@@ -45,20 +45,17 @@ class BicycleController(Node):
     def cmd_vel_callback(self, msg: Twist):
         self.cmd_vel = [msg.linear.x, msg.angular.z]
 
-    def publish_steering(self, steering: float):
-        traj_msg = JointTrajectory()
-        traj_msg.joint_names = ['front_left_steering', 'front_right_steering']
-        
-        point = JointTrajectoryPoint()
-        point.positions = [float(steering), float(steering)]
-        # Set a small time-from-start, e.g., 0.1 seconds.
+    def publish_steering(self, steering_L: float, steering_R: float):
+        steering_msg = Float64MultiArray()
+        steering_msg.data = [steering_L, steering_R]
+        self.pub_steering.publish(steering_msg)
 
-        point.time_from_start = Duration(seconds=0.1).to_msg()
-        traj_msg.points.append(point)
-        self.pub_steering.publish(traj_msg)
+    def publish_wheel_speed(self, wheelspeed_L:float, wheelspeed_R:float):
+        wheel_msg = Float64MultiArray()
+        wheel_msg.data = [wheelspeed_L, wheelspeed_R]
+        self.pub_wheel_spd.publish(wheel_msg)
 
     def timer_callback(self):
-        # Extract commands: v is forward speed, w is yaw rate.
         v = self.cmd_vel[0]
         w = self.cmd_vel[1]
         
@@ -68,27 +65,14 @@ class BicycleController(Node):
         else:
             # From w = v/L * tan(delta)  =>  delta = arctan(L*w / v)
             self.steering_angle = np.arctan(self.wheel_base * w / v)
-            # self.steering_angle = np.clip(self.steering_angle, -self.max_steering_angle, self.max_steering_angle)
             self.wheel_speed = v / self.wheel_radius
         
-        # Publish the steering command.
-        self.publish_steering(self.steering_angle)
-        # print(self.steering_angle)
-        
-        # Publish the wheel speed command.
-        wheel_msg = Float64MultiArray()
-        # Assuming a differential drive controller where both wheels are commanded identically.
-        wheel_msg.data = [self.wheel_speed, self.wheel_speed]
-        self.pub_wheel_spd.publish(wheel_msg)
+        # Publish the steering command
+        self.publish_steering(self.steering_angle, self.steering_angle)
 
-
-        speed_avg = self.cmd_vel[0]  # Use the forward speed directly
-        theta = speed_avg * np.tan(self.steering_angle ) / self.wheel_base
-        # print(f"theta (deg): {theta * (180/np.pi)}")
-        
-        
-        # (Optional) Log info for debugging.
-        # self.get_logger().info(f"v = {v:.3f}, w = {w:.3f}, delta = {self.steering_angle:.3f}, wheel_speed = {self.wheel_speed:.3f}")
+        # Publish wheel speeds
+        self.publish_wheel_speed(self.wheel_speed, self.wheel_speed)
+        # print(f"v = {v:.3f}, w = {w:.3f}, delta = {self.steering_angle:.3f}, wheel_speed = {self.wheel_speed:.3f}")
 
 def main(args=None):
     rclpy.init(args=args)

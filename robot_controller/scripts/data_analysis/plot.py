@@ -39,10 +39,11 @@ def compute_rms_error(est_x, est_y, gt_x, gt_y):
     return rms_error, errors
 
 def main(): 
+    path = "/home/peeradon/FRA532_MobileRobot/src/"
     # Load estimated odometry data from CSV
-    est_time, est_x, est_y = load_csv("/home/peeradon/FRA532_MobileRobot/src/odom_estimated.csv")
+    est_time, est_x, est_y = load_csv(f"{path}/odom_estimated.csv")
     # Load Gazebo ground truth data
-    gt_time, gt_x, gt_y = load_csv("/home/peeradon/FRA532_MobileRobot/src/odom_gazebo_limo.csv")
+    gt_time, gt_x, gt_y = load_csv(f"{path}/odom_gazebo_limo.csv")
 
     # Check if data was successfully loaded
     if len(est_time) == 0 or len(gt_time) == 0:
