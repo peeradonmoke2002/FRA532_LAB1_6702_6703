@@ -10,7 +10,7 @@ import numpy as np
 import math
 import time
 import matplotlib.pyplot as plt
-
+import rospkg
 # ✅ Pure Pursuit Parameters
 k = 0.1  # Look forward gain
 Lfc = 1.0  # [m] Lookahead distance
@@ -22,10 +22,10 @@ class PurePursuitROS(Node):
     def __init__(self):
         super().__init__('pure_pursuit_ros')
         self.create_subscription(ModelStates, '/gazebo/model_states', self.gazebo_callback, 10)
-        self.waypoints = self.load_path('/home/tang/ros2_lab1_m/src/FRA532_LAB1_6702_6703/robot_controller/data/path.yaml')
+        self.waypoints = self.load_path('/home/tang/ros2_lab1_m/src/FRA532_LAB1_6702_6703/path_tracking/data/path.yaml')
         self.pub_steering = self.create_publisher(JointTrajectory, '/joint_trajectory_position_controller/joint_trajectory', 10)
         self.pub_wheel_spd = self.create_publisher(Float64MultiArray, '/velocity_controllers/commands', 10)
-
+        
         #  Robot state
         self.x = 0.0
         self.y = 0.0

@@ -6,6 +6,18 @@
         </plugin>
     </gazebo>
 
+    <!-- <gazebo>
+      <plugin name="ground_truth_plugin" filename="libgazebo_ros_p3d.so">
+        <ros>
+          <namespace>/ground_truth</namespace>
+          <remapping>odom:=pose</remapping>
+        </ros>
+        <body_name>base_link</body_name>
+        <frameName>world</frameName>
+        <updateRate>100.0</updateRate>
+      </plugin>
+    </gazebo> -->
+
     <ros2_control name="GazeboSystem" type="system">
         <hardware>
             <plugin>gazebo_ros2_control/GazeboSystem</plugin>
@@ -95,70 +107,87 @@
               </state_interface>
               <state_interface name="effort"/>
         </joint>
-<!-- 
-        <joint name="main_steering">
-            <command_interface name="velocity"/>
-            <command_interface name="position">
-                <param name="min">-0.523598767</param>
-                <param name="max">0.523598767</param>
-              </command_interface>
-              <state_interface name="position">
-                <param name="initial_value">0.0</param>
-              </state_interface>
-              <state_interface name="velocity">
-              </state_interface>
-              <state_interface name="effort"/>
-        </joint> -->
+
 
     </ros2_control>
 
-    <gazebo reference="base_footprint">
-        
-        <kp  value="1000000.0"/>
-        <kd  value="100.0"/>
+    <gazebo>
+        <mu1 value="10"/>
+        <mu2 value="10"/>
+        <kp value="10000000.0" />
+        <kd value="1.0" />
+        <fdir1 value="1 0 0"/>
+        <minDepth value="0.001" />
+        <maxContacts value="64"/>
     </gazebo>
+
+
+    <xacro:macro name="limo_wheel_transmission" params="wheel_prefix">
+        <transmission name="${wheel_prefix}_wheel_trans" type="SimpleTransmission">
+            <type>transmission_interface/SimpleTransmission</type>
+            <actuator name="${wheel_prefix}_wheel_motor">
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+            </actuator>
+            <joint name="${wheel_prefix}_wheel">
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+            </joint>
+        </transmission>
+    </xacro:macro>
+
+    <xacro:macro name="limo_steering_hinge_transmission" params="wheel_prefix">
+        <transmission name="${wheel_prefix}_wheel_trans" type="SimpleTransmission">
+            <type>transmission_interface/SimpleTransmission</type>
+            <actuator name="${wheel_prefix}_wheel_motor">
+                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            </actuator>
+            <joint name="${wheel_prefix}_wheel">
+                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            </joint>
+        </transmission>
+    </xacro:macro>
+
+    <xacro:limo_wheel_transmission wheel_prefix="front_right" />
+    <xacro:limo_wheel_transmission wheel_prefix="front_left" />
+    <xacro:limo_wheel_transmission wheel_prefix="rear_left" />
+    <xacro:limo_wheel_transmission wheel_prefix="rear_right" />
+    <xacro:limo_steering_hinge_transmission wheel_prefix="front_left_steering" />
+    <xacro:limo_steering_hinge_transmission wheel_prefix="front_right_steering" />
+
+
 
     <gazebo reference="base_link">
-        
-        <kp  value="1000000.0"/>
-        <kd  value="100.0"/>
+        <minDepth>0.001</minDepth>
+        <kp value="10000000.0"/>
+        <kd value="1.0"/>
     </gazebo>
-<!-- 
-    <gazebo reference="main_steering_link">
-        
-        <kp  value="1000000.0"/>
-        <kd  value="100.0"/>
-    </gazebo> -->
-        
-
-
     <gazebo reference="front_left_wheel_link">
-        <mu1>10.0</mu1>
+       <mu1>10.0</mu1>
         <mu2>10.0</mu2>
-        
-        <kp  value="1000000.0"/>
-
+        <minDepth>0.001</minDepth>
+        <kp value="1000000.0"/>
+        <kd value="1.0"/>
     </gazebo>
     <gazebo reference="front_right_wheel_link">
-        <mu1>10.0</mu1>
+       <mu1>10.0</mu1>
         <mu2>10.0</mu2>
-        
-        <kp  value="1000000.0"/>
-
+        <minDepth>0.001</minDepth>
+        <kp value="1000000.0"/>
+        <kd value="1.0"/>
     </gazebo>
     <gazebo reference="rear_left_wheel_link">
-        <mu1>10.0</mu1>
+       <mu1>10.0</mu1>
         <mu2>10.0</mu2>
-        
-        <kp  value="1000000.0"/>
-
+        <minDepth>0.001</minDepth>
+        <kp value="1000000.0"/>
+        <kd value="1.0"/>
     </gazebo>
     <gazebo reference="rear_right_wheel_link">
-        <mu1>10.0</mu1>
+       <mu1>10.0</mu1>
         <mu2>10.0</mu2>
-        
-        <kp  value="1000000.0"/>
-
+        <minDepth>0.001</minDepth>
+        <kp value="1000000.0"/>
+        <kd value="1.0"/>
     </gazebo>
+
 
 </robot>

@@ -2,7 +2,7 @@
 
 import rclpy
 from rclpy.node import Node
-from gazebo_msgs.msg import ModelStates
+from nav_msgs.msg import Odometry            # Use Odometry message instead of Gazebo ModelStates
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from std_msgs.msg import Float64MultiArray
 import yaml
@@ -13,19 +13,20 @@ import matplotlib.pyplot as plt
 
 # MPC parameters
 DT = 0.15      # time step [s]
-N =   10        # horizon length (timesteps in horizon)
+N = 10         # horizon length (timesteps in horizon)
 WB = 0.2       # [m] wheelbase of the robot
 
-# MPC PARAMETERS 
+# 🎯 MANUAL MPC PARAMETERS (Using Optimized Values)
 Q = np.diag([10.0, 10.0, 6.0, 2.0])   # State error penalty
-Qf = Q                                 # Terminal cost
+Qf = Q                                # Terminal cost
 R = np.diag([3.0, 1.73436065])         # Control effort penalty
-Rd = np.diag([0.2, 30.1])       # Smooth control transitions
+Rd = np.diag([0.2, 30.1])               # Smooth control transitions
 
 class MPCPathFollower(Node):
     def __init__(self):
         super().__init__('mpc_path_follower')
-        self.create_subscription(ModelStates, '/gazebo/model_states', self.gazebo_callback, 10)
+        # Subscribe to the filtered odometry topic instead of Gazebo model states
+        self.create_subscription(Odometry, '/odometry/filtered', self.odom_callback, 10)
         self.waypoints = self.load_path('/home/tang/ros2_lab1_m/src/FRA532_LAB1_6702_6703/robot_controller/data/path.yaml')
         self.get_logger().info("✅ Path loaded successfully.")
         self.pub_steering = self.create_publisher(JointTrajectory, '/joint_trajectory_position_controller/joint_trajectory', 10)
@@ -55,16 +56,17 @@ class MPCPathFollower(Node):
             return []
         return np.array([(point['x'], point['y']) for point in data['path']])
     
-    #skip waypoint impossible to reach
-
     def should_skip_waypoint(self, current_pos, waypoint):
+        """
+        Returns True if the waypoint is too far or requires an impossible yaw change.
+        """
         wp_x, wp_y = waypoint
         distance = np.linalg.norm(np.array([self.x, self.y]) - np.array([wp_x, wp_y]))
         
         yaw_to_wp = math.atan2(wp_y - self.y, wp_x - self.x)
         yaw_diff = self.normalize_angle(yaw_to_wp - self.yaw)
 
-        # ✅ If the waypoint is too far or requires a large yaw change, skip it
+        # If the waypoint is too far or requires a large yaw change, skip it
         if distance > 3.0 or abs(yaw_diff) > np.deg2rad(75):
             return True
         return False
@@ -74,11 +76,10 @@ class MPCPathFollower(Node):
 
     def get_reference_trajectory(self, current_pos, horizon, min_distance=0.2):
         ref_traj = []
-        
         for i, wp in enumerate(self.waypoints):
             wp_x, wp_y = wp[0], wp[1]
 
-            #  Compute yaw if not provided
+            # Compute yaw if not provided
             if len(wp) > 2:
                 wp_yaw = wp[2]
             else:
@@ -88,25 +89,24 @@ class MPCPathFollower(Node):
             angle_to_wp = math.atan2(vector[1], vector[0])
             angle_diff = self.normalize_angle(angle_to_wp - self.yaw)
 
-            max_angle_threshold = np.deg2rad(60)  #  Allow ±60° in front
+            max_angle_threshold = np.deg2rad(60)  # Allow ±60° in front
             if abs(angle_diff) > max_angle_threshold:
                 continue
 
-            #  Skip very close waypoints
+            # Skip very close waypoints
             distance_to_wp = np.linalg.norm(np.array([self.x, self.y]) - np.array([wp_x, wp_y]))
             if distance_to_wp < min_distance:
-                continue  # ✅ Skip if too close
+                continue
 
-            #  Skip waypoint if impossible to reach
+            # Skip waypoint if impossible to reach
             if self.should_skip_waypoint(current_pos, [wp_x, wp_y]):
-                # self.get_logger().info(f"🚀 Skipping waypoint {i} at ({wp_x:.2f}, {wp_y:.2f})")
                 continue  
 
             ref_traj.append([wp_x, wp_y, wp_yaw])
             if len(ref_traj) >= horizon:
                 break
 
-        #  If not enough waypoints, repeat the last one
+        # If not enough waypoints, repeat the last one
         if len(ref_traj) < horizon:
             last_wp = self.waypoints[-1]
             last_wp_yaw = last_wp[2] if len(last_wp) > 2 else 0.0
@@ -118,21 +118,18 @@ class MPCPathFollower(Node):
 
         return np.array(ref_traj)
 
-
     def mpc_control(self):
         """
         Compute control commands via MPC using iterative linearization.
-        along with adjustment (adaptive) by adjusting the weight in the cost function (Q) according to the tracking error
+        Adaptive adjustment of the weight in the cost function (Q) is done according to the tracking error.
         Model state: [x, y, yaw, v]
         Control inputs: [a, delta]
         """
         current_pos = [self.x, self.y]
-        # 1) สร้าง reference trajectory (N+1 ขั้นตอนใน horizon)
+        # 1) Generate reference trajectory (N+1 steps in horizon)
         ref_traj = self.get_reference_trajectory(current_pos, horizon=N+1, min_distance=0.1)
 
-        
-
-        # 2) คำนวณ reference yaw จาก waypoints
+        # 2) Compute reference yaw from waypoints
         ref_yaw = []
         for j in range(len(ref_traj)-1):
             dy = ref_traj[j+1, 1] - ref_traj[j, 1]
@@ -147,31 +144,32 @@ class MPCPathFollower(Node):
         # 3) Reference speed
         ref_speed = self.target_speed
 
-        # 4) estimate initial value velocity & steering
+        # 4) Estimate initial value velocity & steering
         v_nom = np.full(N, self.v)
         u_nom = np.zeros(N)  # for steering
 
-        # ค่า nominal สำหรับ state trajectory (ใช้สำหรับ linearization)
+        # Nominal state trajectory (used for linearization)
         x_nom = np.full(N+1, self.x)
         y_nom = np.full(N+1, self.y)
         yaw_nom = np.full(N+1, self.yaw)
 
         # === Adaptive Part === for next loop   
-         
+        # Calculate error between current position and the next waypoint (index 0)
         error = np.linalg.norm(np.array([self.x, self.y]) - np.array([ref_traj[0, 0], ref_traj[0, 1]]))
-        threshold = 1.0 
+        threshold = 1.0  # error threshold in meters
         adaptive_gain = max(1.0, error / threshold)
+        # Adjust Q by scaling with adaptive_gain (increasing weight when error is high)
         Q_adapt = Q * adaptive_gain
-        # self.get_logger().info(f"Adaptive gain: {adaptive_gain:.2f}")
+        self.get_logger().info(f"Adaptive gain: {adaptive_gain:.2f}")
 
         max_iter = 5
         tol = 1e-3
 
-        sol = None  # กำหนด sol ให้มี scope นอก loop
+        sol = None  # define sol outside the loop
         for it in range(max_iter):
             opti = ca.Opti()
 
-            # กำหนดตัวแปร decision
+            # Decision variables
             x_var   = opti.variable(N+1)
             y_var   = opti.variable(N+1)
             yaw_var = opti.variable(N+1)
@@ -181,14 +179,14 @@ class MPCPathFollower(Node):
 
             cost = 0
 
-            # เงื่อนไขเริ่มต้น
+            # Initial conditions
             opti.subject_to(x_var[0] == self.x)
             opti.subject_to(y_var[0] == self.y)
             opti.subject_to(yaw_var[0] == self.yaw)
             opti.subject_to(v_var[0] == self.v)
 
             for k in range(N):
-                # ค่า cost ของ state error (ใช้ Q_adapt ที่ปรับแล้ว)
+                # State error cost using adapted Q
                 state_error = ca.vertcat(
                     x_var[k] - ref_traj[k, 0],
                     y_var[k] - ref_traj[k, 1],
@@ -197,21 +195,21 @@ class MPCPathFollower(Node):
                 )
                 cost += ca.mtimes([state_error.T, Q_adapt, state_error])
                 
-                # ค่า cost ของ input effort
+                # Control effort cost
                 u_vec = ca.vertcat(a_var[k], delta_var[k])
                 cost += ca.mtimes([u_vec.T, R, u_vec])
                 
-                # ค่า cost สำหรับความต่อเนื่องของ input
+                # Input smoothness cost
                 if k > 0:
                     input_diff = ca.vertcat(a_var[k] - a_var[k-1], delta_var[k] - delta_var[k-1])
                     cost += ca.mtimes([input_diff.T, Rd, input_diff])
                 
-                # Soft penalty สำหรับ steering angle ที่เกินขีดจำกัด
+                # Soft penalty for steering angle exceeding limits
                 big_lambda = 1215000.0
                 penalty = big_lambda * (ca.fmax(0, ca.fabs(delta_var[k]) - self.max_steering_angle)**2)
                 cost += penalty
 
-                # Linearized dynamics: n use nominal ของ state ที่ timestep ปัจจุบัน
+                # Linearized dynamics using nominal state at current timestep
                 if it == 0:
                     yaw_nom_k = self.yaw
                 else:
@@ -229,14 +227,14 @@ class MPCPathFollower(Node):
                     v_nom_k * sin_yaw * (yaw_var[k] - yaw_nom_k)
                 )
 
-                # สำหรับ y
+                # Linearized dynamics for y
                 linearized_y = y_var[k] + DT * (
                     v_nom_k * sin_yaw +
                     sin_yaw * (v_var[k] - v_nom_k) +
                     v_nom_k * cos_yaw * (yaw_var[k] - yaw_nom_k)
                 )
 
-                # สำหรับ yaw (ใช้ bilinear expansion)
+                # Linearized dynamics for yaw (using bilinear expansion)
                 tan_nom = math.tan(delta_nom) if abs(delta_nom) < 1.4 else math.tan(1.4)
                 bilinear_term = (
                     v_nom_k * tan_nom +
@@ -245,16 +243,16 @@ class MPCPathFollower(Node):
                 )
                 linearized_yaw = yaw_var[k] + (DT / WB) * bilinear_term
 
-                # สำหรับ velocity: v_{k+1} = v_k + DT * a_k
+                # Dynamics for velocity: v_{k+1} = v_k + DT * a_k
                 linearized_v = v_var[k] + DT * a_var[k]
 
-                # เพิ่ม constraint ของ dynamics สำหรับ state ถัดไป
+                # Enforce dynamics constraints for next state
                 opti.subject_to(x_var[k+1] == linearized_x)
                 opti.subject_to(y_var[k+1] == linearized_y)
                 opti.subject_to(yaw_var[k+1] == linearized_yaw)
                 opti.subject_to(v_var[k+1] == linearized_v)
 
-                # Constraint สำหรับ input
+                # Input constraints
                 opti.subject_to(ca.fabs(delta_var[k]) <= self.max_steering_angle)
                 opti.subject_to(a_var[k] <= 1.0)
                 opti.subject_to(a_var[k] >= -1.0)
@@ -270,7 +268,7 @@ class MPCPathFollower(Node):
 
             opti.minimize(cost)
 
-            # ตั้งค่า solver (ใช้ IPOPT)
+            # Set solver options (using IPOPT)
             p_opts = {"print_time": False}
             s_opts = {"print_level": 0}
             opti.solver("ipopt", p_opts, s_opts)
@@ -280,11 +278,11 @@ class MPCPathFollower(Node):
                 self.get_logger().error("❌ MPC solve error with CasADi: " + str(e))
                 return 0.0, 0.0
 
-            # ดึงค่าที่ได้จาก solution
+            # Update nominal values from solution
             v_nom_new = np.array([sol.value(v_var[k]) for k in range(N)])
             delta_nom_new = np.array([sol.value(delta_var[k]) for k in range(N)])
 
-            # จำลอง nominal state trajectory โดยใช้ input ปัจจุบัน
+            # Simulate nominal state trajectory using current inputs
             x_nom[0] = self.x
             y_nom[0] = self.y
             yaw_nom[0] = self.yaw
@@ -297,42 +295,35 @@ class MPCPathFollower(Node):
                 tan_val = math.tan(delta_nom_k) if abs(delta_nom_k) < 1.4 else math.tan(1.4)
                 yaw_nom[k+1] = yaw_nom[k] + (DT / WB) * (v_nom[k] * tan_val)
 
-            # check nominal inputs
+            # Check convergence of nominal inputs
             if (np.linalg.norm(v_nom_new - v_nom) < tol) and (np.linalg.norm(delta_nom_new - u_nom) < tol):
                 v_nom = v_nom_new
                 u_nom = delta_nom_new
                 break
 
-            # update nominal values for next iteration 
+            # Update nominal values for the next iteration
             v_nom = v_nom_new
             u_nom = delta_nom_new
 
-        # ใช้คำสั่งควบคุมตัวแรกจาก solution ที่ได้
+        # Use the first control input from the solution
         a_cmd = sol.value(a_var[0])
         delta_cmd = sol.value(delta_var[0])
         delta_cmd = np.clip(delta_cmd, -self.max_steering_angle, self.max_steering_angle)
 
         return a_cmd, delta_cmd
 
-
     def search_nearest_index(self):
-        # คำนวณระยะ Euclidean จากตำแหน่งปัจจุบันกับทุก waypoint
+        # Compute Euclidean distance from current position to all waypoints
         distances = np.linalg.norm(self.waypoints - np.array([self.x, self.y]), axis=1)
         return np.argmin(distances)
 
-    def gazebo_callback(self, msg):
-        try:
-            index = msg.name.index("limo")
-        except ValueError:
-            self.get_logger().error(" Robot model not found in Gazebo!")
-            return
+    def odom_callback(self, msg):
+        # Use filtered odometry data instead of Gazebo model state
+        self.x = msg.pose.pose.position.x
+        self.y = msg.pose.pose.position.y
+        self.yaw = self.quaternion_to_euler(msg.pose.pose.orientation)
         
-        pose = msg.pose[index]
-        self.x = pose.position.x
-        self.y = pose.position.y
-        self.yaw = self.quaternion_to_euler(pose.orientation)
-        
-        # show next waypoint 
+        # Show next waypoint
         idx = self.search_nearest_index()
         dist = np.hypot(self.waypoints[idx, 0] - self.x,
                         self.waypoints[idx, 1] - self.y)
@@ -351,7 +342,7 @@ class MPCPathFollower(Node):
             f"🔄 Steering: {math.degrees(steering_cmd):.2f}° | 🚀 Speed: {self.v:.2f} m/s"
         )
         
-        # สำหรับ plotting
+        # For plotting
         self.robot_x.append(self.x)
         self.robot_y.append(self.y)
         self.update_plot()
@@ -375,15 +366,7 @@ class MPCPathFollower(Node):
         self.pub_wheel_spd.publish(wheel_msg)
 
     def update_plot(self):
-        
-        # self.ax.clear()
-        # self.ax.plot(self.waypoints[:, 0], self.waypoints[:, 1], 'go-', label="Planned Path")
-        # self.ax.plot(self.robot_x, self.robot_y, 'r.-', label="Actual Path")
-        # self.ax.scatter(self.robot_x[-1], self.robot_y[-1], c='purple', marker='x', label="Current Position")
-        # self.ax.set_title("MPC Controller")
-        # self.ax.legend()
-        # plt.draw()
-        # plt.pause(0.1)
+        # Placeholder for plotting updates if needed
         pass
 
 def main():

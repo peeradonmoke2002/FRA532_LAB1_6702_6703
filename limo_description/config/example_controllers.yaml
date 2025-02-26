@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 2000 # Hz
+    update_rate: 2000  # Hz
 
     # Broadcaster for publishing joint states
     joint_state_broadcaster:
@@ -60,21 +60,21 @@ joint_trajectory_position_controller:
       - velocity
 
 
-robot_state_publisher:
-  ros__parameters:
-    use_sim_time: true
-    publish_frequency: 2000  # Hz
+# robot_state_publisher:
+#   ros__parameters:
+#     use_sim_time: true
+#     publish_frequency: 100  # Hz
 
 
-    state_publish_rate: 50 # Defaults to 50
-    action_monitor_rate: 20 # Defaults to 20
+#     state_publish_rate: 50 # Defaults to 50
+#     action_monitor_rate: 20 # Defaults to 20
 
-    allow_partial_joints_goal: false # Defaults to false
-    open_loop_control: true
-    allow_integration_in_goal_trajectories: true
-    constraints:
-      stopped_velocity_tolerance: 0.01 # Defaults to 0.01
-      goal_time: 0.0 # Defaults to 0.0 (start immediately)
+#     allow_partial_joints_goal: false # Defaults to false
+#     open_loop_control: true
+#     allow_integration_in_goal_trajectories: true
+#     constraints:
+#       stopped_velocity_tolerance: 0.01 # Defaults to 0.01
+#       goal_time: 0.0 # Defaults to 0.0 (start immediately)
 
 # odom:
 #   ros__parameters:
