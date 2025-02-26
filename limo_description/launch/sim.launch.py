@@ -86,10 +86,6 @@ def generate_launch_description():
         parameters=[{"use_sim_time": True}]
     )
 
-    steering_monitor = Node(
-        package="robot_controller",
-        executable="steering_monitor.py"
-    )
 
     ackerman_controller = Node(
         package="robot_controller",

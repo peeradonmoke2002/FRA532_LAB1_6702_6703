@@ -1,0 +1,95 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <world name="default">
+
+    <!-- A global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+<!-- 
+    <plugin name="gazebo_ros_state" filename="libgazebo_ros_state.so">
+      <ros>
+        <namespace>/gazebo</namespace>
+      </ros>
+      <update_rate>1.0</update_rate>
+    </plugin> -->
+
+    <include>
+    <uri>model://ground_plane</uri>
+    <pose>0 0 0 0 0 0</pose>
+    <surface>
+        <contact>
+        <ode>
+            <soft_cfm>0.00001</soft_cfm> <!-- Reduce numerical instability -->
+            <soft_erp>0.8</soft_erp> <!-- Increase energy absorption -->
+            <kp>10</kp>  <!-- High stiffness -->
+            <kd>100000.0</kd>  <!-- Damping -->
+        </ode>
+        </contact>
+        <bounce>
+        <restitution_coefficient>0.0</restitution_coefficient> <!-- No bounce -->
+        <threshold>0.01</threshold>
+        </bounce>
+        <friction>
+        <ode>
+            <mu>2.5</mu>  <!-- Increase friction -->
+            <mu2>2.5</mu2>
+            <slip1>0.0</slip1>
+            <slip2>0.0</slip2>
+        </ode>
+        </friction>
+    </surface>
+    </include>
+
+
+    <!-- a static ramp. The meshes must be copied from models/nist_simple_ramp_120 to
+~/.gazebo/models/, or you must set GAZEBO_MODEL_PATH environment variable to
+include the models directory either in the launch file using <env.../>, or in
+your shell.  -->
+    <model name="ramp2">
+      <static>true</static>
+      <link name="nist_simple_ramp_120_link">
+        <pose>0 2 -0.3 -0.94 0 0</pose>
+        <collision name="collision">
+        <geometry>
+            <mesh>
+            <uri>model://ramp2/meshes/nist_simple_ramp_120.dae</uri>
+            <scale>1 1 1</scale>
+            </mesh>
+        </geometry>
+        <surface>
+            <contact>
+            <ode>
+                <soft_cfm>0.00001</soft_cfm> <!-- Reduce numerical instability -->
+                <soft_erp>0.8</soft_erp> <!-- Increase energy restitution -->
+                <kp>10</kp>  <!-- High stiffness -->
+                <kd>100000.0</kd>  <!-- Damping -->
+            </ode>
+            </contact>
+            <bounce>
+            <restitution_coefficient>0.0</restitution_coefficient> <!-- No bounce -->
+            <threshold>0.01</threshold>  <!-- Reduce unwanted bounce -->
+            </bounce>
+            <friction>
+            <ode>
+                <mu>1.1</mu>  <!-- High friction -->
+                <mu2>1.1</mu2>
+                <slip1>0.0</slip1>
+                <slip2>0.0</slip2>
+            </ode>
+            </friction>
+        </surface>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://ramp2/meshes/nist_simple_ramp_120.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+
+  </world>
+</sdf>

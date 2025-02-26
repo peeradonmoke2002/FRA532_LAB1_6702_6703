@@ -125,13 +125,17 @@ class DoubleTrackOdom(Node):
         # for testing concept !! ##
         # self.v_curr = self.compute_vehicle_velocity(self.v_rl, self.v_rr,
         #                                     self.delta_fl, self.delta_fr,
-        #                                     self.BETA,
         #                                     self.r_rl[0], self.r_rl[1],
         #                                     self.r_rr[0], self.r_rr[1])
         # self.w_curr = self.compute_yaw_rate(self.v_rl, self.v_rr,
         #                             self.delta_fl, self.delta_fr,
         #                             self.r_rl[0], self.r_rl[1],
         #                             self.r_rr[0], self.r_rr[1])
+
+        avg_steering = (self.delta_fl + self.delta_fr) / 2
+        real_sign = np.sign(avg_steering)
+        if np.sign(self.w_curr) != real_sign:
+            self.w_curr = -self.w_curr 
 
         
 
@@ -172,7 +176,7 @@ class DoubleTrackOdom(Node):
         self.w_prev = self.w_curr
         self.theta_prev = self.theta_curr
 
-        print('x:', self.x_curr, 'y:', self.y_curr, 'yaw rate:', self.w_curr)
+        # print('x:', self.x_curr, 'y:', self.y_curr, 'yaw rate:', self.w_curr)
         # print("speed left: ", self.v_rl, "speed right: ", self.v_rr, "yaw rate: ", self.w_curr)
 
 
