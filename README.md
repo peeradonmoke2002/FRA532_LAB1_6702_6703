@@ -24,6 +24,11 @@ source install/setup.bash
 ```bash
 ros2 launch limo_description sim.launch.py
 ```
+it shoud show rivz view and gazebo simulation as figture below:
+
+<img width="1373" alt="Screenshot 2568-02-26 at 12 40 33" src="https://github.com/user-attachments/assets/e245c9de-abda-4360-9457-68f8df1d112a" />
+
+
 
 ## Inverse Kinematics
 ## Forward Kinematics
