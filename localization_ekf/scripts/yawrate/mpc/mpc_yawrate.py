@@ -10,7 +10,7 @@ import numpy as np
 import math
 import casadi as ca
 import matplotlib.pyplot as plt
-
+import os
 # MPC parameters
 DT = 0.15      # time step [s]
 N = 10         # horizon length (timesteps in horizon)
@@ -27,7 +27,7 @@ class MPCPathFollower(Node):
         super().__init__('mpc_path_follower')
         # Subscribe to the filtered odometry topic instead of Gazebo model states
         self.create_subscription(Odometry, '/odometry/filtered', self.odom_callback, 10)
-        self.waypoints = self.load_path('/home/tang/ros2_lab1_m/src/FRA532_LAB1_6702_6703/robot_controller/data/path.yaml')
+        self.waypoints = self.load_path("path.yaml")
         self.get_logger().info("✅ Path loaded successfully.")
         self.pub_steering = self.create_publisher(JointTrajectory, '/joint_trajectory_position_controller/joint_trajectory', 10)
         self.pub_wheel_spd = self.create_publisher(Float64MultiArray, '/velocity_controllers/commands', 10)
@@ -49,17 +49,21 @@ class MPCPathFollower(Node):
         self.fig, self.ax = plt.subplots(figsize=(8,6))
     
     def load_path(self, filename):
+        if not os.path.isabs(filename):
+            ros_workspace = os.getenv("ROS_WORKSPACE")
+            if ros_workspace is None:
+                script_dir = os.path.dirname(os.path.realpath(__file__))
+                ros_workspace = script_dir.split('/src/')[0]
+
+            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "data", filename)
+        
         with open(filename, 'r') as file:
             data = yaml.safe_load(file)
-        if 'path' not in data:
-            self.get_logger().error(f"⚠️ Key 'path' not found in {filename}")
-            return []
+        
         return np.array([(point['x'], point['y']) for point in data['path']])
     
     def should_skip_waypoint(self, current_pos, waypoint):
-        """
-        Returns True if the waypoint is too far or requires an impossible yaw change.
-        """
+
         wp_x, wp_y = waypoint
         distance = np.linalg.norm(np.array([self.x, self.y]) - np.array([wp_x, wp_y]))
         
@@ -160,7 +164,7 @@ class MPCPathFollower(Node):
         adaptive_gain = max(1.0, error / threshold)
         # Adjust Q by scaling with adaptive_gain (increasing weight when error is high)
         Q_adapt = Q * adaptive_gain
-        self.get_logger().info(f"Adaptive gain: {adaptive_gain:.2f}")
+        # self.get_logger().info(f"Adaptive gain: {adaptive_gain:.2f}")
 
         max_iter = 5
         tol = 1e-3

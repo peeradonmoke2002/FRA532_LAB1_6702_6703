@@ -9,7 +9,6 @@ from rclpy.duration import Duration
 import yaml
 import numpy as np
 import math
-from ament_index_python.packages import get_package_share_directory
 import os
 
 class PIDBicycleController(Node):
@@ -17,12 +16,11 @@ class PIDBicycleController(Node):
         super().__init__('pid_bicycle_controller')
         self.dt_loop = 1 / 50.0  # Loop time in seconds (50 Hz)
 
-        # Robot parameters
+
         self.wheel_base = 0.2  # Distance between front and rear axles (meters)
         self.wheel_radius = 0.045  # Rear wheel radius (meters)
         self.max_steering_angle = 0.523598767 / 2  # Limit steering angle
 
-        #  PID Gains (Tunable)
         self.kp_steer = 0.25  # Increased for better response
         self.ki_steer = 0.01  # Small integral gain to reduce steady-state error
         self.kd_steer = 0.005  # Increased to reduce overshoot
@@ -30,58 +28,36 @@ class PIDBicycleController(Node):
         self.ki_speed = 10.05
         self.kd_speed = 0.05  # Small derivative gain to smooth speed control
 
-        #  PID Variables
         self.integral_steer = 0.0
         self.prev_error_steer = 0.0
         self.integral_speed = 0.0
         self.prev_error_speed = 0.0
 
-        self.waypoints = self.load_path('path.yaml')
+        self.waypoints = self.load_path("path.yaml")
 
         self.pub_steering = self.create_publisher(
             JointTrajectory, '/joint_trajectory_position_controller/joint_trajectory', 10)
         self.pub_wheel_spd = self.create_publisher(
             Float64MultiArray, '/velocity_controllers/commands', 10)
         
-        # ✅ Subscriber to Gazebo model states
+
         self.create_subscription(ModelStates, '/gazebo/model_states', self.gazebo_callback, 10)
 
-
     def load_path(self, filename):
-        # Try to get ROS_WORKSPACE from the environment, otherwise find it dynamically
-        ros_workspace = os.getenv("ROS_WORKSPACE")
+        if not os.path.isabs(filename):
+            ros_workspace = os.getenv("ROS_WORKSPACE")
+            if ros_workspace is None:
+                script_dir = os.path.dirname(os.path.realpath(__file__))
+                ros_workspace = script_dir.split('/src/')[0]
+
+            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "data", filename)
         
-        if ros_workspace is None:
-            # Auto-detect workspace path based on this script's location
-            script_dir = os.path.dirname(os.path.realpath(__file__))
-            ros_workspace = script_dir.split('/src/')[0]  # Assumes the package is inside src/
-
-        # Construct the full path to path.yaml
-        filepath = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "data", filename)
-
-        # Check if file exists
-        if not os.path.exists(filepath):
-            raise FileNotFoundError(f"❌ File not found: {filepath}\nCheck if the path is correct.")
-
-        # Load YAML file
-        with open(filepath, 'r') as file:
+        with open(filename, 'r') as file:
             data = yaml.safe_load(file)
-
-        if 'path' not in data:
-            self.get_logger().error(f"⚠️ Key 'path' not found in {filepath}. Check file formatting.")
-            return []
-
+        
         return [(point['x'], point['y'], point['yaw']) for point in data['path']]
-
-
-
-
+    
     def nearest_waypoint(self, x, y, yaw):
-        """
-        Select the nearest waypoint that is in front of the robot.
-        - Ignore waypoints that are too close (within 5 cm).
-        - Choose waypoints with a forward direction based on the dot product.
-        """
         tolerance = 0.05  # Ignore waypoints closer than 5 cm
         forward_threshold = 0.1  # The waypoint must be in front of the robot
         min_distance = float('inf')
@@ -110,17 +86,13 @@ class PIDBicycleController(Node):
         return best_index
 
     def pid_control(self, error, prev_error, integral, kp, ki, kd, dt):
-        """
-        Compute PID control output.
-        """
+
         derivative = (error - prev_error) / dt
         integral += error * dt
         return kp * error + ki * integral + kd * derivative, integral, error
 
     def gazebo_callback(self, msg):
-        """
-        Process Gazebo model state and compute control commands.
-        """
+
         try:
             index = msg.name.index("limo")  # Ensure correct model name
         except ValueError:
@@ -131,16 +103,14 @@ class PIDBicycleController(Node):
         x, y = pose.position.x, pose.position.y
         _, _, yaw = self.quaternion_to_euler(pose.orientation)
 
-        # ✅ Find the nearest valid waypoint
         target_idx = self.nearest_waypoint(x, y, yaw)
         target_x, target_y, target_yaw = self.waypoints[target_idx]
 
-        # ✅ Compute PID errors
+
         error_steer = np.arctan2(target_y - y, target_x - x) - yaw
         error_steer = (error_steer + np.pi) % (2 * np.pi) - np.pi  # Normalize to [-pi, pi]
         error_speed = np.hypot(target_x - x, target_y - y)
 
-        # ✅ Apply PID control
         steer, self.integral_steer, self.prev_error_steer = self.pid_control(
             error_steer, self.prev_error_steer, self.integral_steer,
             self.kp_steer, self.ki_steer, self.kd_steer, self.dt_loop)
@@ -149,11 +119,10 @@ class PIDBicycleController(Node):
             error_speed, self.prev_error_speed, self.integral_speed,
             self.kp_speed, self.ki_speed, self.kd_speed, self.dt_loop)
 
-        # ✅ Limit Steering and Speed
         steer = np.clip(steer, -self.max_steering_angle, self.max_steering_angle)
         speed = max(2.5, min(speed, 8.0))  # Adjusted speed limits
 
-        # ✅ Publish Commands
+
         self.publish_steering(steer)
         self.publish_wheel_speed(speed)
 

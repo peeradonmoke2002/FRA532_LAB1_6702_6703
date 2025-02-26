@@ -16,7 +16,7 @@ class CSVPathSaver(Node):
         self.create_subscription(ModelStates, '/gazebo/model_states', self.gazebo_callback, 10)
 
         # ✅ (ถ้าต้องการ) Load waypoints from `path.yaml`
-        self.waypoints = self.load_path('/home/tang/ros2_lab1_m/src/FRA532_LAB1_6702_6703/robot_controller/data/path.yaml')
+        self.waypoints = self.load_path('../ros2_lab1_m/src/FRA532_LAB1_6702_6703/path_tracking/data/path.yaml')
 
         # ✅ Setup CSV file for saving robot trajectory data
         self.csv_file = open("robot_path_data.csv", "w", newline="")

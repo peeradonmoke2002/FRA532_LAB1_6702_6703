@@ -7,6 +7,19 @@ from tf_transformations import quaternion_from_euler, euler_from_quaternion
 import numpy as np
 import math
 
+
+        # odom0_config: [true, true,  true,
+        #               false, false, false,
+        #                true, true, false,
+        #                false, false, true,
+        #                false, false, false]
+
+                # imu0_config: [false, false, false,
+                #       true,  true,  true,
+                #       false, false, false,
+                #       true,  true,  true,
+                #       true,  true,  true]
+
 # -----------------------------
 # Define Noise Covariances
 # -----------------------------
@@ -235,7 +248,7 @@ class OdomFilteredNode(Node):
         self.dt = 0.02  # 50 Hz prediction rate
 
         # Subscribers for raw odometry and IMU measurements
-        self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
+        self.create_subscription(Odometry, '/odom_noisy', self.odom_callback, 10)
         self.create_subscription(Imu, '/imu', self.imu_callback, 10)
 
         # Publisher for filtered odometry

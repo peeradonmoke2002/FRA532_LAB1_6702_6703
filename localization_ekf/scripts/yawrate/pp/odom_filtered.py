@@ -6,7 +6,17 @@ from sensor_msgs.msg import Imu
 from tf_transformations import quaternion_from_euler, euler_from_quaternion
 import numpy as np
 import math
+        # imu0_config: [true, true, true,
+        #               true,  true,  true,
+        #               true, true, true,
+        #               true,  true,  true,
+        #               true,  true,  true]
 
+        # odom0_config: [true, true, true,
+        #               true,  true,  true,
+        #               true, true, true,
+        #               true,  true,  true,
+        #               true,  true,  true]
 # -----------------------------
 # Define Noise Covariances
 # -----------------------------
@@ -16,7 +26,7 @@ Q = np.diag([
     np.deg2rad(0.01), np.deg2rad(0.01), np.deg2rad(0.01),  # Orientation noise (roll, pitch, yaw) - small to minimize heading error
     0.05, 0.05, 0.05,          # Linear velocity noise - reduced for precise path tracking
     np.deg2rad(0.05), np.deg2rad(0.05), np.deg2rad(0.05),  # Angular velocity noise (rad/s) - smoothed to prevent oscillations
-    0.01, 0.01, 0.01             # Linear acceleration noise - kept low for stable motion estimation
+    1.41, 1.41, 1.41             # Linear acceleration noise - kept low for stable motion estimation
 ]) ** 2
 
 
@@ -239,7 +249,7 @@ class OdomFilteredNode(Node):
         self.dt = 0.02  # 50 Hz prediction rate
 
         # Subscribers for raw odometry and IMU measurements
-        self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
+        self.create_subscription(Odometry, '/odom_noisy', self.odom_callback, 10)
         self.create_subscription(Imu, '/imu', self.imu_callback, 10)
 
         # Publisher for filtered odometry

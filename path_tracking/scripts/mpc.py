@@ -10,7 +10,7 @@ import numpy as np
 import math
 import casadi as ca
 import matplotlib.pyplot as plt
-
+import os
 # MPC parameters
 DT = 0.15      # time step [s]
 N =   10        # horizon length (timesteps in horizon)
@@ -31,53 +31,36 @@ class MPCPathFollower(Node):
         self.pub_steering = self.create_publisher(JointTrajectory, '/joint_trajectory_position_controller/joint_trajectory', 10)
         self.pub_wheel_spd = self.create_publisher(Float64MultiArray, '/velocity_controllers/commands', 10)
         
-        # Robot state
+
         self.x = 0
         self.y = 0
         self.yaw = 0
         self.v = 0.0
         self.target_speed = 25  # [m/s]
         
-        # Maximum steering angle (radians)
         self.max_steering_angle = 0.5
 
-        # For plotting (optional)
         self.robot_x = []
         self.robot_y = []
         plt.ion()
         self.fig, self.ax = plt.subplots(figsize=(8,6))
     
     def load_path(self, filename):
-        """ Load waypoints from YAML file with adaptive path resolution """
-        import os, yaml, numpy as np
-
-        # If filename is not absolute, construct the full path.
         if not os.path.isabs(filename):
             ros_workspace = os.getenv("ROS_WORKSPACE")
             if ros_workspace is None:
-                # Auto-detect workspace based on script location (assumes package is under 'src')
                 script_dir = os.path.dirname(os.path.realpath(__file__))
                 ros_workspace = script_dir.split('/src/')[0]
-            # Build the full path assuming the file is in:
-            # <ros_workspace>/src/FRA532_LAB1_6702_6703/path_tracking/data/
+
             filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "data", filename)
+        
+        with open(filename, 'r') as file:
+            data = yaml.safe_load(file)
+        
+        return np.array([(point['x'], point['y']) for point in data['path']])
 
-        # Try to open and load the YAML file
-        try:
-            with open(filename, 'r') as file:
-                data = yaml.safe_load(file)
-        except Exception as e:
-            self.get_logger().error(f"❌ Error opening {filename}: {e}")
-            return np.array([])
 
-        # Check that the 'path' key exists
-        if 'path' not in data:
-            self.get_logger().error(f"⚠️ Key 'path' not found in {filename}")
-            return np.array([])
 
-        waypoints = np.array([(point['x'], point['y']) for point in data['path']])
-        self.get_logger().info(f"✅ Loaded {len(waypoints)} waypoints from {filename}")
-        return waypoints
     
     #skip waypoint impossible to reach
 
@@ -88,7 +71,7 @@ class MPCPathFollower(Node):
         yaw_to_wp = math.atan2(wp_y - self.y, wp_x - self.x)
         yaw_diff = self.normalize_angle(yaw_to_wp - self.yaw)
 
-        # ✅ If the waypoint is too far or requires a large yaw change, skip it
+        #  If the waypoint is too far or requires a large yaw change, skip it
         if distance > 3.0 or abs(yaw_diff) > np.deg2rad(75):
             return True
         return False
@@ -119,11 +102,11 @@ class MPCPathFollower(Node):
             #  Skip very close waypoints
             distance_to_wp = np.linalg.norm(np.array([self.x, self.y]) - np.array([wp_x, wp_y]))
             if distance_to_wp < min_distance:
-                continue  # ✅ Skip if too close
+                continue  #  Skip if too close
 
             #  Skip waypoint if impossible to reach
             if self.should_skip_waypoint(current_pos, [wp_x, wp_y]):
-                # self.get_logger().info(f"🚀 Skipping waypoint {i} at ({wp_x:.2f}, {wp_y:.2f})")
+                # self.get_logger().info(f" Skipping waypoint {i} at ({wp_x:.2f}, {wp_y:.2f})")
                 continue  
 
             ref_traj.append([wp_x, wp_y, wp_yaw])
@@ -180,7 +163,7 @@ class MPCPathFollower(Node):
         y_nom = np.full(N+1, self.y)
         yaw_nom = np.full(N+1, self.yaw)
 
-        # === Adaptive Part === for next loop   
+        #  Adaptive Part for next loop   
          
         error = np.linalg.norm(np.array([self.x, self.y]) - np.array([ref_traj[0, 0], ref_traj[0, 1]]))
         threshold = 1.0 
@@ -205,7 +188,6 @@ class MPCPathFollower(Node):
 
             cost = 0
 
-            # เงื่อนไขเริ่มต้น
             opti.subject_to(x_var[0] == self.x)
             opti.subject_to(y_var[0] == self.y)
             opti.subject_to(yaw_var[0] == self.yaw)
@@ -294,7 +276,7 @@ class MPCPathFollower(Node):
 
             opti.minimize(cost)
 
-            # ตั้งค่า solver (ใช้ IPOPT)
+            #  solver setting with cadasi
             p_opts = {"print_time": False}
             s_opts = {"print_level": 0}
             opti.solver("ipopt", p_opts, s_opts)

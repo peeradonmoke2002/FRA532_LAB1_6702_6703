@@ -35,7 +35,7 @@ def load_and_plot():
 
     plt.xlabel("X Position")
     plt.ylabel("Y Position")
-    plt.title("Saved Trajectories from EKF Localization")
+    plt.title(" Trajectories from EKF Localization [SingleTrack-PID]")
     plt.legend()
     plt.grid(True)
     plt.show()

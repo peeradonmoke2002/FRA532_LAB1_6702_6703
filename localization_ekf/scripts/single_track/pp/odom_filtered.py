@@ -7,34 +7,46 @@ from tf_transformations import quaternion_from_euler, euler_from_quaternion
 import numpy as np
 import math
 
-
-
-
-        # odom0_config: [true, true, true,
-        #               true,  true,  true,
-        #               true, true, true,
-        #               true,  true,  true,
-        #               true,  true,  true]
 # -----------------------------
 # Define Noise Covariances
 # -----------------------------
 # Process noise covariance Q (15x15) decrease value = high precision
+# Q = np.diag([
+#     0.02, 0.02, 0.02,            
+#     np.deg2rad(0.08), np.deg2rad(0.08), np.deg2rad(0.15),  # เพิ่ม yaw noise ให้ Pure Pursuit ใช้ได้
+#     0.1, 0.1, 0.1,               
+#     np.deg2rad(0.08), np.deg2rad(0.08), np.deg2rad(0.08),  
+#     0.8, 0.8, 0.8   # ลด acceleration noise ลงจาก 3.2 เพื่อให้ movement สมจริงขึ้น
+# ]) ** 2
+
+
+# # Measurement noisecovariance for odometry (6x6): [p (3), v (3)]
+# R_odom = np.diag([2.5, 2.5, 2.5, 2.5, 2.5, 2.5]) ** 2
+
+# # Measurement noise covariance for IMU (9x9): [orientation (3), angular velocity (3), linear acceleration (3)]
+# R_imu = np.diag([
+#     np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.15),  # Increase yaw measurement noise
+#     np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),   
+#     0.1, 0.1, 0.1
+# ]) ** 2
+
 Q = np.diag([
-    0.02, 0.02, 0.02,            # position noise
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),  # orientation noise (rad) roll pitch yaw
-    0.1, 0.1, 0.1,               # linear velocity noise
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),  # angular velocity noise (rad/s)
-    3.2, 3.2, 3.2                # linear acceleration noise อนุญาตให้ yaw เปลี่ยนแปลงได้ดีขึ้น
+    0.02, 0.02, 0.02,            
+    np.deg2rad(0.08), np.deg2rad(0.08), np.deg2rad(0.15),  # เพิ่ม yaw noise ให้ Pure Pursuit ใช้ได้
+    0.1, 0.1, 0.1,               
+    np.deg2rad(0.08), np.deg2rad(0.08), np.deg2rad(0.08),  
+    1.8, 1.8, 1.8   # ลด acceleration noise ลงจาก 3.2 เพื่อให้ movement สมจริงขึ้น
 ]) ** 2
 
+
 # Measurement noisecovariance for odometry (6x6): [p (3), v (3)]
-R_odom = np.diag([0.3, 0.3, 0.3, 0.3, 0.3, 0.3]) ** 2
+R_odom = np.diag([2.5, 2.5, 2.5, 2.5, 2.5, 2.5]) ** 2
 
 # Measurement noise covariance for IMU (9x9): [orientation (3), angular velocity (3), linear acceleration (3)]
 R_imu = np.diag([
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),
-    0.2, 0.2, 0.2
+    np.deg2rad(0.11), np.deg2rad(0.11), np.deg2rad(0.15),  # Increase yaw measurement noise
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),   
+    0.1, 0.1, 0.1
 ]) ** 2
 
 print('Noise covariances defined.')
@@ -243,7 +255,7 @@ class OdomFilteredNode(Node):
         self.dt = 0.02  # 50 Hz prediction rate
 
         # Subscribers for raw odometry and IMU measurements
-        self.create_subscription(Odometry, '/odom_noisy', self.odom_callback, 10)
+        self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
         self.create_subscription(Imu, '/imu', self.imu_callback, 10)
 
         # Publisher for filtered odometry

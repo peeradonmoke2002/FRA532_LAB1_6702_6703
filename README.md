@@ -1,18 +1,30 @@
-# FRA532 Mobile Robot: LAB1
-## Table of Contents
-- [Forward Kinematics](#forward-kinematics)
-  - [Bicycle model](#bicycle-model)
 
-  ### Bicycle model
-Converting wheel velocity and steering to robot twist (linear velocity, angular velocity)
 # FRA532 Mobile Robot: LAB1.2
 
 ## Table of Contents
 - [PID Controller](#pid-controller)
 - [Pure Pursuit Controller](#pure-pursuit-controller)
 
-## HOW to run 
+## Installation
 
+### Step 1: Create Workspace
+```bash
+mkdir ros2_lab1_m 
+cd ros2_lab1_m 
+mkdir src
+cd src
+git clone https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703.git -b Path-Tracking-Controller
+cd ..
+colcon build 
+source install/setup.bash
+export ROS_WORKSPACE=~/ros2_lab1_m\
+source  ~/.bashrc
+cd src/FRA532_LAB1_6702_6703/path_tracking/scripts
+
+python3 pid.py
+python3 purepursuit.py
+python3 mpc.py
+```
 ## PID Controller
 PID it separate to steering and speed 
 
@@ -63,6 +75,29 @@ $$ u(t) = K_p e(t) + K_I \int_0^t e(t) \,dt + K_d \frac{de}{dt} $$
 
 ### Speed Profile
 ![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/path_tracking/result/MPC/mpc_speed.png)
+
+# FRA532 Mobile Robot: LAB1.3
+
+
+
+## yaw rate 
+
+yawrate it very percise  then we can lower Q more than R from imu 
+
+### PID 
+
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/PID/pid_yawrate.png)
+
+
+### purepursuit 
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/purepursuit/pp_yawrate.png)
+
+## single track
+
+single track model heading it  too many error  then we use lower R matrix more than Q matrix
+
+
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/PID/SingleTrack-PID.png)
 ## Our Team
 
 1. 67340700402 พงษ์พัฒน์ วงศ์กำแหงหาญ

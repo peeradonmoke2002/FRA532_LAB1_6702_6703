@@ -14,7 +14,7 @@ import math
 Q = np.diag([
     0.05, 0.05, 0.05,            # Position noise (low to ensure accurate localization)
     np.deg2rad(0.04), np.deg2rad(0.04), np.deg2rad(0.04),  # Orientation noise (roll, pitch, yaw) - small to minimize heading error
-    10.05, 10.05, 10.05,          # Linear velocity noise - reduced for precise path tracking
+    8.05, 8.05, 8.05,          # Linear velocity noise - reduced for precise path tracking
     np.deg2rad(0.35), np.deg2rad(0.35), np.deg2rad(0.35),  # Angular velocity noise (rad/s) - smoothed to prevent oscillations
     0.05, 0.05, 0.05             # Linear acceleration noise - kept low for stable motion estimation
 ]) ** 2
@@ -28,7 +28,7 @@ R_odom = np.diag([5.05, 5.05, 5.05, 5.1, 5.1, 5.1]) ** 2
 R_imu = np.diag([
     np.deg2rad(0.5), np.deg2rad(0.5), np.deg2rad(0.5),  # Orientation noise - high to reduce trust in IMU heading
     np.deg2rad(3.3), np.deg2rad(3.3), np.deg2rad(3.3),  # Angular velocity noise - high to prevent drift impact
-    10.1, 10.1, 10.1  # Linear acceleration noise - high to minimize reliance on IMU acceleration
+    8.1, 8.1, 8.1  # Linear acceleration noise - high to minimize reliance on IMU acceleration
 ]) ** 2  
 
 
@@ -239,7 +239,7 @@ class OdomFilteredNode(Node):
         self.dt = 0.02  # 50 Hz prediction rate
 
         # Subscribers for raw odometry and IMU measurements
-        self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
+        self.create_subscription(Odometry, '/odom_noisy', self.odom_callback, 10)
         self.create_subscription(Imu, '/imu', self.imu_callback, 10)
 
         # Publisher for filtered odometry
