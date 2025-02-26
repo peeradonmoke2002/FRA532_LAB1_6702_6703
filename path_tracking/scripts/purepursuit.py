@@ -22,7 +22,8 @@ class PurePursuitROS(Node):
     def __init__(self):
         super().__init__('pure_pursuit_ros')
         self.create_subscription(ModelStates, '/gazebo/model_states', self.gazebo_callback, 10)
-        self.waypoints = self.load_path('/home/tang/ros2_lab1_m/src/FRA532_LAB1_6702_6703/path_tracking/data/path.yaml')
+        self.waypoints = self.load_path("path.yaml")
+
         self.pub_steering = self.create_publisher(JointTrajectory, '/joint_trajectory_position_controller/joint_trajectory', 10)
         self.pub_wheel_spd = self.create_publisher(Float64MultiArray, '/velocity_controllers/commands', 10)
         
@@ -41,13 +42,38 @@ class PurePursuitROS(Node):
         self.fig, self.ax = plt.subplots(figsize=(8, 6))
 
     def load_path(self, filename):
-        """ Load waypoints from YAML file """
-        with open(filename, 'r') as file:
-            data = yaml.safe_load(file)
+        """ Load waypoints from YAML file with adaptive path resolution """
+        import os, yaml, numpy as np
+
+        # If filename is not absolute, construct the full path.
+        if not os.path.isabs(filename):
+            ros_workspace = os.getenv("ROS_WORKSPACE")
+            if ros_workspace is None:
+                # Auto-detect workspace based on script location (assumes package is under 'src')
+                script_dir = os.path.dirname(os.path.realpath(__file__))
+                ros_workspace = script_dir.split('/src/')[0]
+            # Build the full path assuming the file is in:
+            # <ros_workspace>/src/FRA532_LAB1_6702_6703/path_tracking/data/
+            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "data", filename)
+
+        # Try to open and load the YAML file
+        try:
+            with open(filename, 'r') as file:
+                data = yaml.safe_load(file)
+        except Exception as e:
+            self.get_logger().error(f"❌ Error opening {filename}: {e}")
+            return np.array([])
+
+        # Check that the 'path' key exists
         if 'path' not in data:
             self.get_logger().error(f"⚠️ Key 'path' not found in {filename}")
-            return []
-        return np.array([(point['x'], point['y']) for point in data['path']])
+            return np.array([])
+
+        waypoints = np.array([(point['x'], point['y']) for point in data['path']])
+        self.get_logger().info(f"✅ Loaded {len(waypoints)} waypoints from {filename}")
+        return waypoints
+
+
 
     def search_target_index(self):
         """ Find the nearest waypoint and determine the lookahead index """

@@ -9,6 +9,8 @@ from rclpy.duration import Duration
 import yaml
 import numpy as np
 import math
+from ament_index_python.packages import get_package_share_directory
+import os
 
 class PIDBicycleController(Node):
     def __init__(self):
@@ -34,7 +36,8 @@ class PIDBicycleController(Node):
         self.integral_speed = 0.0
         self.prev_error_speed = 0.0
 
-        self.waypoints = self.load_path('/home/tang/ros2_lab1_m/src/FRA532_LAB1_6702_6703/path_tracking/data/path.yaml')
+        self.waypoints = self.load_path('path.yaml')
+
         self.pub_steering = self.create_publisher(
             JointTrajectory, '/joint_trajectory_position_controller/joint_trajectory', 10)
         self.pub_wheel_spd = self.create_publisher(
@@ -43,13 +46,35 @@ class PIDBicycleController(Node):
         # ✅ Subscriber to Gazebo model states
         self.create_subscription(ModelStates, '/gazebo/model_states', self.gazebo_callback, 10)
 
+
     def load_path(self, filename):
-        with open(filename, 'r') as file:
+        # Try to get ROS_WORKSPACE from the environment, otherwise find it dynamically
+        ros_workspace = os.getenv("ROS_WORKSPACE")
+        
+        if ros_workspace is None:
+            # Auto-detect workspace path based on this script's location
+            script_dir = os.path.dirname(os.path.realpath(__file__))
+            ros_workspace = script_dir.split('/src/')[0]  # Assumes the package is inside src/
+
+        # Construct the full path to path.yaml
+        filepath = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "data", filename)
+
+        # Check if file exists
+        if not os.path.exists(filepath):
+            raise FileNotFoundError(f"❌ File not found: {filepath}\nCheck if the path is correct.")
+
+        # Load YAML file
+        with open(filepath, 'r') as file:
             data = yaml.safe_load(file)
+
         if 'path' not in data:
-            self.get_logger().error(f"Key 'path' not found in {filename}. Check file formatting.")
+            self.get_logger().error(f"⚠️ Key 'path' not found in {filepath}. Check file formatting.")
             return []
+
         return [(point['x'], point['y'], point['yaw']) for point in data['path']]
+
+
+
 
     def nearest_waypoint(self, x, y, yaw):
         """

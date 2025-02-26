@@ -11,6 +11,8 @@ Converting wheel velocity and steering to robot twist (linear velocity, angular 
 - [PID Controller](#pid-controller)
 - [Pure Pursuit Controller](#pure-pursuit-controller)
 
+## HOW to run 
+
 ## PID Controller
 PID it separate to steering and speed 
 
@@ -32,10 +34,10 @@ $$ u(t) = K_p e(t) + K_I \int_0^t e(t) \,dt + K_d \frac{de}{dt} $$
 
 ## PID Controller Results
 ### Path Tracking
-![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result_img/PID/PID_path.png)
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/path_tracking/result/PID/PID_path.png)
 
 ### Speed Profile
-![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result_img/PID/PID_speed.png)
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/path_tracking/result/PID/PID_speed.png)
 
 ---
 
@@ -46,10 +48,10 @@ $$ u(t) = K_p e(t) + K_I \int_0^t e(t) \,dt + K_d \frac{de}{dt} $$
 
 ### Path Tracking
 
-![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result_img/purepursuit/purepursuit_path.png)
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/path_tracking/result/purepursuit/purepursuit_path.png)
 
 ### Speed Profile
-![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result_img/purepursuit/purepursuit_speed.png)
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/path_tracking/result/purepursuit/purepursuit_speed.png)
 
 
 ## MPC Controller
@@ -57,10 +59,10 @@ $$ u(t) = K_p e(t) + K_I \int_0^t e(t) \,dt + K_d \frac{de}{dt} $$
 ## MPC Controller Results
 
 ### Path Tracking
-![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result_img/MPC/mpc_path.png)
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/path_tracking/result/MPC/mpc_path.png)
 
 ### Speed Profile
-![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/robot_controller/result_img/MPC/mpc_speed.png)
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/path_tracking/result/MPC/mpc_speed.png)
 ## Our Team
 
 1. 67340700402 พงษ์พัฒน์ วงศ์กำแหงหาญ
