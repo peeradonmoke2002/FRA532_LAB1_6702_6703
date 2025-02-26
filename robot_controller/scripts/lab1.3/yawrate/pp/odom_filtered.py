@@ -12,22 +12,26 @@ import math
 # -----------------------------
 # Process noise covariance Q (15x15) decrease value = high precision
 Q = np.diag([
-    0.02, 0.02, 0.02,            # position noise
-    np.deg2rad(0.5), np.deg2rad(0.5), np.deg2rad(0.5),  # orientation noise (rad) roll pitch yaw
-    0.1, 0.1, 0.1,               # linear velocity noise
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),  # angular velocity noise (rad/s)
-    0.2, 0.2, 0.2                # linear acceleration noise
+    0.01, 0.01, 0.01,            # Position noise (low to ensure accurate localization)
+    np.deg2rad(0.01), np.deg2rad(0.01), np.deg2rad(0.01),  # Orientation noise (roll, pitch, yaw) - small to minimize heading error
+    0.05, 0.05, 0.05,          # Linear velocity noise - reduced for precise path tracking
+    np.deg2rad(0.05), np.deg2rad(0.05), np.deg2rad(0.05),  # Angular velocity noise (rad/s) - smoothed to prevent oscillations
+    0.01, 0.01, 0.01             # Linear acceleration noise - kept low for stable motion estimation
 ]) ** 2
 
-# Measurement noise covariance for odometry (6x6): [p (3), v (3)]
-R_odom = np.diag([0.1, 0.1, 0.1, 0.1, 0.1, 0.1]) ** 2
+
+# Measurement noise covariance for odometry (6x6): [position (3), velocity (3)]
+R_odom = np.diag([10.05, 10.05, 10.05, 10.1, 10.1, 10.1]) ** 2  
+# High odometry measurement noise - reduces reliance on odometry data
 
 # Measurement noise covariance for IMU (9x9): [orientation (3), angular velocity (3), linear acceleration (3)]
 R_imu = np.diag([
-    np.deg2rad(1.0), np.deg2rad(1.0), np.deg2rad(1.0),
-    np.deg2rad(0.5), np.deg2rad(0.5), np.deg2rad(0.5),
-    0.2, 0.2, 0.2
-]) ** 2
+    np.deg2rad(10.5), np.deg2rad(10.5), np.deg2rad(10.5),  # Orientation noise - high to reduce trust in IMU heading
+    np.deg2rad(10.3), np.deg2rad(10.3), np.deg2rad(10.3),  # Angular velocity noise - high to prevent drift impact
+    10.1, 10.1, 10.1  # Linear acceleration noise - high to minimize reliance on IMU acceleration
+]) ** 2  
+
+
 
 print('Noise covariances defined.')
 
