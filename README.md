@@ -34,7 +34,16 @@ source install/setup.bash
 
 ```bash
 cd ~/FRA532_MobileRobot
+sudo apt update
+
+sudo apt install -y python3-rosdep
+
+rosdep update --rosdistro=humble
+
+rosdep install --from-paths src --ignore-src -r -y --rosdistro humble
+
 colcon build
+
 source install/setup.bash
 ```
 

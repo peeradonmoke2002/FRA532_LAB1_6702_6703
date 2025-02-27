@@ -19,8 +19,11 @@ class DoubleTrackOdom(Node):
         self.wheel_base = 0.2 
         self.track_width = 0.14 
         self.wheel_radius = 0.045 
-        self.r_rl = [0.0, 0.07]  
-        self.r_rr = [0.0, -0.07]  
+        # self.r_rl = [0.0, 0.07]  
+        # self.r_rr = [0.0, -0.07]  
+        self.d_rr = np.arctan(self.track_width / self.wheel_base)        # ใช้ L/W แทน 0.20/0.13
+        self.d_rl = np.pi - self.d_rr
+        self.dr = np.sqrt(self.track_width**2 + self.wheel_base**2)
 
         # Pose and velocity state (set initial conditions as needed)
         self.x_curr = 0.0
@@ -114,13 +117,20 @@ class DoubleTrackOdom(Node):
         # Compute time step dt
         dt = (self.get_clock().now() - self.prev_time).to_msg().nanosec * 1.0e-9
 
-        self.x_curr = self.x_prev + self.v_prev * dt * np.cos(self.theta_prev + (self.w_prev * dt / 2))
-        self.y_curr = self.y_prev + self.v_prev * dt * np.sin(self.theta_prev + (self.w_prev * dt / 2))
-        self.theta_curr = self.theta_prev + self.w_prev * dt
+        self.x_curr = self.x_prev + (self.v_prev * dt * np.cos(self.theta_prev + (self.w_prev * dt / 2)))
+        self.y_curr = self.y_prev + (self.v_prev * dt * np.sin(self.theta_prev + (self.w_prev * dt / 2)))
+        self.theta_curr = self.theta_prev + (self.w_prev * dt)
         self.quat = tf_transformations.quaternion_from_euler(0.0, 0.0, self.theta_curr)
 
         self.v_curr = (self.v_rl + self.v_rr) / 2
-        self.w_curr = (self.v_rr - self.v_rl) / (self.r_rr[1]-self.r_rl[1])
+        # self.w_curr = (self.v_rr - self.v_rl) / (self.track_width)
+
+        denom = self.dr * (np.sin(self.d_rl + self.theta_prev) - np.sin(self.d_rr + self.theta_prev))
+        if abs(denom) < 1e-6:
+            self.w_curr = 0.0
+        else:
+            self.w_curr = (self.v_rl + self.v_rr) / denom
+
 
         # for testing concept !! ##
         # self.v_curr = self.compute_vehicle_velocity(self.v_rl, self.v_rr,
@@ -132,10 +142,10 @@ class DoubleTrackOdom(Node):
         #                             self.r_rl[0], self.r_rl[1],
         #                             self.r_rr[0], self.r_rr[1])
 
-        avg_steering = (self.delta_fl + self.delta_fr) / 2
-        real_sign = np.sign(avg_steering)
-        if np.sign(self.w_curr) != real_sign:
-            self.w_curr = -self.w_curr 
+        # avg_steering = (self.delta_fl + self.delta_fr) / 2
+        # real_sign = np.sign(avg_steering)
+        # if np.sign(self.w_curr) != real_sign:
+        #     self.w_curr = -self.w_curr 
 
         
 

@@ -16,7 +16,7 @@ class OdomRecorderNode(Node):
         queue_size = 10
 
         # Subscribe to the estimated odometry topic
-        self.create_subscription(Odometry, '/odom', self.odom_callback, queue_size)
+        self.create_subscription(Odometry, 'double_track/odom', self.odom_callback, queue_size)
 
         # Subscribe to the Gazebo model states topic
         self.create_subscription(ModelStates, '/gazebo/model_states', self.model_states_callback, queue_size)
