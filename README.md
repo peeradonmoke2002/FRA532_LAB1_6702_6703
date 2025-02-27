@@ -1,12 +1,18 @@
 # FRA532 Mobile Robot
 
 ## Table of Contents
-
+- [System Overview](#system-overview)
 - [Installation](#installation)
 - [LAB 1.1](#lab-11)
     - [Inverse Kinematics](#inverse-kinematics)
     - [Forward Kinematics](#forward-kinematics)
     - [Methodology and Results](#methodology-and-results)
+
+
+
+## System Overview
+![Personal diagram - FRA532 Mobile Robot](https://github.com/user-attachments/assets/3620884a-405c-4cc2-9266-519d7f3b8d79)
+
 
 ## Installation
 
