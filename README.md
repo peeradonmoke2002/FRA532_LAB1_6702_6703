@@ -206,18 +206,18 @@ We tested the system by making the robot move in a **circular left turn** using 
 - **No-Slip Model Output:**
   ![No-Slip Model Odom](./results_data/lab1.1/noslip_odom_all.png)
 
-The following table compares the **ground truth from Gazebo** and the odometry performance across different models:
+The following table presents the **Root Mean Square Error (RMSE)** values comparing the odometry performance across different models.  
+Lower RMSE values indicate better accuracy in following the expected trajectory.
 
-| Model Type  | Ground Truth (Gazebo) | Yaw Rate | Single Track | Double Track |
-|-------------|----------------------|---------|--------------|--------------|
-| **Basic Model** | 0.1507 | 0.1507 | 0.3548 | 0.7694 |
-| **No-Slip** | 0.1225 | 0.1225 | 0.6366 | 0.1736 |
+| Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
+|-------------|----------------|----------------------|----------------------|
+| **Basic Model** | 0.1507 | 0.3548 | 0.7694 |
+| **No-Slip** | 0.1225 | 0.6366 | 0.1736 |
 
 #### **Observations**
 - The **Basic Model** shows a **higher yaw rate** but exhibits **more deviation** from the expected trajectory.
 - The **No-Slip Model** results in a **lower yaw rate**, which aligns better with real-world physics due to no-slip constraints.
-- The **Single Track and Double Track values** indicate that the **No-Slip Model** provides better lateral stability.
-
+- The **Single Track and Double Track RMSE values** indicate that the **No-Slip Model** provides better lateral stability.
 
 
 ## Our Team
