@@ -200,24 +200,43 @@ ros2 launch robot_controller noslip_model+all_odom.launch.py
 #### **Results**
 We tested the system by making the robot move in a **circular left turn** using different kinematic models.
 
-- **Basic Model Output:**  
-  <img src="./results_data/lab1.1/basic_odom_all.png" alt="Basic Model Odom" width="600"/>
+### **Basic Model Output**
+<p align="center">
+  <img src="./results_data/lab1.1/basic_odom_all_3.png" alt="Basic Model Odom" width="35%"/>
+  <img src="./results_data/lab1.1/basic_odom_all_3_yaw.png" alt="Basic Model Yaw Odom" width="45%"/>
+</p>
 
-- **No-Slip Model Output:**  
-  <img src="./results_data/lab1.1/noslip_odom_all.png" alt="No-Slip Model Odom" width="600"/>
+### **No-Slip Model Output**
+<p align="center">
+  <img src="./results_data/lab1.1/noslip_odom_all_3.png" alt="No-Slip Model Odom" width="35%"/>
+  <img src="./results_data/lab1.1/noslip_odom_all_3_yaw.png" alt="No-Slip Model Yaw Odom" width="45%"/>
+</p>
 
+---
+
+### **RMSE Results**
 The following table presents the **Root Mean Square Error (RMSE)** values comparing the odometry performance across different models.  
-Lower RMSE values indicate better accuracy in following the expected trajectory.
+Lower RMSE values indicate **better accuracy** in following the expected trajectory.
 
+#### **XY Position RMSE Data**
 | Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
 |-------------|----------------|----------------------|----------------------|
-| **Basic Model** | 0.1507 | 0.3548 | 0.7694 |
-| **No-Slip** | 0.1225 | 0.6366 | 0.1736 |
+| **Basic Model** | 0.1187 | 0.2372 | 0.7821 |
+| **No-Slip** | 0.1143 | 0.4142 | 0.1599 |
+
+#### **Yaw Orientation RMSE Data (Radians)**
+| Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
+|-------------|----------------|----------------------|----------------------|
+| **Basic Model** | 0.1256 | 0.9162 | 2.2293 |
+| **No-Slip** | 0.0037 | 2.4682 | 0.6105 |
 
 #### **Observations**
-- The **Basic Model** shows a **higher yaw rate** but exhibits **more deviation** from the expected trajectory.
-- The **No-Slip Model** results in a **lower yaw rate**, which aligns better with real-world physics due to no-slip constraints.
-- The **Single Track and Double Track RMSE values** indicate that the **No-Slip Model** provides better lateral stability.
+- The **Basic Model** has a **higher yaw rate RMSE** but shows **better position tracking** than the No-Slip Model in the **Single Track and Double Track** configurations.
+- The **No-Slip Model** has a **lower yaw rate RMSE**, which suggests it provides a more stable and accurate heading estimation.
+- In **XY Position RMSE**, the **No-Slip Model performs better** in the **Double Track** configuration, showing the lowest RMSE (0.1599), while the Basic Model performs better in the **Single Track** configuration.
+- In **Yaw Orientation RMSE**, the **Basic Model has significantly higher errors** in the **Single Track and Double Track** configurations, whereas the **No-Slip Model shows more stable yaw tracking**, especially in the **Yaw Rate** configuration with an RMSE of just **0.0037 radians**.
+- Overall, the **No-Slip Model provides better yaw stability**, while the **Basic Model maintains better positional accuracy** in certain cases.
+
 
 
 ## Our Team

@@ -6,3 +6,11 @@ RMSE for double_track relative to ground truth: 0.7694
 RMSE for yaw_rate relative to ground truth: 0.1247
 RMSE for single_track relative to ground truth: 0.2257
 RMSE for double_track relative to ground truth: 0.8041
+
+
+RMSE for yaw_rate relative to ground truth: 0.1187
+RMSE for single_track relative to ground truth: 0.2372
+RMSE for double_track relative to ground truth: 0.7821
+RMSE for yaw_rate (yaw orientation) relative to ground truth: 0.1256 radians
+RMSE for single_track (yaw orientation) relative to ground truth: 0.9162 radians
+RMSE for double_track (yaw orientation) relative to ground truth: 2.2293 radians
