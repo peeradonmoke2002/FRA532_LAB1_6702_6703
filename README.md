@@ -197,23 +197,33 @@ ros2 launch robot_controller noslip_model+all_odom.launch.py
 
 3) Use the odometry recording and plotting tool to compare results.
 
-#### Results
+#### **Results**
+We tested the system by making the robot move in a **circular left turn** using different kinematic models.
 
-Try to move as circle into the left turn 
+- **Basic Model Output:**
+  ![Basic Model Odom](./results_data/lab1.1/basic_odom_all.png)
 
-<img src="results_data/lab1.1/basic_odom_all.png" alt="basic model_odom all" width="800"/>
+- **No-Slip Model Output:**
+  ![No-Slip Model Odom](./results_data/lab1.1/noslip_odom_all.png)
 
-<img src="results_data/lab1.1/noslip_odom_all.png" alt="basic model_odom all" width="800"/>
+The following table compares the **ground truth from Gazebo** and the odometry performance across different models:
 
-| Model Type  | Yaw Rate | Single Track | Double Track |
-|-------------|---------|--------------|--------------|
-| Basic Model | 0.1507     | 0.3548         | 0.7694         |
-| No-Slip     | 0.1225    | 0.6366        | 0.1736          |
+| Model Type  | Ground Truth (Gazebo) | Yaw Rate | Single Track | Double Track |
+|-------------|----------------------|---------|--------------|--------------|
+| **Basic Model** | 0.1507 | 0.1507 | 0.3548 | 0.7694 |
+| **No-Slip** | 0.1225 | 0.1225 | 0.6366 | 0.1736 |
+
+#### **Observations**
+- The **Basic Model** shows a **higher yaw rate** but exhibits **more deviation** from the expected trajectory.
+- The **No-Slip Model** results in a **lower yaw rate**, which aligns better with real-world physics due to no-slip constraints.
+- The **Single Track and Double Track values** indicate that the **No-Slip Model** provides better lateral stability.
+
+
 
 ## Our Team
+- **67340700402** พงษ์พัฒน์ วงศ์กำแหงหาญ
+- **67340700403** พีรดนย์ เรืองแก้ว
 
-1. **67340700402** พงษ์พัฒน์ วงศ์กำแหงหาญ
-2. **67340700403** พีรดนย์ เรืองแก้ว
 
 ## References
 
