@@ -199,10 +199,16 @@ ros2 launch robot_controller noslip_model+all_odom.launch.py
 
 #### Results
 
+Try to move as circle into the left turn 
+
+<img src="results_data/lab1.1/basic_odom_all.png" alt="basic model_odom all" width="800"/>
+
+<img src="results_data/lab1.1/noslip_odom_all.png" alt="basic model_odom all" width="800"/>
+
 | Model Type  | Yaw Rate | Single Track | Double Track |
 |-------------|---------|--------------|--------------|
-| Basic Model | TBD     | TBD          | TBD          |
-| No-Slip     | TBD     | TBD          | TBD          |
+| Basic Model | 0.1507     | 0.3548         | 0.7694         |
+| No-Slip     | 0.1225    | 0.6366        | 0.1736          |
 
 ## Our Team
 
