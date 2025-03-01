@@ -8,6 +8,7 @@ from launch_ros.actions import Node
 from launch.event_handlers import OnProcessExit
 from launch_ros.substitutions import FindPackageShare
 from launch.actions import IncludeLaunchDescription
+import launch_ros.actions
 
 def generate_launch_description():
 
@@ -26,7 +27,7 @@ def generate_launch_description():
     world_path = os.path.join(get_package_share_directory(package_name), "worlds", world_file)
     pkg_share = FindPackageShare(package=package_name).find(package_name)
     gazebo_models_path = os.path.join(pkg_share, gazebo_models_path)
-    os.environ["GAZEBO_MODEL_PATH"] = gazebo_models_path
+    os.environ["GAZEBO_MODEL_PATH"] = gazebo_models_path + ":" + os.environ.get("GAZEBO_MODEL_PATH", "")
 
     # Include Robot State Publisher
     rsp = IncludeLaunchDescription(
@@ -137,6 +138,15 @@ def generate_launch_description():
         )
     )
 
+    # Static Transform Publisher (world -> odom)
+    static_tf = launch_ros.actions.Node(
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        arguments=[spawn_x_val, spawn_y_val, spawn_z_val, spawn_yaw_val, "0", "0", "world", "odom"],
+        output="screen"
+    )
+    
+
     # Add launch actions
     launch_description.add_action(rviz)
     launch_description.add_action(gazebo)
@@ -145,5 +155,7 @@ def generate_launch_description():
     # launch_description.add_action(ackerman_yaw_rate_odom)
     # launch_description.add_action(steering_monitor)
     launch_description.add_action(rsp)
+    # launch_description.add_action(static_tf)
+   
 
     return launch_description

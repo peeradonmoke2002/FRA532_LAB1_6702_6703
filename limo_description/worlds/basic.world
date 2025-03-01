@@ -5,16 +5,24 @@
   <world name="default">
 
     <scene>
-        <background>
-            <color>0 178 178 1</color>
-        </background>
+      <background>
+        <color>0 0 0 1</color>
+      </background>
     </scene>
 
     <include>
       <uri>model://ground_plane_invisible</uri>
+      <friction>
+        <ode>
+          <mu>2.5</mu>          <!-- Increase friction -->
+          <mu2>2.5</mu2>
+          <slip1>0.0</slip1>
+          <slip2>0.0</slip2>
+        </ode>
+      </friction>
     </include>
 
-    <include>
+     <include>
       <uri>model://circuit</uri>
       <pose>0 0 -0.040176 0 0 0</pose>
     </include>

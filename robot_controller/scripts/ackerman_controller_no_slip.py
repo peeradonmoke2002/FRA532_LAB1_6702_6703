@@ -61,22 +61,22 @@ class AckermannController(Node):
         sin_steer = np.sin(center_steer)
         cos_steer = np.cos(center_steer)
         tan_steer = np.tan(center_steer)
-        # inside = np.arctan(
-        #     (2 * self.wheel_base * sin_steer) /
-        #     (2 * self.wheel_base * cos_steer - self.track_width * sin_steer)
-        # )
-        # outside = np.arctan(
-        #     (2 * self.wheel_base * sin_steer) /
-        #     (2 * self.wheel_base * cos_steer + self.track_width * sin_steer)
-        # )
         inside = np.arctan(
-            (self.wheel_base * np.tan(center_steer)) /
-            (self.wheel_base - 0.5 * self.track_width * np.tan(center_steer))
+            (2 * self.wheel_base * sin_steer) /
+            (2 * self.wheel_base * cos_steer - self.track_width * sin_steer)
         )
         outside = np.arctan(
-            (self.wheel_base * np.tan(center_steer)) /
-            (self.wheel_base + 0.5 * self.track_width * np.tan(center_steer))
+            (2 * self.wheel_base * sin_steer) /
+            (2 * self.wheel_base * cos_steer + self.track_width * sin_steer)
         )
+        # inside = np.arctan(
+        #     (self.wheel_base * np.tan(center_steer)) /
+        #     (self.wheel_base - 0.5 * self.track_width * np.tan(center_steer))
+        # )
+        # outside = np.arctan(
+        #     (self.wheel_base * np.tan(center_steer)) /
+        #     (self.wheel_base + 0.5 * self.track_width * np.tan(center_steer))
+        # )
 
         return inside, outside
 
@@ -84,10 +84,11 @@ class AckermannController(Node):
 
     def timer_callback(self):
         # Compute wheel speed (assume wheel speed = forward speed / wheel radius)
-        v_x = self.cmd_vel[0]  # forward linear speed
+        v = self.cmd_vel[0]  # forward linear speed
+        w = self.cmd_vel[1]
         # omega speed each wheel
-        wheel_speed_left = v_x / self.wheel_radius
-        wheel_speed_right = v_x / self.wheel_radius
+        wheel_speed_left = v / self.wheel_radius
+        wheel_speed_right = v / self.wheel_radius
 
         # Check for straight or nearly straight motion:
         if abs(self.cmd_vel[0]) < 1e-9 or abs(self.cmd_vel[1]) < 1e-9:
@@ -98,20 +99,24 @@ class AckermannController(Node):
         else:
             # base from tan(max_steering_angle) = L/R
             r_ICR = self.wheel_base / np.tan(self.max_steering_angle) 
-            turn_sign = np.sign(self.cmd_vel[1])  # +1 for left turn, -1 for right turn
-            self.steer_angle_center = np.arctan(self.wheel_base / r_ICR) * turn_sign
-            
+            turn_sign = np.sign(w)  # +1 for left turn, -1 for right turn
+            self.steer_angle_center = np.arctan((self.wheel_base*w)/v)
+            # self.steer_angle_center = np.arctan(self.wheel_base / r_ICR) * turn_sign
             if turn_sign > 0:
                 # turn left
                 inside_angle, outside_angle = self.compute_ackermann_angles(self.steer_angle_center)
                 left_angle =  inside_angle
                 right_angle = outside_angle
+                # wheel_speed_left = self.cmd_vel[0] * (2 - (self.track_width / r_ICR)) / (2 * self.wheel_radius)
+                # wheel_speed_right = self.cmd_vel[0] * (2 + (self.track_width / r_ICR)) / (2 * self.wheel_radius)
                 # print(left_angle,right_angle)
             else:
                 # turn right
                 outside_angle, inside_angle = self.compute_ackermann_angles(self.steer_angle_center)
                 left_angle = outside_angle
                 right_angle = inside_angle
+                # wheel_speed_left = self.cmd_vel[0] * (2 + (self.track_width / r_ICR)) / (2 * self.wheel_radius)
+                # wheel_speed_right = self.cmd_vel[0] * (2 - (self.track_width / r_ICR)) / (2 * self.wheel_radius)
                 # print(left_angle,right_angle)
             self.publish_steering(left_angle, right_angle)
 

@@ -4,9 +4,9 @@
     <xacro:macro name="limo_wheel" params="parent_prefix wheel_prefix reflect *joint_pose visual_on:=true fixed_on:=false">
         <link name="${wheel_prefix}_wheel_link">
             <!-- <inertial>
-                <origin xyz="0 ${wheel_length/2} 0" rpy="1.57 0 0" />
+                <origin xyz="0 0 0" />
                 <mass value="0.5" />
-                <inertia ixx="0.00033749999999999996" ixy="0" ixz="0" iyy="0.00033749999999999996" iyz="0" izz="0.00050625" />
+                <inertia ixx="0.01055" ixy="0" ixz="0" iyy="0.00075" iyz="0" izz="0.01055" />
             </inertial> -->
             <xacro:if value="${visual_on}">
                 <visual>

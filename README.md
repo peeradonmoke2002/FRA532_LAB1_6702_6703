@@ -111,9 +111,9 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 In this lab, we have used three models to compare the performance and accuracy of forward kinematics models:
 
-- [Yaw-Rate Model](#yaw-rate)
-- [Single Track Model](#single-track)
-- [Double Track Model](#double-track)
+- [Yaw-Rate Model](#yaw-rate-model)
+- [Single Track Model](#single-track-model)
+- [Double Track Model](#double-track-model)
 
 #### Yaw-Rate Model
 

@@ -1,0 +1,3 @@
+RMSE for yaw_rate relative to ground truth: 0.1225
+RMSE for single_track relative to ground truth: 0.6366
+RMSE for double_track relative to ground truth: 0.1736
