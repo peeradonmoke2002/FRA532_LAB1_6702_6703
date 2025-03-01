@@ -201,10 +201,10 @@ ros2 launch robot_controller noslip_model+all_odom.launch.py
 We tested the system by making the robot move in a **circular left turn** using different kinematic models.
 
 - **Basic Model Output:**
-  ![Basic Model Odom](./results_data/lab1.1/basic_odom_all.png)
+  ![Basic Model Odom](./results_data/lab1.1/basic_odom_all.png|width=300)
 
 - **No-Slip Model Output:**
-  ![No-Slip Model Odom](./results_data/lab1.1/noslip_odom_all.png)
+  ![No-Slip Model Odom](./results_data/lab1.1/noslip_odom_all.png|width=300)
 
 The following table presents the **Root Mean Square Error (RMSE)** values comparing the odometry performance across different models.  
 Lower RMSE values indicate better accuracy in following the expected trajectory.
