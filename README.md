@@ -197,16 +197,16 @@ ros2 launch robot_controller noslip_model+all_odom.launch.py
 
 3) Use the odometry recording and plotting tool to compare results.
 
-#### **Results**
+### **Results**
 We tested the system by making the robot move in a **circular left turn** using different kinematic models.
 
-### **Basic Model Output**
+#### **Basic Model Output**
 <p align="center">
   <img src="./results_data/lab1.1/basic_odom_all_3.png" alt="Basic Model Odom" width="35%"/>
   <img src="./results_data/lab1.1/basic_odom_all_3_yaw.png" alt="Basic Model Yaw Odom" width="45%"/>
 </p>
 
-### **No-Slip Model Output**
+#### **No-Slip Model Output**
 <p align="center">
   <img src="./results_data/lab1.1/noslip_odom_all_3.png" alt="No-Slip Model Odom" width="35%"/>
   <img src="./results_data/lab1.1/noslip_odom_all_3_yaw.png" alt="No-Slip Model Yaw Odom" width="45%"/>
@@ -230,13 +230,14 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 | **Basic Model** | 0.1256 | 0.9162 | 2.2293 |
 | **No-Slip** | 0.0037 | 2.4682 | 0.6105 |
 
-#### **Observations**
+---
+
+### **Observations**
 - The **Basic Model** has a **higher yaw rate RMSE** but shows **better position tracking** than the No-Slip Model in the **Single Track and Double Track** configurations.
 - The **No-Slip Model** has a **lower yaw rate RMSE**, which suggests it provides a more stable and accurate heading estimation.
 - In **XY Position RMSE**, the **No-Slip Model performs better** in the **Double Track** configuration, showing the lowest RMSE (0.1599), while the Basic Model performs better in the **Single Track** configuration.
 - In **Yaw Orientation RMSE**, the **Basic Model has significantly higher errors** in the **Single Track and Double Track** configurations, whereas the **No-Slip Model shows more stable yaw tracking**, especially in the **Yaw Rate** configuration with an RMSE of just **0.0037 radians**.
 - Overall, the **No-Slip Model provides better yaw stability**, while the **Basic Model maintains better positional accuracy** in certain cases.
-
 
 
 ## Our Team
