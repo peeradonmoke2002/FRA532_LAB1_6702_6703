@@ -10,7 +10,9 @@
 - [LAB 1.2](#lab-12)
     - [PID Controller](#pid-controller)
     - [Pure Pursuit Controller](#pure-pursuit-controller)
+    - [MPC Controller](#mpc-controller)
     - [Methodology and Results](#methodology-and-results)
+
 
 
 ## System Overview
