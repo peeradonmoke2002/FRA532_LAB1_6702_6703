@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import rclpy
 from rclpy.node import Node
@@ -12,7 +12,7 @@ class PathDataRecord(Node):
     def __init__(self):
         super().__init__('path_data_record')
 
-        # Subscribe to joint states (to collect wheel and steering data).
+        # Subscribe to joint states to record wheel and steering data.
         self.sub_joint_states = self.create_subscription(
             JointState,
             '/joint_states',
@@ -20,7 +20,7 @@ class PathDataRecord(Node):
             10
         )
 
-        # Subscribe to Gazebo model states.
+        # Subscribe to Gazebo model states to record ground-truth pose.
         self.sub_model_states = self.create_subscription(
             ModelStates,
             '/gazebo/model_states',
@@ -77,7 +77,7 @@ class PathDataRecord(Node):
 
     def model_states_callback(self, msg):
         timestamp = self.get_elapsed_time()
-        # Collect data only for the 'limo' model.
+        # Record data only for the 'limo' model.
         if "limo" in msg.name:
             index = msg.name.index("limo")
             pos = msg.pose[index].position
@@ -86,8 +86,9 @@ class PathDataRecord(Node):
 
     def save_data_to_file(self):
         """Save the collected data to CSV files for later plotting."""
-        path_tracking_package = get_package_share_directory("path_tracking")
-        save_dir = f'{path_tracking_package}/path_data/collect_data'
+        # Get the package share directory (adjust if needed)
+        save_dir = os.path.expanduser("~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/path_tracking/path_data/record_data")
+        print(save_dir)
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
 
@@ -109,16 +110,17 @@ class PathDataRecord(Node):
         
         self.get_logger().info("Data saved to CSV files.")
 
-
 def main(args=None):
     rclpy.init(args=args)
     node = PathDataRecord()
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
-        node.get_logger().info("DataCollector node shutting down.")
-    node.destroy_node()
-    rclpy.shutdown()
+        node.get_logger().info("KeyboardInterrupt received, saving data before shutdown.")
+        node.save_data_to_file()  # Save any remaining data on shutdown.
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == '__main__':
     main()

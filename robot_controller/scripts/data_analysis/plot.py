@@ -4,6 +4,7 @@ import csv
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
+import os
 
 def load_csv(file_name):
     """
@@ -40,7 +41,7 @@ def compute_rms_error(est_x, est_y, gt_x, gt_y):
     return rms_error, errors
 
 def main(): 
-    path = "/home/peeradon/FRA532_MobileRobot/src/"
+    path = os.path.expanduser("~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/path_tracking/path_data/record_data")
     # Load estimated odometry data from CSV
     est_time, est_x, est_y = load_csv(f"{path}/odom_estimated.csv")
     # Load Gazebo ground truth data

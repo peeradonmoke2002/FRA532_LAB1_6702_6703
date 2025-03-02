@@ -21,7 +21,7 @@ class OdomRecorderNode(Node):
         # Subscribe to the Gazebo model states topic
         self.create_subscription(ModelStates, '/gazebo/model_states', self.model_states_callback, queue_size)
 
-        odom_path = "/home/peeradon/FRA532_MobileRobot/src/"
+        odom_path = os.path.expanduser("~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller/scripts/data_analysis/record_data")
         # Open CSV file for recording odometry estimates
         self.odom_file_name = 'odom_estimated.csv'
         self.odom_csv_file = open(os.path.join(odom_path, self.odom_file_name), 'w', newline='')

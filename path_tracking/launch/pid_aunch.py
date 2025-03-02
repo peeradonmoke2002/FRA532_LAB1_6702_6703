@@ -18,10 +18,10 @@ def generate_launch_description():
     )
 
     # Use the LaunchConfiguration to pass the "mode" parameter to the node.
-    pure_pursuit_node = Node(
+    pid_node = Node(
         package=package_name,
-        executable='pure_pursuit.py',  # Ensure this matches your executable name
-        name='pure_pursuit_node',
+        executable='pid.py',  # Ensure this matches your executable name
+        name='pid_node',
         output='screen',
         parameters=[{'mode': LaunchConfiguration('mode')}]
     )
@@ -33,7 +33,7 @@ def generate_launch_description():
         output='screen'
     )
     launch_description = LaunchDescription()
-    launch_description.add_action(pure_pursuit_node)
+    launch_description.add_action(pid_node)
     launch_description.add_action(path_data_record)
 
 
