@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(path_controller)
+project(path_tracking)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -28,6 +28,8 @@ ament_python_install_package(${PROJECT_NAME})
 # Install Python executables
 install(PROGRAMS
   scripts/dummy_script.py
+  scripts/pure_pursuit.py
+  scripts/path_data_record.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
@@ -48,7 +50,7 @@ install(TARGETS
 ################ INSTALL LAUNCH, ETC #################
 install(DIRECTORY
   # add directories here
-  config
+  path_data launch
   DESTINATION share/${PROJECT_NAME})
 
 ament_package()

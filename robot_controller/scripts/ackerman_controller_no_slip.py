@@ -8,9 +8,9 @@ from sensor_msgs.msg import JointState
 from std_msgs.msg import Float64MultiArray
 import numpy as np
 
-class AckermannController(Node):
+class NoslipController(Node):
     def __init__(self):
-        super().__init__('ackermann_controller')
+        super().__init__('noslip_controller')
         
         self.wheel_base = 0.2         # L: Distance between front and rear axles (meters)
         self.wheel_radius = 0.045     # r: Rear wheel radius (meters)
@@ -126,7 +126,7 @@ class AckermannController(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = AckermannController()
+    node = NoslipController()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()

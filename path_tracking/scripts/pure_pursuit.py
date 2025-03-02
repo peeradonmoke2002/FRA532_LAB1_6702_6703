@@ -7,29 +7,32 @@ from std_msgs.msg import Float64MultiArray
 from rclpy.duration import Duration
 import tf_transformations
 from gazebo_msgs.msg import ModelStates
-import math
-import yaml
+from ament_index_python.packages import get_package_share_directory
 import numpy as np
 import matplotlib.pyplot as plt
+import math
+import yaml
 
 class PurePursuit(Node):
     def __init__(self):
         super().__init__('pure_pursuit')
+
+        self.declare_parameter("mode", "noslip")
+        self.mode = self.get_parameter("mode").get_parameter_value().string_value
         
-        # Publisher for steering commands (JointTrajectory for steering joints)
+        # Publishers
         self.pub_steering = self.create_publisher(
-            JointTrajectory, 
-            '/joint_trajectory_position_controller/joint_trajectory', 
+            Float64MultiArray, 
+            '/position_controllers/commands', 
             10
         )
-        # Publisher for wheel speed commands (using Float64MultiArray)
         self.pub_wheel_spd = self.create_publisher(
             Float64MultiArray, 
             '/velocity_controllers/commands', 
             10
         )
         
-        # Subscriber for the robot pose from Gazebo
+        # Subscriber for Gazebo model states.
         self.subscription_gazebo = self.create_subscription(
             ModelStates, 
             '/gazebo/model_states', 
@@ -37,35 +40,31 @@ class PurePursuit(Node):
             10
         )
         
-        # Timer to run the pure pursuit control loop
-        self.timer = self.create_timer(0.01, self.pure_pursuit_control)
-
-        # Load waypoints from a YAML file and convert to a NumPy array.
-        wp = self.load_waypoints(
-            '/home/peeradon/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/path_controller/config/path.yaml'
-        )
-        wp = np.array(wp)  # Convert list to NumPy array
-        # Assuming each waypoint is (x, y, yaw); take only x and y.
+        # Timer for the control loop.
+        self.dt_loop = 1/100
+        self.timer = self.create_timer(self.dt_loop, self.pure_pursuit_control)
+        path_tracking_package = get_package_share_directory("path_tracking")
+        # Corrected file path with a '/' separator.
+        wp = self.load_waypoints(f'{path_tracking_package}/path_data/path.yaml')
+        wp = np.array(wp)  
         self.waypoints = wp[:, 0:2]
 
-        # Parameters
+        # State variables.
         self.current_index = 0
         self.lookahead_distance = 1.0  # meters
         self.position = (0.0, 0.0)
         self.yaw = 0.0
-        self.theta = 0.0     # Robot heading (from tf_transformations)
-        self.x = 0.0         # Current x position
-        self.y = 0.0         # Current y position
-
-        # For tracking the actual path and previous position (for waypoint advance check)
-        self.robot_path = []  # List to store (x, y) positions
+        self.theta = 0.0
+        self.x = 0.0
+        self.y = 0.0
+        self.robot_path = []  # To store the tracked path.
         self.prev_position = None
 
-        # Robot parameters (repeated here for clarity; values must match above)
-        self.wheel_base = 0.2         # Distance between front and rear axles (meters)
-        self.track_width = 0.14       # Distance between left and right wheels (meters)
-        self.max_steering_angle = 0.523598767  # 30 degrees in radians
-        self.wheel_radius = 0.045     # Rear wheel radius (meters)
+        # Robot parameters.
+        self.wheel_base = 0.2         
+        self.track_width = 0.14       
+        self.max_steering_angle = 0.523598767  
+        self.wheel_radius = 0.045     
 
         # Set up real-time plotting.
         plt.ion()
@@ -75,10 +74,27 @@ class PurePursuit(Node):
         """Load waypoints from a YAML file."""
         with open(file_path, 'r') as file:
             data = yaml.safe_load(file)
-        # Expect each entry to have 'x', 'y', and optionally 'yaw'
         waypoints = [(wp['x'], wp['y'], wp.get('yaw', 0.0)) for wp in data]
         self.get_logger().info(f"Loaded {len(waypoints)} waypoints.")
         return waypoints
+    
+    def compute_ackermann_angles(self, center_steer: float):
+        if abs(center_steer) < 1e-6:
+            return 0.0, 0.0
+
+        sin_steer = np.sin(center_steer)
+        cos_steer = np.cos(center_steer)
+        inside = np.arctan(
+            (2 * self.wheel_base * sin_steer) /
+            (2 * self.wheel_base * cos_steer - self.track_width * sin_steer)
+        )
+        outside = np.arctan(
+            (2 * self.wheel_base * sin_steer) /
+            (2 * self.wheel_base * cos_steer + self.track_width * sin_steer)
+        )
+
+        return inside, outside
+
 
     def model_states_callback(self, msg):
         """Update the robot's position and orientation from Gazebo ModelStates."""
@@ -87,11 +103,11 @@ class PurePursuit(Node):
             pose = msg.pose[index]
             self.position = (pose.position.x, pose.position.y)
             orientation_q = pose.orientation
-            # Convert quaternion to yaw (heading)
+            # Convert quaternion to yaw.
             siny_cosp = 2 * (orientation_q.w * orientation_q.z + orientation_q.x * orientation_q.y)
-            cosy_cosp = 1 - 2 * (orientation_q.y * orientation_q.y + orientation_q.z * orientation_q.z)
+            cosy_cosp = 1 - 2 * (orientation_q.y**2 + orientation_q.z**2)
             self.yaw = math.atan2(siny_cosp, cosy_cosp)
-            # Also update theta using tf_transformations
+            # Also update theta using tf_transformations.
             _, _, self.theta = tf_transformations.euler_from_quaternion([
                 orientation_q.x,
                 orientation_q.y,
@@ -101,49 +117,49 @@ class PurePursuit(Node):
         else:
             self.get_logger().warn("Model 'limo' not found in ModelStates.")
 
-    def publish_steering(self, steering: float):
-        traj_msg = JointTrajectory()
-        traj_msg.joint_names = ['front_left_steering', 'front_right_steering']
-        
-        point = JointTrajectoryPoint()
-        point.positions = [float(steering), float(steering)]
-        # Set a small time-from-start, e.g., 0.1 seconds.
-        point.time_from_start = Duration(seconds=0.1).to_msg()
-        
-        traj_msg.points.append(point)
-        self.pub_steering.publish(traj_msg)
-        self.get_logger().info(f"Published steering angle: {steering:.3f} rad")
+    def publish_steering(self, steering_L: float, steering_R: float):
+        steering_msg = Float64MultiArray()
+        steering_msg.data = [steering_L, steering_R]
+        self.pub_steering.publish(steering_msg)
+
+    def publish_wheel_speed(self, wheelspeed_L: float, wheelspeed_R: float):
+        wheel_msg = Float64MultiArray()
+        wheel_msg.data = [wheelspeed_L, wheelspeed_R]
+        self.pub_wheel_spd.publish(wheel_msg)
+
 
     def pure_pursuit_control(self):
-        """Compute the steering command using pure pursuit and publish commands."""
+        mode = self.get_parameter("mode").get_parameter_value().string_value
         if self.current_index >= len(self.waypoints):
             self.current_index = 0 
             self.get_logger().info("Reached final waypoint. Restarting path.")
+            # self.publish_wheel_speed(0.0, 0.0)
+            # self.publish_steering(0.0, 0.0)
+            # self.get_logger().info("All waypoints reached. Stopping robot.")
             return
         
-        # Update robot's current position.
+        # Update current position.
         self.x = self.position[0]
         self.y = self.position[1]
-        # Append current position to the path for plotting, ignoring the default (0,0)
         if (self.x, self.y) != (0.0, 0.0):
             self.robot_path.append((self.x, self.y))
         
-        # Compute a lookahead point based on the robot's current heading.
+        # Calculate lookahead point in global coordinates.
         gazebo_lookahead_x = self.x + (self.lookahead_distance * math.cos(self.theta))
         gazebo_lookahead_y = self.y + (self.lookahead_distance * math.sin(self.theta))
-
+        lookahead_point = (gazebo_lookahead_x, gazebo_lookahead_y)
+        
         # Find the waypoint closest to the lookahead point.
         distances = np.sqrt(np.sum((self.waypoints - np.array([gazebo_lookahead_x, gazebo_lookahead_y])) ** 2, axis=1))
         min_dist_index = np.argmin(distances)
-        wp_x = self.waypoints[min_dist_index][0]
-        wp_y = self.waypoints[min_dist_index][1]
+        wp_x, wp_y = self.waypoints[min_dist_index]
 
-        # Transform the goal point to the vehicle's frame.
+        # Compute error in global frame.
         dx = wp_x - self.x
         dy = wp_y - self.y
         distance = math.sqrt(dx**2 + dy**2)
         
-        # If the waypoint is within the lookahead distance, only advance if the robot is actually moving.
+        # Check if within lookahead distance.
         if distance < self.lookahead_distance:
             if self.prev_position is not None:
                 movement = math.sqrt((self.x - self.prev_position[0])**2 + (self.y - self.prev_position[1])**2)
@@ -155,30 +171,37 @@ class PurePursuit(Node):
             else:
                 self.prev_position = (self.x, self.y)
         
-        # Transform (dx, dy) into the robot's local coordinate frame.
+        # Transform (dx, dy) into the robot's local frame.
         transform_x = dx * math.cos(self.theta) + dy * math.sin(self.theta)
         transform_y = -dx * math.sin(self.theta) + dy * math.cos(self.theta)
-
-        # Calculate curvature using the pure pursuit formula:
-        #   curvature = 2 * y_local / L^2, where y_local = transform_y and L = distance.
+        
+        # Pure pursuit curvature calculation.
         curvature = 0.0
         if distance != 0:
             curvature = 2 * transform_y / (distance**2)
-        # Compute the steering angle using a bicycle model.
         steering_angle = math.atan(self.wheel_base * curvature)
         
-        # Publish the computed steering command.
-        self.publish_steering(steering_angle)
-
-        # Publish the forward wheel speed command using Float64MultiArray.
-        forward_velocity = min(5.5, distance)/self.wheel_radius
-        speed_msg = Float64MultiArray()
-        speed_msg.data = [forward_velocity, forward_velocity]
-        self.pub_wheel_spd.publish(speed_msg)
-
-
-
+        # Publish steering commands based on selected mode.
+        if mode == "basic":
+            self.publish_steering(steering_angle, steering_angle)
+        elif mode == "noslip":
+            turn_sign = np.sign(curvature)
+            if turn_sign > 0:
+                left_angle, right_angle = self.compute_ackermann_angles(steering_angle)
+                self.publish_steering(left_angle, right_angle)
+            else:
+                right_angle, left_angle = self.compute_ackermann_angles(steering_angle)
+                self.publish_steering(left_angle, right_angle)
+        else:
+            self.get_logger().error("Error: mode not defined")
+            return
         
+        # Publish wheel speed.
+        speed = 0.5
+        wheel_speed = min(speed, distance) / self.wheel_radius
+        self.publish_wheel_speed(wheel_speed, wheel_speed)
+        
+
 
 def main(args=None):
     rclpy.init(args=args)
