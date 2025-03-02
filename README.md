@@ -6,12 +6,12 @@
 - [LAB 1.1](#lab-11)
     - [Inverse Kinematics](#inverse-kinematics)
     - [Forward Kinematics](#forward-kinematics)
-    - [Methodology and Results](#methodology-and-results)
+    - [Methodology and Results lab 1.1](#methodology-and-results-lab-1.1)
 - [LAB 1.2](#lab-12)
     - [PID Controller](#pid-controller)
     - [Pure Pursuit Controller](#pure-pursuit-controller)
     - [MPC Controller](#mpc-controller)
-    - [Methodology and Results](#methodology-and-results)
+    - [Methodology and Results lab 1.2](#methodology-and-results-lab-1.2)
 
 
 
@@ -179,7 +179,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 5) Use the odometry recording and plotting tool to compare results.
 
-### Methodology and Results
+### Methodology and Results lab 1.1
 
 This section compares inverse and forward kinematics by recording the odometry of each forward kinematics model using different inverse kinematics models for data collection and comparison.
 
@@ -213,7 +213,7 @@ We tested the system by making the robot move in a **circular left turn** using 
   <img src="./results_data/lab1.1/basic_odom_all_3_yaw.png" alt="Basic Model Yaw Odom" width="47%"/>
 </p>
 
-### **No-Slip Model Output**
+#### **No-Slip Model Output**
 <p align="center">
   <img src="./results_data/lab1.1/noslip_odom_all_3.png" alt="No-Slip Model Odom" width="35%"/>
   <img src="./results_data/lab1.1/noslip_odom_all_3_yaw.png" alt="No-Slip Model Yaw Odom" width="47%"/>
@@ -251,14 +251,54 @@ In this lab, we have used three traking controller to compare the performance an
 - [MPC Controller](#mpc-controller) 
 
 ### PID Controller
-PID it separate to steering and speed 
+Try running the following commands to test the PID controller:
 
+1. Run Simulation
+```bash
+ros2 launch limo_description sim.launch.py
+```
+2. Run PID launch file by can swtich the parameter to use basic model or noslip model:
+
+basic model:
+```bash
+ros2 launch path_tracking pid.launch.py mode:=basic
+```
+
+noslip model:
+```bash
+ros2 launch path_tracking pid.launch.py mode:=noslip
+```
+
+3. See the results and stop the launch file when the robot completes one round
 
 ### Pure Pursuit Controller
+Try running the following commands to test the Pure Pursuit controller:
 
+1. Run Simulation
+```bash
+ros2 launch limo_description sim.launch.py
+```
+2. Run PID launch file by can swtich the parameter to use basic model or noslip model:
+
+basic model:
+```bash
+ros2 launch path_tracking pure_pursuit.launch.py mode:=basic
+```
+
+noslip model:
+```bash
+ros2 launch path_tracking pure_pursuit.launch mode:=noslip
+```
+
+3. See the results and stop the launch file when the robot completes one round
 
 ### MPC Controller
+Try to run following commands to test MPC controller:
+> [!IMPORTANT]
+> comming soon !
 
+
+### Methodology and Results lab 1.2
 
 
 
