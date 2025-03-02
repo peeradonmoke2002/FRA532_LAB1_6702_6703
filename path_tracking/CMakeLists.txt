@@ -30,6 +30,9 @@ install(PROGRAMS
   scripts/dummy_script.py
   scripts/pure_pursuit.py
   scripts/path_data_record.py
+  scripts/pid.py
+  scripts/save_path.py
+  scripts/save_speed.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

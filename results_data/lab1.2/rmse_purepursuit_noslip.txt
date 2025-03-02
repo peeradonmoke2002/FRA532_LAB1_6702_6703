@@ -1,0 +1,4 @@
+Computed RMSE values:
+Overall RMSE: 0.038 m
+RMSE in X: 0.026 m
+RMSE in Y: 0.027 m

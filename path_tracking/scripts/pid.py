@@ -70,8 +70,8 @@ class PIDController(Node):
     def load_path(self, filename):
         # If the filename is not absolute, look it up in the package share directory.
         if not os.path.isabs(filename):
-            path_controller_package = get_package_share_directory("path_tracking")
-            filename = os.path.join(path_controller_package, "path_data", filename)
+            path_tracking_package = get_package_share_directory("path_tracking")
+            filename = os.path.join(path_tracking_package, "path_data", filename)
         with open(filename, 'r') as file:
             data = yaml.safe_load(file)
         return [(wp['x'], wp['y'], wp.get('yaw', 0.0)) for wp in data]

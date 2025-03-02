@@ -9,7 +9,6 @@ import tf_transformations
 from gazebo_msgs.msg import ModelStates
 from ament_index_python.packages import get_package_share_directory
 import numpy as np
-import matplotlib.pyplot as plt
 import math
 import yaml
 
@@ -66,9 +65,6 @@ class PurePursuit(Node):
         self.max_steering_angle = 0.523598767  
         self.wheel_radius = 0.045     
 
-        # Set up real-time plotting.
-        plt.ion()
-        self.fig, self.ax = plt.subplots(figsize=(8, 6))
 
     def load_waypoints(self, file_path):
         """Load waypoints from a YAML file."""

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 
 import os
 import pandas as pd
@@ -47,9 +47,9 @@ def plot_speed_profile(joint_states_csv):
     df['v_avg'] = (df['v_rl'] + df['v_rr']) / 2.0
 
     plt.figure()
-    plt.plot(df['time'], df['v_rl'], label='Rear Left Wheel Speed', alpha=0.7)
-    plt.plot(df['time'], df['v_rr'], label='Rear Right Wheel Speed', alpha=0.7)
-    plt.plot(df['time'], df['v_avg'], 'k--', label='Average Speed', linewidth=2)
+    # plt.plot(df['time'], df['v_rl'], label='Rear Left Wheel Speed', alpha=0.7)
+    # plt.plot(df['time'], df['v_rr'], label='Rear Right Wheel Speed', alpha=0.7)
+    plt.plot(df['time'], df['v_avg'], 'r-', label='Speed (m/s)', linewidth=2)
     plt.xlabel('Time (s)')
     plt.ylabel('Speed (m/s)')
     plt.title('Speed Profile')
