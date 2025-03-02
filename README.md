@@ -259,12 +259,12 @@ ros2 launch limo_description sim.launch.py
 ```
 2. Run PID launch file by can swtich the parameter to use basic model or noslip model:
 
-basic model:
+- basic model:
 ```bash
 ros2 launch path_tracking pid.launch.py mode:=basic
 ```
 
-noslip model:
+- noslip model:
 ```bash
 ros2 launch path_tracking pid.launch.py mode:=noslip
 ```
