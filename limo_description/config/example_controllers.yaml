@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 2000  # Hz
+    update_rate: 100 # Hz
 
     # Broadcaster for publishing joint states
     joint_state_broadcaster:
@@ -11,8 +11,8 @@ controller_manager:
       type: velocity_controllers/JointGroupVelocityController
 
     # Position controller for steering joints
-    joint_trajectory_position_controller:
-      type: joint_trajectory_controller/JointTrajectoryController
+    position_controllers:
+      type: position_controllers/JointGroupPositionController
 
 velocity_controllers:
   ros__parameters:
@@ -28,37 +28,12 @@ velocity_controllers:
       - velocity
       - effort
 
-joint_state_publisher:
-  ros__parameters:
-    source_list:
-      - /joint_trajectory_position_controller/state
-    joints:
-    - front_left_steering
-    - front_right_steering
-    
-    command_interfaces:
-      - position
 
-    state_interfaces:
-      - position
-      - velocity
-      - effort
-
-
-
-joint_trajectory_position_controller:
+position_controllers:
   ros__parameters:
     joints:
-    - front_left_steering
-    - front_right_steering
-    
-    command_interfaces:
-      - position
-
-    state_interfaces:
-      - position
-      - velocity
-
+      - front_left_steering
+      - front_right_steering
 
 # robot_state_publisher:
 #   ros__parameters:

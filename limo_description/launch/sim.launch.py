@@ -77,21 +77,21 @@ def generate_launch_description():
         package="controller_manager",
         executable="spawner",
         arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
-        parameters=[{"use_sim_time": False}]
+        parameters=[{"use_sim_time": True}]
     )
 
     velocity_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=["velocity_controllers", "--controller-manager", "/controller_manager"],
-        parameters=[{"use_sim_time": False}]
+        parameters=[{"use_sim_time": True}]
     )
 
-    joint_trajectory_controller_spawner = Node(
+    position_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_trajectory_position_controller", "--controller-manager", "/controller_manager"],
-        parameters=[{"use_sim_time": False}]
+        arguments=["position_controllers", "--controller-manager", "/controller_manager"],
+        parameters=[{"use_sim_time": True}]
     )
 
     # slam_toolbox_node = Node(
@@ -136,8 +136,8 @@ def generate_launch_description():
     launch_description.add_action(
         RegisterEventHandler(
             event_handler=OnProcessExit(
-                target_action=velocity_controller_spawner,
-                on_exit=[joint_trajectory_controller_spawner],
+                target_action=joint_state_broadcaster_spawner,
+                on_exit=[position_controller_spawner],
             )
         )
     )

@@ -148,6 +148,7 @@ class PurePursuitROS(Node):
         wheel_msg.data = [speed, speed]
         self.pub_wheel_spd.publish(wheel_msg)
 
+
     def update_plot(self):
         pass
 

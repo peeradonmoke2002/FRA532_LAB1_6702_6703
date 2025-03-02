@@ -77,7 +77,10 @@ class MPCPathFollower(Node):
         return False
     
     def normalize_angle(self, angle):
-        return (angle + np.pi) % (2 * np.pi) - np.pi
+        return ca.if_else(angle > np.pi,angle - 2*np.pi,
+                      ca.if_else(angle < -np.pi,
+                                 angle + 2*np.pi,
+                                 angle))
 
     def get_reference_trajectory(self, current_pos, horizon, min_distance=0.2):
         ref_traj = []
@@ -92,12 +95,6 @@ class MPCPathFollower(Node):
                 wp_yaw = math.atan2(wp_y - current_pos[1], wp_x - current_pos[0])
 
             vector = np.array([wp_x, wp_y]) - np.array(current_pos)
-            angle_to_wp = math.atan2(vector[1], vector[0])
-            angle_diff = self.normalize_angle(angle_to_wp - self.yaw)
-
-            max_angle_threshold = np.deg2rad(60)  #  Allow ±60° in front
-            if abs(angle_diff) > max_angle_threshold:
-                continue
 
             #  Skip very close waypoints
             distance_to_wp = np.linalg.norm(np.array([self.x, self.y]) - np.array([wp_x, wp_y]))
@@ -336,7 +333,7 @@ class MPCPathFollower(Node):
         pose = msg.pose[index]
         self.x = pose.position.x
         self.y = pose.position.y
-        self.yaw = self.quaternion_to_euler(pose.orientation)
+        self.yaw = self.euler_from_quaternion(pose.orientation)
         
         # show next waypoint 
         idx = self.search_nearest_index()
@@ -362,10 +359,25 @@ class MPCPathFollower(Node):
         self.robot_y.append(self.y)
         self.update_plot()
 
-    def quaternion_to_euler(self, q):
-        siny_cosp = 2 * (q.w * q.z + q.x * q.y)
-        cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z)
-        return math.atan2(siny_cosp, cosy_cosp)
+    def euler_from_quaternion(self, quaternion):
+            # Convert quaternion to Euler angles (roll, pitch, yaw)
+            x = quaternion.x
+            y = quaternion.y
+            z = quaternion.z
+            w = quaternion.w
+
+            sinr_cosp = 2 * (w * x + y * z)
+            cosr_cosp = 1 - 2 * (x * x + y * y)
+            roll = np.arctan2(sinr_cosp, cosr_cosp)
+
+            sinp = 2 * (w * y - z * x)
+            pitch = np.arcsin(sinp)
+
+            siny_cosp = 2 * (w * z + x * y)
+            cosy_cosp = 1 - 2 * (y * y + z * z)
+            yaw = np.arctan2(siny_cosp, cosy_cosp)
+
+            return math.atan2(siny_cosp, cosy_cosp)
 
     def publish_steering(self, steering):
         traj_msg = JointTrajectory()

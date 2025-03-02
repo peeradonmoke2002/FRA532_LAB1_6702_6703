@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 import os
 
 
-k = 0.1   # Look forward gain
-Lfc = 1.0  # [m] Lookahead distance
+k = 0.08   # Look forward gain
+Lfc = 0.6  # [m] Lookahead distance
 Kp = 12.2  # Speed proportional gain
 WB = 0.2   # [m] Wheelbase of the robot
 

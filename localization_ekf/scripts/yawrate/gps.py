@@ -22,7 +22,7 @@ class GPSEmulator(Node):
         # Define GPS noise covariance for x and y positions.
         # Here, np.diag([0.05, 0.05]) creates a diagonal matrix with 0.05 on the diagonal.
         # Squaring it (i.e. [0.05^2, 0.05^2]) gives the variance for x and y.
-        self.gps_noise_cov = np.diag([0.05, 0.05]) ** 2
+        self.gps_noise_cov = np.diag([.05, 0.05]) ** 2
 
     def model_states_callback(self, msg: ModelStates):
         # Select the appropriate model by name, for example 'limo'

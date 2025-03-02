@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 import rclpy
 from rclpy.node import Node
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
@@ -16,35 +15,45 @@ class PIDBicycleController(Node):
         super().__init__('pid_bicycle_controller')
         self.dt_loop = 1 / 50.0  # Loop time in seconds (50 Hz)
 
-
-        self.wheel_base = 0.2  # Distance between front and rear axles (meters)
+        self.wheel_base = 0.2      # Distance between front and rear axles (meters)
         self.wheel_radius = 0.045  # Rear wheel radius (meters)
-        self.max_steering_angle = 0.523598767  # Limit steering angle
+        self.max_steering_angle = 0.523598767 / 2  # Limit steering angle
 
-
-        self.kp_steer = 0.25
+        self.kp_steer = 0.15  # PID gains for steering
         self.ki_steer = 0.01
         self.kd_steer = 0.005
-        self.kp_speed = 20.5
-        self.ki_speed = 10.05
-        self.kd_speed = 0.05
+
+        self.kp_speed = 5.5  # PID gains for speed
+        self.ki_speed = 1.05
+        self.kd_speed = 0.05  # Small derivative gain to smooth speed control
 
         self.integral_steer = 0.0
         self.prev_error_steer = 0.0
         self.integral_speed = 0.0
         self.prev_error_speed = 0.0
 
+        self.min_speed = 2.5  # m/s
+        self.max_speed = 8.0  # m/s
 
+        # Load the path from YAML file (each waypoint: [x, y, yaw])
         self.waypoints = self.load_path("path.yaml")
 
-
-
         self.pub_steering = self.create_publisher(
-            JointTrajectory, '/joint_trajectory_position_controller/joint_trajectory', 10)
+            Float64MultiArray,
+            "/position_controllers/commands",
+            10
+        )
         self.pub_wheel_spd = self.create_publisher(
             Float64MultiArray, '/velocity_controllers/commands', 10)
-        
+
+        # Subscribe to odometry from EKF on the topic '/odometry/filtered'
         self.create_subscription(Odometry, '/odometry/filtered', self.odom_callback, 10)
+
+        # Create a timer callback to run the control loop at a fixed frequency
+        self.control_timer = self.create_timer(self.dt_loop, self.timer_callback)
+
+        # Variable to store the latest odometry
+        self.latest_odom = None
 
     def load_path(self, filename):
         if not os.path.isabs(filename):
@@ -52,18 +61,15 @@ class PIDBicycleController(Node):
             if ros_workspace is None:
                 script_dir = os.path.dirname(os.path.realpath(__file__))
                 ros_workspace = script_dir.split('/src/')[0]
-
             filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "data", filename)
-        
         with open(filename, 'r') as file:
             data = yaml.safe_load(file)
-        
+        # Expect each point has keys 'x', 'y', and 'yaw'
         return [(point['x'], point['y'], point['yaw']) for point in data['path']]
-
+    
     def nearest_waypoint(self, x, y, yaw):
-        """ Select the nearest waypoint that is in front of the robot. """
         tolerance = 0.05  # Ignore waypoints closer than 5 cm
-        forward_threshold = 0.1
+        forward_threshold = 0.1  # The waypoint must be in front of the robot
         min_distance = float('inf')
         best_index = None
 
@@ -90,66 +96,96 @@ class PIDBicycleController(Node):
         return best_index
 
     def pid_control(self, error, prev_error, integral, kp, ki, kd, dt):
-        """ Compute PID control output. """
         derivative = (error - prev_error) / dt
         integral += error * dt
         return kp * error + ki * integral + kd * derivative, integral, error
 
-    def odom_callback(self, msg):
-        """ Process Odometry data and compute control commands. """
-        pose = msg.pose.pose
-        x, y = pose.position.x, pose.position.y
-        _, _, yaw = self.quaternion_to_euler(pose.orientation)
+    def odom_callback(self, msg: Odometry):
+        """
+        Callback for /odom messages.
+        Updates the robot_pose from Odometry.
+        """
+        self.robot_pose = msg.pose.pose
 
-        #  Find the nearest valid waypoint
+    def timer_callback(self):
+        """
+        Timer callback at a fixed frequency (e.g., 50 Hz).
+        Extracts the latest pose from self.robot_pose and calls the PID controller.
+        """
+        # ตรวจสอบก่อนว่ามีข้อมูล robot_pose แล้วหรือยัง
+        if self.robot_pose is None:
+            return
+
+        # ดึงค่า x, y, และ yaw จาก robot_pose
+        x = self.robot_pose.position.x
+        y = self.robot_pose.position.y
+        _, _, yaw = euler_from_quaternion([
+            self.robot_pose.orientation.x,
+            self.robot_pose.orientation.y,
+            self.robot_pose.orientation.z,
+            self.robot_pose.orientation.w
+        ])
+
+        # เรียกใช้ฟังก์ชัน PID โดยส่งค่า x, y, yaw
+        self.controller_step(x, y, yaw)
+
+    def controller_step(self, x, y, yaw):
+        # x, y, and yaw are in meters and radians respectively.
         target_idx = self.nearest_waypoint(x, y, yaw)
         target_x, target_y, target_yaw = self.waypoints[target_idx]
 
-        #  Compute PID errors
+        # Compute heading error
         error_steer = np.arctan2(target_y - y, target_x - x) - yaw
-        error_steer = (error_steer + np.pi) % (2 * np.pi) - np.pi  # Normalize to [-pi, pi]
+        error_steer = (error_steer + math.pi) % (2 * math.pi) - math.pi  # Normalize to [-pi, pi]
         error_speed = np.hypot(target_x - x, target_y - y)
 
-        #  Apply PID control
+        # Compute PID outputs for steering and speed.
         steer, self.integral_steer, self.prev_error_steer = self.pid_control(
             error_steer, self.prev_error_steer, self.integral_steer,
             self.kp_steer, self.ki_steer, self.kd_steer, self.dt_loop)
-
         speed, self.integral_speed, self.prev_error_speed = self.pid_control(
             error_speed, self.prev_error_speed, self.integral_speed,
             self.kp_speed, self.ki_speed, self.kd_speed, self.dt_loop)
 
-        #  Limit Steering and Speed
+        # Clamp commands to limits.
         steer = np.clip(steer, -self.max_steering_angle, self.max_steering_angle)
-        speed = max(2.5, min(speed, 8.0))
+        speed = np.clip(speed, self.min_speed, self.max_speed)
 
-        #  Publish Commands
-        self.publish_steering(steer)
+        self.publish_steering(steer, steer)
         self.publish_wheel_speed(speed)
 
         self.get_logger().info(f"🟢 Target WP: x={target_x:.3f}, y={target_y:.3f}")
         self.get_logger().info(f"🛞 Steering: {steer:.3f} rad, Speed: {speed:.3f} m/s")
 
-    def publish_steering(self, steering):
-        traj_msg = JointTrajectory()
-        traj_msg.joint_names = ['front_left_steering', 'front_right_steering']
-        point = JointTrajectoryPoint()
-        point.positions = [steering, steering]
-        point.time_from_start = Duration(seconds=0.1).to_msg()
-        traj_msg.points.append(point)
-        self.pub_steering.publish(traj_msg)
+    def publish_steering(self, front_left_steering: float, front_right_steering: float):
+        steering_msg = Float64MultiArray()
+        steering_msg.data = [front_left_steering, front_right_steering]
+        self.pub_steering.publish(steering_msg)
+        self.get_logger().info(f"🔄 Steering Published: L={front_left_steering:.3f} rad, R={front_right_steering:.3f} rad")
 
     def publish_wheel_speed(self, speed):
         wheel_msg = Float64MultiArray()
         wheel_msg.data = [speed, speed]
         self.pub_wheel_spd.publish(wheel_msg)
+        self.get_logger().info(f"⚡ Wheel Speed Published: {speed:.3f} m/s")
 
-    def quaternion_to_euler(self, q):
-        """ Convert quaternion to Euler angles """
-        siny_cosp = 2 * (q.w * q.z + q.x * q.y)
-        cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z)
-        yaw = math.atan2(siny_cosp, cosy_cosp)
-        return 0.0, 0.0, yaw  # Only return yaw
+def euler_from_quaternion(quat):
+    """
+    Convert quaternion (x, y, z, w) to Euler angles (roll, pitch, yaw).
+    """
+    x, y, z, w = quat
+    sinr_cosp = 2.0 * (w * x + y * z)
+    cosr_cosp = 1.0 - 2.0 * (x * x + y * y)
+    roll = math.atan2(sinr_cosp, cosr_cosp)
+
+    sinp = 2.0 * (w * y - z * x)
+    pitch = math.asin(sinp) if abs(sinp) <= 1.0 else math.copysign(math.pi/2, sinp)
+
+    siny_cosp = 2.0 * (w * z + x * y)
+    cosy_cosp = 1.0 - 2.0 * (y * y + z * z)
+    yaw = math.atan2(siny_cosp, cosy_cosp)
+
+    return roll, pitch, yaw
 
 def main(args=None):
     rclpy.init(args=args)

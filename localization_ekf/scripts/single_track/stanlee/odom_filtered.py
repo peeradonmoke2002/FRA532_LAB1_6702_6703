@@ -8,32 +8,37 @@ import numpy as np
 import math
 
 
+        # odom0_config: [true, true,  true,
+        #               false, false, false,
+        #                true, true, false,
+        #                false, false, true,
+        #                false, false, false]
 
+                # imu0_config: [false, false, false,
+                #       true,  true,  true,
+                #       false, false, false,
+                #       true,  true,  true,
+                #       true,  true,  true]
 
-        # odom0_config: [true, true, true,
-        #               true,  true,  true,
-        #               true, true, true,
-        #               true,  true,  true,
-        #               true,  true,  true]
 # -----------------------------
 # Define Noise Covariances
 # -----------------------------
 # Process noise covariance Q (15x15) decrease value = high precision
 Q = np.diag([
     0.02, 0.02, 0.02,            # position noise
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),  # orientation noise (rad) roll pitch yaw
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.15),  # orientation noise (rad) roll pitch yaw
     0.1, 0.1, 0.1,               # linear velocity noise
     np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),  # angular velocity noise (rad/s)
-    3.2, 3.2, 3.2                # linear acceleration noise อนุญาตให้ yaw เปลี่ยนแปลงได้ดีขึ้น
+    0.2, 0.2, 0.2                # linear acceleration noise
 ]) ** 2
 
-# Measurement noisecovariance for odometry (6x6): [p (3), v (3)]
-R_odom = np.diag([0.3, 0.3, 0.3, 0.3, 0.3, 0.3]) ** 2
+# Measurement noise covariance for odometry (6x6): [p (3), v (3)]
+R_odom = np.diag([10.1, 10.1, 10.1, 10.1, 10.1, 10.1]) ** 2
 
 # Measurement noise covariance for IMU (9x9): [orientation (3), angular velocity (3), linear acceleration (3)]
 R_imu = np.diag([
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),
+    np.deg2rad(1.0), np.deg2rad(1.0), np.deg2rad(1.0),
+    np.deg2rad(0.5), np.deg2rad(0.5), np.deg2rad(0.5),
     0.2, 0.2, 0.2
 ]) ** 2
 

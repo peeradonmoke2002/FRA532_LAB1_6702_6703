@@ -131,7 +131,7 @@ class SingleTrackOdom(Node):
             w=self.quat[3]
         )
         # uncomment for testing for all models !!
-        # self.publish_transform.sendTransform(transform)
+        self.publish_transform.sendTransform(transform)
 
         # Update previous state for the next iteration
         self.prev_time = self.get_clock().now()
