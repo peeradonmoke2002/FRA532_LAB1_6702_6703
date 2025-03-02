@@ -141,7 +141,7 @@ class PIDBicycleController(Node):
         steering_msg.data = [front_left_steering, front_right_steering]  # Left and Right steering values
         self.pub_steering.publish(steering_msg)
 
-        self.get_logger().info(f"🔄 Steering Published (Float64MultiArray): L={front_left_steering:.3f} rad, R={front_right_steering:.3f} rad")
+        # self.get_logger().info(f"🔄 Steering Published (Float64MultiArray): L={front_left_steering:.3f} rad, R={front_right_steering:.3f} rad")
 
 
     def publish_wheel_speed(self, speed):

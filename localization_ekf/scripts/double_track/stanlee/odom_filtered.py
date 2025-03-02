@@ -248,7 +248,7 @@ class OdomFilteredNode(Node):
         self.dt = 0.02  # 50 Hz prediction rate
 
         # Subscribers for raw odometry and IMU measurements
-        self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
+        self.create_subscription(Odometry, '/odom_noisy', self.odom_callback, 10)
         self.create_subscription(Imu, '/imu', self.imu_callback, 10)
 
         # Publisher for filtered odometry
