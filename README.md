@@ -7,7 +7,10 @@
     - [Inverse Kinematics](#inverse-kinematics)
     - [Forward Kinematics](#forward-kinematics)
     - [Methodology and Results](#methodology-and-results)
-
+- [LAB 1.2](#lab-12)
+    - [PID Controller](#pid-controller)
+    - [Pure Pursuit Controller](#pure-pursuit-controller)
+    - [Methodology and Results](#methodology-and-results)
 
 
 ## System Overview
@@ -238,6 +241,58 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 - In **XY Position RMSE**, the **No-Slip Model performs better** in the **Double Track** configuration, showing the lowest RMSE (0.1599), while the Basic Model performs better in the **Single Track** configuration.
 - In **Yaw Orientation RMSE**, the **Basic Model has significantly higher errors** in the **Single Track and Double Track** configurations, whereas the **No-Slip Model shows more stable yaw tracking**, especially in the **Yaw Rate** configuration with an RMSE of just **0.0037 radians**.
 - Overall, the **No-Slip Model provides better yaw stability**, while the **Basic Model maintains better positional accuracy** in certain cases.
+
+## LAB 1.2
+### PID Controller
+PID it separate to steering and speed 
+
+| Parameter | Description |
+|-----------|------------|
+| `Kp_steer` | Improves robot response to direction changes. |
+| `Ki_steer` | Helps correct long-term drift in steering. |
+| `Kd_steer` | Dampens sudden steering adjustments to reduce oscillation. |
+
+| Parameter | Description |
+|-----------|------------|
+| `Kp_speed` | Controls speed response to target velocity. |
+| `Ki_speed` | Corrects long-term speed drift. |
+| `Kd_speed` | Smooths speed changes for stability. |
+
+The formula of the PID controller is 
+
+$$ u(t) = K_p e(t) + K_I \int_0^t e(t) \,dt + K_d \frac{de}{dt} $$
+
+### PID Controller Results
+#### Path Tracking
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/path_tracking/result/PID/PID_path.png)
+
+#### Speed Profile
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/path_tracking/result/PID/PID_speed.png)
+
+---
+
+### Pure Pursuit Controller
+
+
+### Pure Pursuit Controller Results
+
+#### Path Tracking
+
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/path_tracking/result/purepursuit/purepursuit_path.png)
+
+#### Speed Profile
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/path_tracking/result/purepursuit/purepursuit_speed.png)
+
+
+### MPC Controller
+
+### MPC Controller Results
+
+#### Path Tracking
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/path_tracking/result/MPC/mpc_path.png)
+
+#### Speed Profile
+![Image Description](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/path_tracking/result/MPC/mpc_speed.png)
 
 
 ## Our Team
