@@ -3,3 +3,4 @@
 # ignore vscode files
 .vscode/*
 
+/PythonRobotics/*
