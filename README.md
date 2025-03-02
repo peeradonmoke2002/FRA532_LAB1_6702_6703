@@ -6,12 +6,12 @@
 - [LAB 1.1](#lab-11)
     - [Inverse Kinematics](#inverse-kinematics)
     - [Forward Kinematics](#forward-kinematics)
-    - [Methodology and Results lab 1.1](#methodology-and-results-lab-1.1)
+    - [Methodology and Results lab 1.1](#methodology-and-results-lab-11)  
 - [LAB 1.2](#lab-12)
     - [PID Controller](#pid-controller)
     - [Pure Pursuit Controller](#pure-pursuit-controller)
     - [MPC Controller](#mpc-controller)
-    - [Methodology and Results lab 1.2](#methodology-and-results-lab-1.2)
+    - [Methodology and Results lab 1.2](#methodology-and-results-lab-12)  
 
 
 
