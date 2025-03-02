@@ -299,8 +299,47 @@ Try to run following commands to test MPC controller:
 
 
 ### Methodology and Results lab 1.2
+This section compares the tracking controllers for each inverse kinematics model from **LAB 1.1** by recording **XY position changes over time** against the reference path defined in `path.yaml`. Additionally, we record the **speed profile** to analyze tracking performance.
 
+#### Steps for Testing
+Follow the steps for each controller to run the test and record data:
+- [PID Controller](#pid-controller)
+- [Pure Pursuit Controller](#pure-pursuit-controller) 
+- [MPC Controller](#mpc-controller) 
 
+### **Results**
+We conducted tests on the tracking controllers by making the robot complete one full round and analyzed the results.
+
+#### PID Controller Results
+##### Path Tracking
+_(Add graphs, plots, or images here)_
+
+##### Speed Profile
+_(Add speed profile data or plots here)_
+
+#### Pure Pursuit Controller Results
+##### Path Tracking
+_(Add graphs, plots, or images here)_
+
+##### Speed Profile
+_(Add speed profile data or plots here)_
+
+#### MPC Controller Results
+##### Path Tracking
+_(Add graphs, plots, or images here)_
+
+##### Speed Profile
+_(Add speed profile data or plots here)_
+
+### **RMSE Results**
+The following table presents the **Root Mean Square Error (RMSE)** values comparing the path tracking controllers in different invese kinematics model from **Lab 1.1**.  
+Lower RMSE values indicate **better accuracy** in following the expected trajectory.
+
+#### **XY Position RMSE Data**
+| Model Type  | PID (RMSE) | Pure Pursuit (RMSE) | MPC (RMSE) |
+|-------------|------------|---------------------|------------|
+| **Basic Model** | _TBD_ | _TBD_ | _TBD_ |
+| **No-Slip** | _TBD_ | _TBD_ | _TBD_ |
 
 ## Our Team
 - **67340700402** พงษ์พัฒน์ วงศ์กำแหงหาญ
