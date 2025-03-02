@@ -11,7 +11,8 @@
 
 
 ## System Overview
-![Personal diagram - FRA532 Mobile Robot](https://github.com/user-attachments/assets/3620884a-405c-4cc2-9266-519d7f3b8d79)
+![Personal diagram - FRA532 Mobile Robot-2](https://github.com/user-attachments/assets/e4a6f163-1add-4d8e-b1a1-1536304b5301)
+
 
 
 ## Installation
@@ -40,6 +41,7 @@ source install/setup.bash
 
 ```bash
 cd ~/FRA532_MobileRobot
+
 sudo apt update
 
 sudo apt install -y python3-rosdep
@@ -203,16 +205,14 @@ We tested the system by making the robot move in a **circular left turn** using 
 #### **Basic Model Output**
 <p align="center">
   <img src="./results_data/lab1.1/basic_odom_all_3.png" alt="Basic Model Odom" width="35%"/>
-  <img src="./results_data/lab1.1/basic_odom_all_3_yaw.png" alt="Basic Model Yaw Odom" width="45%"/>
+  <img src="./results_data/lab1.1/basic_odom_all_3_yaw.png" alt="Basic Model Yaw Odom" width="47%"/>
 </p>
 
-#### **No-Slip Model Output**
+### **No-Slip Model Output**
 <p align="center">
   <img src="./results_data/lab1.1/noslip_odom_all_3.png" alt="No-Slip Model Odom" width="35%"/>
-  <img src="./results_data/lab1.1/noslip_odom_all_3_yaw.png" alt="No-Slip Model Yaw Odom" width="45%"/>
+  <img src="./results_data/lab1.1/noslip_odom_all_3_yaw.png" alt="No-Slip Model Yaw Odom" width="47%"/>
 </p>
-
----
 
 ### **RMSE Results**
 The following table presents the **Root Mean Square Error (RMSE)** values comparing the odometry performance across different models.  
