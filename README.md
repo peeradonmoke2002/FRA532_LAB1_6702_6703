@@ -204,7 +204,8 @@ ros2 launch robot_controller noslip_model+all_odom.launch.py
 
 3) Use the odometry recording  `record_odom_all.py` and plotting `plot_all.py` to compare results.
 
->warning: the data will be overwrite if you run the launch file again.
+> [!WARNING] 
+> the data will be overwrite if you run the launch file again.
 
 ### **Results**
 We tested the system by making the robot move in a **circular left turn** using different kinematic models.
@@ -324,18 +325,19 @@ Follow the steps for each tracking controller to run the test:
 - [Pure Pursuit Controller](#pure-pursuit-controller) 
 - [Stanley Controller](#stanley-controller) 
 
-For record data:
+For case want record data:
  uncomment the following line in each launch file
 ```bash    
   launch_description.add_action(path_data_record)
 ```
-For stop record data comment the following line in each launch file:
+For case don't want record data comment the following line in each launch file:
 ```bash
   # launch_description.add_action(path_data_record)
 ```
 it will show the result in the `path_data/record_data` folder use the `plot_data_path` to plot the result.
 
-> warining: the data will be overwrite if you run the launch file again.
+> [!WARNING] 
+> the data will be overwrite if you run the launch file again.
 
 ### **Results**
 We conducted tests on the tracking controllers by making the robot complete one full round and analyzed the results.
@@ -426,5 +428,11 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 
 ### Yaw-Rate, Single Track, and Double Track Models
 - [IEEE Paper on Vehicle Dynamics](https://ieeexplore.ieee.org/document/8574906)
+
+### Path Tracking Controllers
+- [PID Controller](https://thomasfermi.github.io/Algorithms-for-Automated-Driving/Control/PID.html)
+- [Pure Pursuit Controller](https://thomasfermi.github.io/Algorithms-for-Automated-Driving/Control/PurePursuit.html)
+- [Stanley Controller](https://www.ri.cmu.edu/pub_files/2009/2/Automatic_Steering_Methods_for_Autonomous_Automobile_Path_Tracking.pdf)
+
 
 
