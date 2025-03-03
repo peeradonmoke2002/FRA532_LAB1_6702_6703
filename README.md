@@ -11,7 +11,12 @@
     - [PID Controller](#pid-controller)
     - [Pure Pursuit Controller](#pure-pursuit-controller)
     - [Stanley Controller](#stanley-controller)
-    - [Methodology and Results lab 1.2](#methodology-and-results-lab-12)  
+    - [Methodology and Results lab 1.2](#methodology-and-results-lab-12)
+
+- [LAB 1.3](#lab-13)
+
+-[Our Team](#our-team)
+-[References](#references)
 
 
 
@@ -71,7 +76,7 @@ It should show the Rviz view and Gazebo simulation as seen in the figure below:
 
 ## LAB 1.1
 > [!NOTE]  
-> The lab 1.1 package fordler is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller`
+> The lab 1.1 package folder is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller`
 ### Inverse Kinematics
 
 In this lab, we have used two models to compare the performance and accuracy of inverse kinematics models:
@@ -250,7 +255,7 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 
 ## LAB 1.2
 > [!NOTE]  
-> The lab 1.2 package fordler is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/path_tracking`
+> The lab 1.2 package folder is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/path_tracking`
 
 In this lab, we have used three traking controller to compare the performance and accuracy of each model:
 - [PID Controller](#pid-controller)
@@ -435,6 +440,13 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
    - All three controllers (PID, Pure Pursuit, Stanley) **closely follow** the reference path, with errors on the order of a few centimeters.  
    - The **Stanley controller** stands out for its slightly **tighter path-following** in these particular tests.  
    - The **Noslip** vs. **Basic** inverse kinematics models do not produce drastically different results in this scenario, likely because wheel slip is minimal or well-managed by the controllers at these speeds.
+
+
+## LAB 1.3
+> [!IMPORTANT]  
+> Comming Soon!
+
+
 
 
 ## Our Team
