@@ -413,7 +413,7 @@ r_{1,x} \cdot \sin (\delta_1) \cos (\delta_2 - \beta) - r_{1,y} \cdot \cos (\del
 - r_{2,x} \cdot \sin (\delta_2) \cos (\delta_1 - \beta) + r_{2,y} \cdot \cos (\delta_2) \cos (\delta_1 - \beta) 
 \end{array}} 
 \end{align}
-
+```
 where:
 
 - \( x_k, y_k \) are the current coordinates of the object.
