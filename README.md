@@ -4,7 +4,7 @@
 - [System Overview](#system-overview)
 - [Installation](#installation)
 - [LAB 1.1](#lab-11)
-    - [Craete Robot Model](#create-robot-model)
+    - [Create Robot Model](#create-robot-model)
     - [Inverse Kinematics](#inverse-kinematics)
     - [Forward Kinematics](#forward-kinematics)
     - [Methodology and Results lab 1.1](#methodology-and-results-lab-11)  
@@ -77,7 +77,7 @@ It should show the Rviz view and Gazebo simulation as seen in the figure below:
 > [!NOTE]  
 > The lab 1.1 package folder is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller`
 
-### Craete Robot Model
+### Create Robot Model
 ![image](https://github.com/user-attachments/assets/d33851ab-3935-4c03-9aee-bf0b32545424)
 
 
