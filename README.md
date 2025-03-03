@@ -344,7 +344,7 @@ where:
 - $$\( \omega_k \)$$ is the angular velocity.
 - $$\( \delta_{F,k} \)$$ is the front steering angle.
 - $$\( r_b \)$$ is the wheelbase.
-- $$\( $$\tilde{v}_{RL,k}^\times$$, $$\tilde{v}_{RR,k}^\times$$ \)$$ are the left and right rear wheel velocities.
+- $$\( \tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times \)$$ are the left and right rear wheel velocities.
 - $$\( \Delta t \)$$ is the time step.
 
 
@@ -398,7 +398,7 @@ where:
 - $$\( \beta_k \)$$ is the slip angle.
 - $$\( v_k \)$$ is the linear velocity.
 - $$\( \omega_k \)$$ is the angular velocity.
-- $$\( $$\tilde{v}_{RL,k}^\times$$, $$\tilde{v}_{RR,k}^\times$$ \)$$ are the left and right rear wheel velocities.
+- $$\( \tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times \)$$ are the left and right rear wheel velocities.
 - $$\( \Delta t \)$$ is the time step.
 
 
