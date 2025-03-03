@@ -574,7 +574,7 @@ ros2 launch path_tracking pid.launch.py mode:=noslip
 Pure Pursuit is a path-tracking algorithm used for autonomous navigation. The method calculates a steering angle to reach a lookahead point based on the robot's current position and orientation.
 
 Lookahead Point Calculation  
-The lookahead point $$\( (x_L, y_L) \)$$ in the global frame is calculated as:
+The lookahead point $$\(x_L, y_L\)$$ in the global frame is calculated as:
 
 ```math
 x_L = x + L_d \cos(\theta)
@@ -617,7 +617,7 @@ where:
 - $$\( x', y' \)$$ are the waypoint coordinates in the robot’s local frame.
 
 Curvature Calculation  
-Curvature \( \kappa \) of the arc to the lookahead point is:
+Curvature $$\( \kappa \)$$ of the arc to the lookahead point is:
 
 ```math
 \kappa = \frac{2 y'}{L_d^2}
@@ -628,14 +628,14 @@ where:
 - $$\( L_d \)$$ is the lookahead distance.
 
 Steering Angle Calculation
-The required steering angle \( \delta \) is determined using:
+The required steering angle $$\( \delta \)$$ is determined using:
 
 ```math
-\delta = \tan^{-1} (L_w \cdot \kappa)
+\delta = \tan^{-1} (WB \cdot \kappa)
 ```
 
 where:
-- $$\( L_w \)$$ is the wheelbase of the robot.
+- $$WB$$ is the wheelbase of the robot.
 
 
 
