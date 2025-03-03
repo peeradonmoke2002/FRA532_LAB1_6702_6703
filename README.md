@@ -571,6 +571,76 @@ ros2 launch path_tracking pid.launch.py mode:=noslip
 
 ### Pure Pursuit Controller
 
+Pure Pursuit is a path-tracking algorithm used for autonomous navigation. The method calculates a steering angle to reach a lookahead point based on the robot's current position and orientation.
+
+Lookahead Point Calculation  
+The lookahead point $$\( (x_L, y_L) \)$$ in the global frame is calculated as:
+
+```math
+x_L = x + L_d \cos(\theta)
+```
+
+```math
+y_L = y + L_d \sin(\theta)
+```
+
+where:
+- $$\( x, y \)$$ are the current coordinates of the robot.
+- $$\( \theta \)$$ is the current heading of the robot.
+- $$\( L_d \)$$ is the lookahead distance.
+
+Error in Global Frame  
+The difference between the waypoint and the robot’s position:
+
+```math
+dx = x_{wp} - x
+```
+
+```math
+dy = y_{wp} - y
+```
+
+where $$\( (x_{wp}, y_{wp}) \)$$ is the closest waypoint.
+
+Transforming to Local Frame  
+To compute the error in the robot’s local frame:
+
+```math
+x' = dx \cos(\theta) + dy \sin(\theta)
+```
+
+```math
+y' = -dx \sin(\theta) + dy \cos(\theta)
+```
+
+where:
+- $$\( x', y' \)$$ are the waypoint coordinates in the robot’s local frame.
+
+Curvature Calculation  
+Curvature \( \kappa \) of the arc to the lookahead point is:
+
+```math
+\kappa = \frac{2 y'}{L_d^2}
+```
+
+where:
+- $$\( y' \)$$ is the transformed y-coordinate in the robot’s local frame.
+- $$\( L_d \)$$ is the lookahead distance.
+
+Steering Angle Calculation
+The required steering angle \( \delta \) is determined using:
+
+```math
+\delta = \tan^{-1} (L_w \cdot \kappa)
+```
+
+where:
+- $$\( L_w \)$$ is the wheelbase of the robot.
+
+
+
+
+#### Running Pure Pursuit Controller
 
 Try running the following commands to test the Pure Pursuit controller:
 
