@@ -332,6 +332,11 @@ R_imu = np.diag([
     0.2, 0.2, 0.2 # Linear acceleration noise (ax, ay, az)
 ]) ** 2
 ``` 
+### RESULT
+
+![PID Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/PID/pid-yawrate.png)
+![Purepursuit Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/purepursuit/purepursuit_yawrate.png)
+![Stanlee Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/stanlee/stanlee-yawrate.png) 
 ## Single track Q and R tuning
 
 ```bash 
@@ -356,11 +361,11 @@ R_imu = np.diag([
 ]) ** 2
 
 ```
-add image 
+![PID-single ](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/single_track/PID/PID-singletrack.png)
 
-![PID Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/PID/pid-yawrate.png)
-![Purepursuit Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/purepursuit/purepursuit_yawrate.png)
-![Stanlee Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/stanlee/stanlee-yawrate.png)
+![pp-single](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/single_track/purepursuit/purepursuit_singletrack.png) 
+
+![stanle-single](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/single_track/stanlee/stanlee_singletrack.png)
 
 
 ## Double  track Q and R tuning
