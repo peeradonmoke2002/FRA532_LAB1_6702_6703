@@ -11,14 +11,17 @@
     - [PID Controller](#pid-controller)
     - [Pure Pursuit Controller](#pure-pursuit-controller)
     - [Stanley Controller](#stanley-controller)
-    - [Methodology and Results lab 1.2](#methodology-and-results-lab-12)  
+    - [Methodology and Results lab 1.2](#methodology-and-results-lab-12)
+
+- [LAB 1.3](#lab-13)
+
+- [Our Team](#our-team)
+- [References](#references)
 
 
 
 ## System Overview
-![Personal diagram - FRA532 Mobile Robot-2](https://github.com/user-attachments/assets/e4a6f163-1add-4d8e-b1a1-1536304b5301)
-
-
+![Personal diagram - FRA532 Mobile Robot-3](https://github.com/user-attachments/assets/10c20c86-fc86-4021-bdda-3a982760244b)
 
 ## Installation
 
@@ -70,7 +73,8 @@ It should show the Rviz view and Gazebo simulation as seen in the figure below:
 ![Simulation Screenshot](https://github.com/user-attachments/assets/e245c9de-abda-4360-9457-68f8df1d112a)
 
 ## LAB 1.1
-
+> [!NOTE]  
+> The lab 1.1 package folder is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller`
 ### Inverse Kinematics
 
 In this lab, we have used two models to compare the performance and accuracy of inverse kinematics models:
@@ -248,6 +252,9 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 - Overall, the **No-Slip Model provides better yaw stability**, while the **Basic Model maintains better positional accuracy** in certain cases.
 
 ## LAB 1.2
+> [!NOTE]  
+> The lab 1.2 package folder is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/path_tracking`
+
 In this lab, we have used three traking controller to compare the performance and accuracy of each model:
 - [PID Controller](#pid-controller)
 - [Pure Pursuit Controller](#pure-pursuit-controller) 
@@ -296,7 +303,7 @@ ros2 launch path_tracking pure_pursuit.launch mode:=noslip
 3. See the results and stop the launch file when the robot completes one round
 
 ### Stanley Controller
-Try to run following commands to test MPC controller:
+Try to run following commands to test Stanley controller:
 1. Run Simulation
 ```bash
 ros2 launch limo_description sim.launch.py
@@ -317,7 +324,7 @@ ros2 launch path_tracking stanley.launch mode:=noslip
 
 
 ### Methodology and Results lab 1.2
-This section compares the tracking controllers for each inverse kinematics model from **LAB 1.1** by recording **XY position changes over time** against the reference path defined in `path.yaml`. Additionally, we record the **speed profile** to analyze tracking performance.
+This section compares the tracking controllers for each inverse kinematics model from **LAB 1.1** by recording **XY position changes over time** against the reference path defined in `path_tracking/path_data/path.yaml`. Additionally, we record the **speed profile** to analyze tracking performance.
 
 #### Steps for Testing
 Follow the steps for each tracking controller to run the test:
@@ -334,7 +341,7 @@ For case don't want record data comment the following line in each launch file:
 ```bash
   # launch_description.add_action(path_data_record)
 ```
-it will show the result in the `path_data/record_data` folder use the `plot_data_path` to plot the result.
+it will show the result in the `path_tracking/path_data/record_data` folder use the `plot_data_path` to plot the result.
 
 > [!WARNING] 
 > the data will be overwrite if you run the launch file again.
@@ -431,6 +438,13 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
    - All three controllers (PID, Pure Pursuit, Stanley) **closely follow** the reference path, with errors on the order of a few centimeters.  
    - The **Stanley controller** stands out for its slightly **tighter path-following** in these particular tests.  
    - The **Noslip** vs. **Basic** inverse kinematics models do not produce drastically different results in this scenario, likely because wheel slip is minimal or well-managed by the controllers at these speeds.
+
+
+## LAB 1.3
+> [!IMPORTANT]  
+> Comming Soon!
+
+
 
 
 ## Our Team
