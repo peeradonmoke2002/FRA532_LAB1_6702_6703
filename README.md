@@ -249,7 +249,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 ### Forward Kinematics
 For the concept of dead-reckoning, modeling or odometry is a method used to estimate the current position of an object by using its last known location and information about its velocity or traveled distance.
-
+```math
 \begin{align} 
 {\left[\begin{array}{c}x_{k+1} \\ y_{k+1} \\ \theta _{k+1} \end{array}\right]} = 
 {\left[\begin{array}{c}x_{k} \\ y_{k} \\ \theta _{k} \end{array}\right]} + 
@@ -259,7 +259,7 @@ v_{k}\cdot \Delta t \cdot \sin \left(\beta _{k}+\theta _{k}+\frac{\omega _{k}\cd
 \omega _{k}\cdot \Delta t 
 \end{array}\right]} . \tag{2} 
 \end{align}
-
+```
 where:
 
 - $$\( x_k, y_k \)$$ are the current coordinates of the object.
