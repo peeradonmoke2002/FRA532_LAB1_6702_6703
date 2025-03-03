@@ -10,7 +10,7 @@
 - [LAB 1.2](#lab-12)
     - [PID Controller](#pid-controller)
     - [Pure Pursuit Controller](#pure-pursuit-controller)
-    - [MPC Controller](#mpc-controller)
+    - [Stanley Controller](#stanley-controller)
     - [Methodology and Results lab 1.2](#methodology-and-results-lab-12)  
 
 
@@ -152,7 +152,7 @@ ros2 launch limo_description sim.launch.py
 2) Choose an inverse kinematics model from [Inverse Kinematics](#inverse-kinematics)
 3) Run yaw rate odometry
 ```bash
-ros2 launch robot_controller ackerman_yaw_rate_odom.py
+ros2 launch robot_controller ackerman_odom_single_track.py
 ```
 4) Run teleop
 ```bash
@@ -171,7 +171,7 @@ ros2 launch limo_description sim.launch.py
 2) Choose an inverse kinematics model from [Inverse Kinematics](#inverse-kinematics)
 3) Run yaw rate odometry
 ```bash
-ros2 launch robot_controller ackerman_yaw_rate_odom.py
+ros2 launch robot_controller ackerman_odom_double_track.py
 ```
 4) Run teleop
 ```bash
@@ -202,7 +202,9 @@ ros2 launch robot_controller basic_model+all_odom.launch.py
 ros2 launch robot_controller noslip_model+all_odom.launch.py
 ```
 
-3) Use the odometry recording and plotting tool to compare results.
+3) Use the odometry recording  `record_odom_all.py` and plotting `plot_all.py` to compare results.
+
+>warning: the data will be overwrite if you run the launch file again.
 
 ### **Results**
 We tested the system by making the robot move in a **circular left turn** using different kinematic models.
@@ -248,7 +250,7 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 In this lab, we have used three traking controller to compare the performance and accuracy of each model:
 - [PID Controller](#pid-controller)
 - [Pure Pursuit Controller](#pure-pursuit-controller) 
-- [MPC Controller](#mpc-controller) 
+- [Stanley Controller](#stanley-controller) 
 
 ### PID Controller
 Try running the following commands to test the PID controller:
@@ -278,7 +280,7 @@ Try running the following commands to test the Pure Pursuit controller:
 ```bash
 ros2 launch limo_description sim.launch.py
 ```
-2. Run PID launch file by can swtich the parameter to use basic model or noslip model:
+2. Run Pure Pursuit launch file by can swtich the parameter to use basic model or noslip model:
 
 basic model:
 ```bash
@@ -292,54 +294,119 @@ ros2 launch path_tracking pure_pursuit.launch mode:=noslip
 
 3. See the results and stop the launch file when the robot completes one round
 
-### MPC Controller
+### Stanley Controller
 Try to run following commands to test MPC controller:
-> [!IMPORTANT]
-> comming soon !
+1. Run Simulation
+```bash
+ros2 launch limo_description sim.launch.py
+```
+2. Run Stanley launch file by can swtich the parameter to use basic model or noslip model:
+
+basic model:
+```bash
+ros2 launch path_tracking stanley.launch mode:=basic
+```
+
+noslip model:
+```bash
+ros2 launch path_tracking stanley.launch mode:=noslip
+```
+
+3. See the results and stop the launch file when the robot completes one round
 
 
 ### Methodology and Results lab 1.2
 This section compares the tracking controllers for each inverse kinematics model from **LAB 1.1** by recording **XY position changes over time** against the reference path defined in `path.yaml`. Additionally, we record the **speed profile** to analyze tracking performance.
 
 #### Steps for Testing
-Follow the steps for each controller to run the test and record data:
+Follow the steps for each tracking controller to run the test:
 - [PID Controller](#pid-controller)
 - [Pure Pursuit Controller](#pure-pursuit-controller) 
-- [MPC Controller](#mpc-controller) 
+- [Stanley Controller](#stanley-controller) 
+
+For record data:
+ uncomment the following line in each launch file
+```bash    
+  launch_description.add_action(path_data_record)
+```
+For stop record data comment the following line in each launch file:
+```bash
+  # launch_description.add_action(path_data_record)
+```
+it will show the result in the `path_data/record_data` folder use the `plot_data_path` to plot the result.
+
+> warining: the data will be overwrite if you run the launch file again.
 
 ### **Results**
 We conducted tests on the tracking controllers by making the robot complete one full round and analyzed the results.
 
 #### PID Controller Results
-##### Path Tracking
-_(Add graphs, plots, or images here)_
-
-##### Speed Profile
-_(Add speed profile data or plots here)_
+##### Path Tracking and Speed Profile
+![PID Controller Path Tracking](/results_data/lab1.2/pid_results.png)
 
 #### Pure Pursuit Controller Results
-##### Path Tracking
-_(Add graphs, plots, or images here)_
+##### Path Tracking and Speed Profile
+![Pure Pursuit Controller Path Tracking](/results_data/lab1.2/purepursuit_results.png)
 
-##### Speed Profile
-_(Add speed profile data or plots here)_
+#### Stanley Controller Results
+##### Path Tracking and Speed Profile
+![Stanley Controller Path Tracking](/results_data/lab1.2/stanley_results.png)
 
-#### MPC Controller Results
-##### Path Tracking
-_(Add graphs, plots, or images here)_
 
-##### Speed Profile
-_(Add speed profile data or plots here)_
 
 ### **RMSE Results**
 The following table presents the **Root Mean Square Error (RMSE)** values comparing the path tracking controllers in different invese kinematics model from **Lab 1.1**.  
 Lower RMSE values indicate **better accuracy** in following the expected trajectory.
 
 #### **XY Position RMSE Data**
-| Model Type  | PID (RMSE) | Pure Pursuit (RMSE) | MPC (RMSE) |
-|-------------|------------|---------------------|------------|
-| **Basic Model** | _TBD_ | _TBD_ | _TBD_ |
-| **No-Slip** | _TBD_ | _TBD_ | _TBD_ |
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2">Model types</th>
+      <th colspan="3">PID (RMSE)</th>
+      <th colspan="3">Pure Pursuit (RMSE)</th>
+      <th colspan="3">Stanley (RMSE)</th>
+    </tr>
+    <tr>
+      <th>x</th>
+      <th>y</th>
+      <th>overall</th>
+      <th>x</th>
+      <th>y</th>
+      <th>overall</th>
+      <th>x</th>
+      <th>y</th>
+      <th>overall</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Basic</td>
+      <td>0.024</td>
+      <td>0.025</td>
+      <td>0.035</td>
+      <td>0.027</td>
+      <td>0.029</td>
+      <td>0.039</td>
+      <td>0.021</td>
+      <td>0.021</td>
+      <td>0.030</td>
+    </tr>
+    <tr>
+      <td>Noslip</td>
+      <td>0.025</td>
+      <td>0.025</td>
+      <td>0.036</td>
+      <td>0.026</td>
+      <td>0.027</td>
+      <td>0.038</td>
+      <td>0.021</td>
+      <td>0.021</td>
+      <td>0.030</td>
+    </tr>
+  </tbody>
+</table>
+
 
 ## Our Team
 - **67340700402** พงษ์พัฒน์ วงศ์กำแหงหาญ

@@ -159,7 +159,7 @@ class PIDController(Node):
             self.kp_speed, self.ki_speed, self.kd_speed, self.dt_loop)
 
         # Clamp steering and speed.
-        steer = np.clip(steer, -self.max_steering_angle, self.max_steering_angle)
+        # steer = np.clip(steer, -self.max_steering_angle, self.max_steering_angle)
         speed = max(2.5, min(speed, 8.0))  # Adjusted speed limits
 
         # Publish commands based on mode.

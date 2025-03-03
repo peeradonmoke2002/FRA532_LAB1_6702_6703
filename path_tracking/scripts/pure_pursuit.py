@@ -43,7 +43,6 @@ class PurePursuit(Node):
         self.dt_loop = 1/100
         self.timer = self.create_timer(self.dt_loop, self.pure_pursuit_control)
         path_tracking_package = get_package_share_directory("path_tracking")
-        # Corrected file path with a '/' separator.
         wp = self.load_waypoints(f'{path_tracking_package}/path_data/path.yaml')
         wp = np.array(wp)  
         self.waypoints = wp[:, 0:2]
