@@ -269,6 +269,7 @@ v_k \cdot \Delta t \cdot \sin \left(\beta_k + \theta_k + \frac{\omega_k \cdot \D
 \omega_k \cdot \Delta t 
 \end{bmatrix}. 
 \end{align}
+```
 
 where:
 
