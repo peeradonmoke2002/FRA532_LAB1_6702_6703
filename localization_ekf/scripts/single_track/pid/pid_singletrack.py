@@ -13,20 +13,19 @@ import os
 class PIDBicycleController(Node):
     def __init__(self):
         super().__init__('pid_bicycle_controller')
-        self.dt_loop = 1 / 50.0  # Loop time in seconds (50 Hz)
+        self.dt_loop = 1 / 50  # Loop time in seconds (50 Hz)
 
         self.wheel_base = 0.2      # Distance between front and rear axles (meters)
         self.wheel_radius = 0.045  # Rear wheel radius (meters)
         self.max_steering_angle = 0.523598767  # Limit steering angle
 
-        # PID gains for steering
-        self.kp_steer = 0.15  
-        self.ki_steer = 0.01
-        self.kd_steer = 0.005
+        self.kp_steer = 0.25  # Increased for better response
+        self.ki_steer = 0.01  # Small integral gain to reduce steady-state error
+        self.kd_steer = 0.005  # Increased to reduce overshoot
 
-        # PID gains for speed
-        self.kp_speed = 5.5  
-        self.ki_speed = 1.05
+        # PID gains for speed.
+        self.kp_speed = 20.5  # Increased speed gain
+        self.ki_speed = 10.05
         self.kd_speed = 0.05  # Small derivative gain to smooth speed control
 
         self.integral_steer = 0.0

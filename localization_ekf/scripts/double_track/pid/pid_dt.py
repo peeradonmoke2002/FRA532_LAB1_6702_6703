@@ -17,7 +17,7 @@ class PIDBicycleController(Node):
 
         self.wheel_base = 0.2      # Distance between front and rear axles (meters)
         self.wheel_radius = 0.045  # Rear wheel radius (meters)
-        self.max_steering_angle = 0.523598767   # Limit steering angle
+        self.max_steering_angle = 0.523598767 / 2  # Limit steering angle
 
         # PID gains for steering
         self.kp_steer = 0.15  

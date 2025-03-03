@@ -30,7 +30,7 @@ Q = np.diag([
 ]) ** 2
 
 # Measurement noisecovariance for odometry (6x6): [p (3), v (3)]  increase this matrix because it not accurate
-R_odom = np.diag([1.5, 1.5, 1.5, 1.6, 1.6, 1.6]) ** 2
+R_odom = np.diag([1.65, 1.65, 1.65, 1.75, 1.75, 1.75]) ** 2
 
 # Measurement noise covariance for IMU (9x9): [orientation (3), angular velocity (3), linear acceleration (3)]
 R_imu = np.diag([
