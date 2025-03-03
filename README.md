@@ -409,6 +409,29 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
   </tbody>
 </table>
 
+### **Observations**
+
+1. **Overall Tracking Accuracy**  
+   - **Stanley** consistently achieves the **lowest overall RMSE** (0.030 m) for both Basic and Noslip models.  
+   - **PID** is next best, with overall RMSEs around **0.035–0.036 m**.  
+   - **Pure Pursuit** has a slightly higher overall RMSE at **0.038–0.039 m**.
+
+2. **Basic vs. Noslip Models**  
+   - For all controllers, **Basic** and **Noslip** models show **very similar** RMSE values.  
+   - The differences in overall RMSE between Basic and Noslip are generally **within 0.001–0.002 m**, suggesting only a minor advantage for one model over the other in these tests.
+
+3. **X vs. Y Errors**  
+   - The **x** and **y** components of the RMSE are close in magnitude for each controller–model pair. This indicates **balanced tracking** in both axes rather than a bias in one direction.
+
+4. **Speed Profiles**  
+   - The speed remains relatively **stable** around the commanded velocity in all tests.  
+   - Minor dips in speed (visible in the plots) often occur when the controller makes **larger steering corrections** (e.g., tight turns).
+
+5. **Practical Implications**  
+   - All three controllers (PID, Pure Pursuit, Stanley) **closely follow** the reference path, with errors on the order of a few centimeters.  
+   - The **Stanley controller** stands out for its slightly **tighter path-following** in these particular tests.  
+   - The **Noslip** vs. **Basic** inverse kinematics models do not produce drastically different results in this scenario, likely because wheel slip is minimal or well-managed by the controllers at these speeds.
+
 
 ## Our Team
 - **67340700402** พงษ์พัฒน์ วงศ์กำแหงหาญ
