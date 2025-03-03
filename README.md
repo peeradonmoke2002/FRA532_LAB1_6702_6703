@@ -213,7 +213,7 @@ For the Ackermann model, to prevent the front wheels from slipping, the steering
 The turning radius of the robot is:
 
 ```math
-R_b = \frac{L}{\tan(\delta)}
+R = \frac{WB}{\tan(\delta)}
 ```
 The steering angles of the front wheels must satisfy these conditions to avoid skidding:
 
@@ -248,6 +248,28 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 4) Try controlling the robot using the keyboard and observe the results in Rviz and Gazebo simulation.
 
 ### Forward Kinematics
+For the concept of dead-reckoning, modeling or odometry is a method used to estimate the current position of an object by using its last known location and information about its velocity or traveled distance.
+
+\begin{align} 
+{\left[\begin{array}{c}x_{k+1} \\ y_{k+1} \\ \theta _{k+1} \end{array}\right]} = 
+{\left[\begin{array}{c}x_{k} \\ y_{k} \\ \theta _{k} \end{array}\right]} + 
+{\left[\begin{array}{c} 
+v_{k}\cdot \Delta t \cdot \cos \left(\beta _{k}+\theta _{k}+\frac{\omega _{k}\cdot \Delta t}{2}\right) \\ 
+v_{k}\cdot \Delta t \cdot \sin \left(\beta _{k}+\theta _{k}+\frac{\omega _{k}\cdot \Delta t}{2}\right) \\ 
+\omega _{k}\cdot \Delta t 
+\end{array}\right]} . \tag{2} 
+\end{align}
+
+where:
+
+- $$\( x_k, y_k \)$$ are the current coordinates of the object.
+- $$\( \theta_k \)$$ is the current orientation angle.
+- $$\( v_k \)$$ is the linear velocity.
+- $$\( \omega_k \)$$ is the angular velocity.
+- $$\( \beta_k \)$$ is the slip angle (if applicable).
+- $$\( \Delta t \)$$ is the time step.
+
+
 
 In this lab, we have used three models to compare the performance and accuracy of forward kinematics models:
 
@@ -256,7 +278,7 @@ In this lab, we have used three models to compare the performance and accuracy o
 - [Double Track Model](#double-track-model)
 
 #### Yaw-Rate Model
-
+For the model yaw-rate are uses the yaw rate $$ω$$ directly measured by the gyroscope sensor as the information for the rotation and for the model also uses the average rear wheel velocirites as the information on the translation motion
 
 #### Running Yaw-Rate Model
 Try running the following commands to test the yaw-rate model:
