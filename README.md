@@ -370,6 +370,10 @@ R_imu = np.diag([
 ]) ** 2
 ```
 
+![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/PID/PID-doubletrack-crash.png)
+![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/pp/purepursuit-doubletrack.png)
+![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/stanlee/stanlee-doubletrack.png)
+
 image
 image
 image
