@@ -527,6 +527,9 @@ In this lab, we have used three traking controller to compare the performance an
 - [Pure Pursuit Controller](#pure-pursuit-controller) 
 - [Stanley Controller](#stanley-controller) 
 
+For more information -> [Path Tracking Controllers References
+](#path-tracking-controllers-references)
+
 ### PID Controller
 
 PID it separate to steering and speed 
@@ -571,7 +574,7 @@ ros2 launch path_tracking pid.launch.py mode:=noslip
 
 ### Pure Pursuit Controller
 
-Pure Pursuit is a path-tracking algorithm used for autonomous navigation. The method calculates a steering angle to reach a lookahead point based on the robot's current position and orientation.
+Pure Pursuit is a path-tracking algorithm. The method calculates a steering angle to reach a lookahead point based on the robot's current position and orientation.
 
 Lookahead Point Calculation  
 The lookahead point $$\(x_L, y_L\)$$ in the global frame is calculated as:
@@ -600,7 +603,7 @@ dx = x_{wp} - x
 dy = y_{wp} - y
 ```
 
-where $$\( (x_{wp}, y_{wp}) \)$$ is the closest waypoint.
+where $$\(x_{wp}, y_{wp}\)$$ is the closest waypoint.
 
 Transforming to Local Frame  
 To compute the error in the robot’s local frame:
@@ -637,9 +640,6 @@ The required steering angle $$\( \delta \)$$ is determined using:
 where:
 - $$WB$$ is the wheelbase of the robot.
 
-
-
-
 #### Running Pure Pursuit Controller
 
 Try running the following commands to test the Pure Pursuit controller:
@@ -663,6 +663,62 @@ ros2 launch path_tracking pure_pursuit.launch mode:=noslip
 3. See the results and stop the launch file when the robot completes one round
 
 ### Stanley Controller
+
+The Stanley controller is a path-tracking algorithm that calculates a steering angle correction based on both the heading error and the cross-track error.
+
+Lookahead Position (Front Axle Projection)
+The front axle position \( (x_f, y_f) \) is computed using:
+
+```math
+x_f = x + L \cos(	heta)
+```
+
+```math
+y_f = y + L \sin(	heta)
+```
+
+where:
+- \( x, y \) are the current coordinates of the vehicle.
+- \( \theta \) is the vehicle’s heading angle.
+- \( L \) is the distance from the center of mass to the front axle.
+
+Cross-Track Error Calculation
+The cross-track error \( e \) is the perpendicular distance from the front axle position to the nearest point on the reference path:
+
+```math
+e = (x_{	ext{wp}} - x_f) (-\sin(	heta)) + (y_{	ext{wp}} - y_f) \cos(	heta)
+```
+
+where:
+- \( x_{	ext{wp}}, y_{	ext{wp}} \) are the nearest waypoint coordinates.
+- \( x_f, y_f \) are the front axle coordinates.
+- \( e \) is the cross-track error.
+
+Heading Error Calculation
+The heading error \( 	heta_e \) is given by the difference between the path yaw angle and the vehicle’s heading:
+
+```math
+\theta_e = \theta_{	ext{wp}} - \theta
+```
+
+where:
+- \( \theta_{	ext{wp}} \) is the yaw angle of the path at the nearest waypoint.
+
+Steering Angle Calculation
+The Stanley controller computes the desired steering angle \( \delta \) as:
+
+```math
+\delta = \theta_e + \tan^{-1} \left( \frac{k e}{v} \right)
+```
+
+where:
+- \( k \) is the Stanley gain parameter.
+- \( e \) is the cross-track error.
+- \( v \) is the vehicle’s velocity.
+- \( \theta_e \) is the heading error.
+
+#### Running Stanley Controller
+
 Try to run following commands to test Stanley controller:
 1. Run Simulation
 ```bash
