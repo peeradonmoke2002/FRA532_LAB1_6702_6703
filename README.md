@@ -75,8 +75,8 @@ It should show the Rviz view and Gazebo simulation as seen in the figure below:
 
 ## LAB 1.1
 > [!NOTE]  
-> The lab 1.1 package folder is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller`
-> For Robot Model package are locate at `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/limo_description`
+> - The lab 1.1 package folder is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller`
+> - For Robot Model package are locate at `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/limo_description`
 
 ### Create Robot Model
 
@@ -142,12 +142,6 @@ After creating the robot model based on the specified robot dimensions, the foll
    - This could be an intermediate frame used for sensor fusion or processing depth images.
 
 <img width="1371" alt="Screenshot 2568-03-03 at 23 49 39" src="https://github.com/user-attachments/assets/e9974f2c-f8a7-4839-95ea-7bbec239c075" />
-
-
-> [!WARNING]   
-> Incorrectly setting up these transformations will affect the robot’s ability to navigate, localize, and process sensor data properly. Ensure the frames are correctly configured before running simulations or real-world applications.
-
-
 
 
 
