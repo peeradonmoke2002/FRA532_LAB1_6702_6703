@@ -17,13 +17,15 @@ class PIDBicycleController(Node):
 
         self.wheel_base = 0.2      # Distance between front and rear axles (meters)
         self.wheel_radius = 0.045  # Rear wheel radius (meters)
-        self.max_steering_angle = 0.523598767 / 2  # Limit steering angle
+        self.max_steering_angle = 0.523598767  # Limit steering angle
 
-        self.kp_steer = 0.15  # PID gains for steering
+        # PID gains for steering
+        self.kp_steer = 0.15  
         self.ki_steer = 0.01
         self.kd_steer = 0.005
 
-        self.kp_speed = 5.5  # PID gains for speed
+        # PID gains for speed
+        self.kp_speed = 5.5  
         self.ki_speed = 1.05
         self.kd_speed = 0.05  # Small derivative gain to smooth speed control
 
@@ -53,7 +55,7 @@ class PIDBicycleController(Node):
         self.control_timer = self.create_timer(self.dt_loop, self.timer_callback)
 
         # Variable to store the latest odometry
-        self.latest_odom = None
+        self.robot_pose = None
 
     def load_path(self, filename):
         if not os.path.isabs(filename):
@@ -112,11 +114,10 @@ class PIDBicycleController(Node):
         Timer callback at a fixed frequency (e.g., 50 Hz).
         Extracts the latest pose from self.robot_pose and calls the PID controller.
         """
-        # ตรวจสอบก่อนว่ามีข้อมูล robot_pose แล้วหรือยัง
         if self.robot_pose is None:
             return
 
-        # ดึงค่า x, y, และ yaw จาก robot_pose
+        # Extract current state from robot_pose
         x = self.robot_pose.position.x
         y = self.robot_pose.position.y
         _, _, yaw = euler_from_quaternion([
@@ -126,18 +127,33 @@ class PIDBicycleController(Node):
             self.robot_pose.orientation.w
         ])
 
-        # เรียกใช้ฟังก์ชัน PID โดยส่งค่า x, y, yaw
+        # Call the controller step with current state
         self.controller_step(x, y, yaw)
 
     def controller_step(self, x, y, yaw):
-        # x, y, and yaw are in meters and radians respectively.
+        """
+        Controller step:
+          - Find the nearest waypoint.
+          - Compute the heading error.
+          - Compute the speed error based on no-slip condition: project error vector onto the vehicle's forward direction.
+          - Compute PID outputs.
+          - Publish commands.
+        """
         target_idx = self.nearest_waypoint(x, y, yaw)
         target_x, target_y, target_yaw = self.waypoints[target_idx]
 
-        # Compute heading error
-        error_steer = np.arctan2(target_y - y, target_x - x) - yaw
+        # Compute the error vector from current position to target waypoint
+        error_vec = np.array([target_x - x, target_y - y])
+        
+        # Heading error (steering error) computed as difference between target bearing and vehicle heading
+        target_bearing = math.atan2(error_vec[1], error_vec[0])
+        error_steer = target_bearing - yaw
         error_steer = (error_steer + math.pi) % (2 * math.pi) - math.pi  # Normalize to [-pi, pi]
-        error_speed = np.hypot(target_x - x, target_y - y)
+
+        # Under no-slip condition, assume the vehicle's velocity is aligned with its heading.
+        # Therefore, the effective speed error is the projection of error_vec onto the forward direction.
+        forward_direction = np.array([np.cos(yaw), np.sin(yaw)])
+        error_speed = np.dot(error_vec, forward_direction)
 
         # Compute PID outputs for steering and speed.
         steer, self.integral_steer, self.prev_error_steer = self.pid_control(

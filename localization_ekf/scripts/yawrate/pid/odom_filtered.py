@@ -8,22 +8,12 @@ import numpy as np
 import math
 
 
-        # odom0_config: [true, true,  true,
-        #               false, false, false,
-        #                true, true, false,
-        #                false, false, true,
-        #                false, false, false]
-
-                # imu0_config: [false, false, false,
-                #       true,  true,  true,
-                #       false, false, false,
-                #       true,  true,  true,
-                #       true,  true,  true]
 
 # -----------------------------
 # Define Noise Covariances
 # -----------------------------
-# Process noise covariance Q (15x15) decrease value = high precision
+# Process noise covariance Q (15x15) decrease value = high precision 
+#initial noise
 Q = np.diag([
     0.02, 0.02, 0.02,            # position noise
     np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),  # orientation noise (rad) roll pitch yaw
@@ -33,13 +23,15 @@ Q = np.diag([
 ]) ** 2
 
 # Measurement noise covariance for odometry (6x6): [p (3), v (3)]
-R_odom = np.diag([0.1, 0.1, 0.1, 0.1, 0.1, 0.1]) ** 2
+R_odom = np.diag([0.1, 0.1, 0.1,# Position noise (x, y, z)
+                   0.1, 0.1, 0.1]) ** 2 # Velocity noise (vx, vy, vz)
+
 
 # Measurement noise covariance for IMU (9x9): [orientation (3), angular velocity (3), linear acceleration (3)]
 R_imu = np.diag([
-    np.deg2rad(1.0), np.deg2rad(1.0), np.deg2rad(1.0),
-    np.deg2rad(0.5), np.deg2rad(0.5), np.deg2rad(0.5),
-    0.2, 0.2, 0.2
+    np.deg2rad(1.0), np.deg2rad(1.0), np.deg2rad(1.0),# Orientation noise (roll, pitch, yaw)
+    np.deg2rad(0.5), np.deg2rad(0.5), np.deg2rad(0.5),# Angular velocity noise (ωx, ωy, ωz)
+    0.2, 0.2, 0.2 # Linear acceleration noise (ax, ay, az)
 ]) ** 2
 
 print('Noise covariances defined.')

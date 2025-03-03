@@ -16,7 +16,7 @@ Q = np.diag([
     np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),  # orientation noise (rad) roll pitch yaw
     0.1, 0.1, 0.1,               # linear velocity noise
     np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),  # angular velocity noise (rad/s)
-    0.2, 0.2, 0.2                # linear acceleration noise
+    3.2, 3.2, 3.2                # linear acceleration noise
 ]) ** 2
 
 # Measurement noisecovariance for odometry (6x6): [p (3), v (3)]
@@ -26,7 +26,7 @@ R_odom = np.diag([0.3, 0.3, 0.3, 0.3, 0.3, 0.3]) ** 2
 R_imu = np.diag([
     np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),
     np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),
-    0.2, 0.2, 0.2
+    0.1, 0.1, 0.1
 ]) ** 2
 
 print('Noise covariances defined.')

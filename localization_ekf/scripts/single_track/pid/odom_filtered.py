@@ -21,14 +21,14 @@ import math
 # Process noise covariance Q (15x15) decrease value = high precision
 Q = np.diag([
     0.02, 0.02, 0.02,            # position noise
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),  # orientation noise (rad) roll pitch yaw
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(3.1),  # orientation noise (rad) roll pitch yaw
     0.1, 0.1, 0.1,               # linear velocity noise
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),  # angular velocity noise (rad/s)
-    3.2, 3.2, 3.2                # linear acceleration noise อนุญาตให้ yaw เปลี่ยนแปลงได้ดีขึ้น
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(3.1),  # angular velocity noise (rad/s)
+    0.1, 0.1, 2.1                # linear acceleration noise อนุญาตให้ yaw เปลี่ยนแปลงได้ดีขึ้น
 ]) ** 2
 
-# Measurement noisecovariance for odometry (6x6): [p (3), v (3)]
-R_odom = np.diag([0.3, 0.3, 0.3, 0.3, 0.3, 0.3]) ** 2
+# Measurement noisecovariance for odometry (6x6): [p (3), v (3)]  increase this matrix because it not accurate
+R_odom = np.diag([1.7, 1.7, 1.5, 1.8, 1.8, 1.6]) ** 2
 
 # Measurement noise covariance for IMU (9x9): [orientation (3), angular velocity (3), linear acceleration (3)]
 R_imu = np.diag([
@@ -243,7 +243,7 @@ class OdomFilteredNode(Node):
         self.dt = 0.02  # 50 Hz prediction rate
 
         # Subscribers for raw odometry and IMU measurements
-        self.create_subscription(Odometry, '/odom_noisy', self.odom_callback, 10)
+        self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
         self.create_subscription(Imu, '/imu', self.imu_callback, 10)
 
         # Publisher for filtered odometry
