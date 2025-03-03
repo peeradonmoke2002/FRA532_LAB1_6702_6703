@@ -280,6 +280,8 @@ where:
 - $$\( \beta_k \)$$ is the slip angle (if applicable).
 - $$\( \Delta t \)$$ is the time step.
 
+  
+For more information about forward kinematics, refer to this reference, which includes details from above and below: -> [Yaw-Rate, Single Track, and Double Track Models References](#yaw-rate-single-track-and-double-track-models-references)
 
 
 In this lab, we have used three models to compare the performance and accuracy of forward kinematics models:
@@ -333,6 +335,17 @@ y_{k-1} + v_{k-1} \cdot \Delta t \cdot \sin \left(\beta_{k-1} + \theta_{k-1} + \
 \end{bmatrix} 
 \end{align}
 ```
+where:
+
+- \( x_k, y_k \) are the current coordinates of the object.
+- \( \theta_k \) is the current orientation angle.
+- \( \beta_k \) is the slip angle.
+- \( v_k \) is the linear velocity.
+- \( \omega_k \) is the angular velocity.
+- \( \delta_{F,k} \) is the front steering angle.
+- \( r_b \) is the wheelbase.
+- \( \tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times \) are the left and right rear wheel velocities.
+- \( \Delta t \) is the time step.
 
 
 #### Running Single Track Model
@@ -354,8 +367,28 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 5) Use the odometry recording and plotting tool to compare results.
 
 #### Double Track Model
+For double track model are determines the pose by suing basic of two single wheel velocities, For translation motion is calculate by average of the velocities of the two wheels and the roatation is determined on the basic of the velocity difference with respect to the single wheel angle and wheel contact points
 
-
+```math
+\begin{align} 
+\begin{bmatrix} 
+x_k\\ 
+y_k\\ 
+\theta_k\\ 
+\beta_k\\ 
+v_k\\ 
+\omega_k 
+\end{bmatrix} 
+= 
+\begin{bmatrix} 
+x_{k-1} + v_{k-1} \cdot \Delta t \cdot \cos \left(\beta_{k-1} + \theta_{k-1} + \frac{\omega_{k-1} \cdot \Delta t}{2} \right)\\ 
+y_{k-1} + v_{k-1} \cdot \Delta t \cdot \sin \left(\beta_{k-1} + \theta_{k-1} + \frac{\omega_{k-1} \cdot \Delta t}{2} \right)\\ 
+\theta_{k-1} + \omega_{k-1} \cdot \Delta t\\ 
+0\\ 
+\omega_{k-1}
+\end{bmatrix}
+\end{align}
+```
 #### Running Double Track Model
 Try running the following commands to test the double track model:
 
