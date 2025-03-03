@@ -185,6 +185,9 @@ Substituting into the first equation:
 ```math
 \delta = \arctan \left( \frac{L \cdot \omega_z}{v} \right)
 ```
+For more information -> [Bicycle Model References](#bicycle-model-references)
+
+##### Running Bicycle Model
 Try running the following commands to test the bicycle model:
 
 1) Run simulation
@@ -201,8 +204,32 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 4) Try controlling the robot using the keyboard and observe the results in Rviz and Gazebo simulation.
 
-#### Ackermann Model
+### Ackermann Model
+For the Ackermann model, to prevent the front wheels from slipping, the steering angles of the front wheels cannot be equal.
 
+![image](https://github.com/user-attachments/assets/72521e7d-4b39-4935-9a83-6c75c6fc8b51)
+
+The turning radius of the robot is:
+
+```math
+R_b = \frac{L}{\tan(\delta)}
+```
+The steering angles of the front wheels must satisfy these conditions to avoid skidding:
+
+```math
+\delta_{left} = \arctan \left( \frac{2 \cdot WB \cdot \sin(\delta)}{2 \cdot WB \cdot \cos(\delta) - TW \cdot \sin(\delta)} \right)
+```
+```math
+\delta_{right} = \arctan \left( \frac{2 \cdot WB \cdot \sin(\delta)}{2 \cdot WB \cdot \cos(\delta) + TW \cdot \sin(\delta)} \right)
+```
+where
+
+- `WB` is the **wheel_base**
+- `TW` is the **track_width**
+
+
+
+##### Running Ackermann Model
 Try running the following commands to test the Ackermann model:
 
 1) Run simulation
@@ -229,6 +256,8 @@ In this lab, we have used three models to compare the performance and accuracy o
 
 #### Yaw-Rate Model
 
+
+#### Running Yaw-Rate Model
 Try running the following commands to test the yaw-rate model:
 
 1) Run simulation
@@ -248,6 +277,8 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 #### Single Track Model
 
+
+#### Running Single Track Model
 Try running the following commands to test the single track model:
 
 1) Run simulation
@@ -267,6 +298,8 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 #### Double Track Model
 
+
+#### Running Double Track Model
 Try running the following commands to test the double track model:
 
 1) Run simulation
@@ -787,19 +820,19 @@ R_imu = np.diag([
 
 ## References
 
-### Bicycle Model
+### Bicycle Model References
 - [Algorithms for Automated Driving - Bicycle Model](https://thomasfermi.github.io/Algorithms-for-Automated-Driving/Control/BicycleModel.html)
 - [ROS2 Controllers - Bicycle Model](https://control.ros.org/rolling/doc/ros2_controllers/doc/mobile_robot_kinematics.html#car-like-bicycle-model)
 
-### Ackermann Model
+### Ackermann Model References
 - [MathWorks - Kinematic Steering](https://www.mathworks.com/help/vdynblks/ref/kinematicsteering.html)
 - [Ackermann Steering](https://raw.org/book/kinematics/ackerman-steering/)
 - [ROS2 Controllers - Ackermann Model](https://control.ros.org/rolling/doc/ros2_controllers/doc/mobile_robot_kinematics.html#ackermann-steering)
 
-### Yaw-Rate, Single Track, and Double Track Models
+### Yaw-Rate, Single Track, and Double Track Models References
 - [IEEE Paper on Vehicle Dynamics](https://ieeexplore.ieee.org/document/8574906)
 
-### Path Tracking Controllers
+### Path Tracking Controllers References
 - [PID Controller](https://thomasfermi.github.io/Algorithms-for-Automated-Driving/Control/PID.html)
 - [Pure Pursuit Controller](https://thomasfermi.github.io/Algorithms-for-Automated-Driving/Control/PurePursuit.html)
 - [Stanley Controller](https://www.ri.cmu.edu/pub_files/2009/2/Automatic_Steering_Methods_for_Autonomous_Automobile_Path_Tracking.pdf)
