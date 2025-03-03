@@ -329,8 +329,8 @@ y_{k-1} + v_{k-1} \cdot \Delta t \cdot \sin \left(\beta_{k-1} + \theta_{k-1} + \
 \theta_{k-1} + \omega_{k-1} \cdot \Delta t\\ 
 \beta^*_{R,k}\\ 
 \frac{\tilde{v}_{RL,k}^\times + \tilde{v}_{RR,k}^\times}{2}\\ 
-\frac{v_{k-1}}{r_b} + \tan (\beta^*_{F,k})
-\end{bmatrix}, 
+\frac{v_{k-1}}{r_b} + \tan (δ_{F,k})
+\end{bmatrix} 
 \end{align}
 ```
 
