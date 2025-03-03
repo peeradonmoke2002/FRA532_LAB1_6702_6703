@@ -110,36 +110,8 @@ single track model heading it  too many error  then we use lower R matrix more t
 ## State Vector Representation
 
 The system state is defined as:
-$$
-\mathbf{X}_k =
-\begin{bmatrix}
-p_{x,k} \\
-p_{y,k} \\
-p_{z,k} \\
-\text{roll}_k \\
-\text{pitch}_k \\
-\text{yaw}_k \\
-v_{x,k} \\
-v_{y,k} \\
-v_{z,k} \\
-\omega_{x,k} \\
-\omega_{y,k} \\
-\omega_{z,k} \\
-a_{x,k} \\
-a_{y,k} \\
-a_{z,k}
-\end{bmatrix}
-$$
 
-$$
-\begin{aligned}
-p_{x,k}, p_{y,k}, p_{z,k} & \quad \text{represent the position.} \\
-\text{roll}_k, \text{pitch}_k, \text{yaw}_k & \quad \text{represent the orientation.} \\
-v_{x,k}, v_{y,k}, v_{z,k} & \quad \text{represent the linear velocity.} \\
-\omega_{x,k}, \omega_{y,k}, \omega_{z,k} & \quad \text{represent the angular velocity.} \\
-a_{x,k}, a_{y,k}, a_{z,k} & \quad \text{represent the linear acceleration.}
-\end{aligned}
-$$
+![equation](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/equation.png)
 
 
 
