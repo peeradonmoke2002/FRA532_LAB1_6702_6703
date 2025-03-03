@@ -4,6 +4,7 @@
 - [System Overview](#system-overview)
 - [Installation](#installation)
 - [LAB 1.1](#lab-11)
+    - [Craete Robot Model](#create-robot-model)
     - [Inverse Kinematics](#inverse-kinematics)
     - [Forward Kinematics](#forward-kinematics)
     - [Methodology and Results lab 1.1](#methodology-and-results-lab-11)  
@@ -75,6 +76,25 @@ It should show the Rviz view and Gazebo simulation as seen in the figure below:
 ## LAB 1.1
 > [!NOTE]  
 > The lab 1.1 package folder is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller`
+
+### Craete Robot Model
+![image](https://github.com/user-attachments/assets/d33851ab-3935-4c03-9aee-bf0b32545424)
+
+
+
+Base from robot dimension that set in this lab we need to set following this in `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/limo_descritopn` base from below:
+- wheel base
+- wheel length
+- track width
+- maximum angle steering
+
+
+
+![Screenshot from 2025-03-03 23-10-37](https://github.com/user-attachments/assets/995d742f-06c9-4ac5-9dd7-c04f061cbb04)
+
+
+
+
 ### Inverse Kinematics
 
 In this lab, we have used two models to compare the performance and accuracy of inverse kinematics models:
