@@ -21,9 +21,7 @@
 
 
 ## System Overview
-![Personal diagram - FRA532 Mobile Robot-2](https://github.com/user-attachments/assets/e4a6f163-1add-4d8e-b1a1-1536304b5301)
-
-
+![Personal diagram - FRA532 Mobile Robot-3](https://github.com/user-attachments/assets/10c20c86-fc86-4021-bdda-3a982760244b)
 
 ## Installation
 
