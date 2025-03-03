@@ -251,15 +251,25 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 For the concept of dead-reckoning, modeling or odometry is a method used to estimate the current position of an object by using its last known location and information about its velocity or traveled distance.
 ```math
 \begin{align} 
-{\left[\begin{array}{c}x_{k+1} \\ y_{k+1} \\ \theta _{k+1} \end{array}\right]} = 
-{\left[\begin{array}{c}x_{k} \\ y_{k} \\ \theta _{k} \end{array}\right]} + 
-{\left[\begin{array}{c} 
-v_{k}\cdot \Delta t \cdot \cos \left(\beta _{k}+\theta _{k}+\frac{\omega _{k}\cdot \Delta t}{2}\right) \\ 
-v_{k}\cdot \Delta t \cdot \sin \left(\beta _{k}+\theta _{k}+\frac{\omega _{k}\cdot \Delta t}{2}\right) \\ 
-\omega _{k}\cdot \Delta t 
-\end{array}\right]} . \tag{2} 
+\begin{bmatrix} 
+x_{k+1} \\ 
+y_{k+1} \\ 
+\theta_{k+1} 
+\end{bmatrix} 
+= 
+\begin{bmatrix} 
+x_k \\ 
+y_k \\ 
+\theta_k 
+\end{bmatrix} 
++ 
+\begin{bmatrix} 
+v_k \cdot \Delta t \cdot \cos \left(\beta_k + \theta_k + \frac{\omega_k \cdot \Delta t}{2} \right) \\ 
+v_k \cdot \Delta t \cdot \sin \left(\beta_k + \theta_k + \frac{\omega_k \cdot \Delta t}{2} \right) \\ 
+\omega_k \cdot \Delta t 
+\end{bmatrix}. 
 \end{align}
-```
+
 where:
 
 - $$\( x_k, y_k \)$$ are the current coordinates of the object.
