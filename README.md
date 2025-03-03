@@ -337,15 +337,15 @@ y_{k-1} + v_{k-1} \cdot \Delta t \cdot \sin \left(\beta_{k-1} + \theta_{k-1} + \
 ```
 where:
 
-- \( x_k, y_k \) are the current coordinates of the object.
-- \( \theta_k \) is the current orientation angle.
-- \( \beta_k \) is the slip angle.
-- \( v_k \) is the linear velocity.
-- \( \omega_k \) is the angular velocity.
-- \( \delta_{F,k} \) is the front steering angle.
-- \( r_b \) is the wheelbase.
-- \( \tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times \) are the left and right rear wheel velocities.
-- \( \Delta t \) is the time step.
+- $$\( x_k, y_k \)$$ are the current coordinates of the object.
+- $$\( \theta_k \)$$ is the current orientation angle.
+- $$\( \beta_k \)$$ is the slip angle.
+- $$\( v_k \)$$ is the linear velocity.
+- $$\( \omega_k \)$$ is the angular velocity.
+- $$\( \delta_{F,k} \)$$ is the front steering angle.
+- $$\( r_b \)$$ is the wheelbase.
+- $$\( \tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times \)$$ are the left and right rear wheel velocities.
+- $$\( \Delta t \)$$ is the time step.
 
 
 #### Running Single Track Model
@@ -393,13 +393,13 @@ y_{k-1} + v_{k-1} \cdot \Delta t \cdot \sin \left(\beta_{k-1} + \theta_{k-1} + \
 
 where:
 
-- \( x_k, y_k \) are the current coordinates of the object.
-- \( \theta_k \) is the current orientation angle.
-- \( \beta_k \) is the slip angle.
-- \( v_k \) is the linear velocity.
-- \( \omega_k \) is the angular velocity.
-- \( \tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times \) are the left and right rear wheel velocities.
-- \( \Delta t \) is the time step.
+- $$\( x_k, y_k \)$$ are the current coordinates of the object.
+- $$\( \theta_k \)$$ is the current orientation angle.
+- $$\( \beta_k \)$$ is the slip angle.
+- $$\( v_k \)$$ is the linear velocity.
+- $$\( \omega_k \)$$ is the angular velocity.
+- $$\( \tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times \)$$ are the left and right rear wheel velocities.
+- $$\( \Delta t \)$$ is the time step.
 
 
 To find $$\omega_{k-1}$$
@@ -416,17 +416,17 @@ r_{1,x} \cdot \sin (\delta_1) \cos (\delta_2 - \beta) - r_{1,y} \cdot \cos (\del
 ```
 where:
 
-- \( x_k, y_k \) are the current coordinates of the object.
-- \( \theta_k \) is the current orientation angle.
-- \( \beta_k \) is the slip angle.
-- \( v_k \) is the linear velocity.
-- \( \omega_k \) is the angular velocity.
-- \( \tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times \) are the left and right rear wheel velocities.
-- \( \Delta t \) is the time step.
-- \( \omega \) is the calculated angular velocity.
-- \( \delta_1, \delta_2 \) are the front wheel steering angles.
-- \( v_1, v_2 \) are the wheel velocities.
-- \( r_{1,x}, r_{1,y}, r_{2,x}, r_{2,y} \) are the contact points of the wheels.
+- $$\( x_k, y_k \)$$ are the current coordinates of the object.
+- $$\( \theta_k \)$$ is the current orientation angle.
+- $$\( \beta_k \)$$ is the slip angle.
+- $$\( v_k \)$$ is the linear velocity.
+- $$\( \omega_k \)$$ is the angular velocity.
+- $$\( \tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times \)$$ are the left and right rear wheel velocities.
+- $$\( \Delta t \)$$ is the time step.
+- $$\( \omega \)$$ is the calculated angular velocity.
+- $$\( \delta_1, \delta_2 \)$$ are the front wheel steering angles.
+- $$\( v_1, v_2 \)$$ are the wheel velocities.
+- $$\( r_{1,x}, r_{1,y}, r_{2,x}, r_{2,y} \)$$ are the contact points of the wheels.
 
 
 
