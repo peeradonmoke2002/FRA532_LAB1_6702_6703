@@ -76,21 +76,78 @@ It should show the Rviz view and Gazebo simulation as seen in the figure below:
 ## LAB 1.1
 > [!NOTE]  
 > The lab 1.1 package folder is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller`
+> For Robot Model package are locate at `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/limo_description`
 
 ### Create Robot Model
+
+#### Robot Dimension
 ![image](https://github.com/user-attachments/assets/d33851ab-3935-4c03-9aee-bf0b32545424)
 
+Based on the robot dimensions set in this lab, you need to configure the following parameters in `limo_description` as shown below:
+
+- **Wheel base:** `0.2 m`
+- **Wheel radius:** `0.045 m`
+- **Wheel length:** `0.001 m`
+- **Track width:** `0.13 m`
+
+> [!WARNING]  
+> Incorrect dimensions will negatively impact the robot's performance and accuracy in Labs 1.1, 1.2, and 1.3. Please ensure that you have set the correct dimensions.
 
 
-Base from robot dimension that set in this lab we need to set following this in `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/limo_descritopn` base from below:
-- wheel base
-- wheel length
-- track width
-- maximum angle steering
+### TF (Transform Frames)
 
-
+After creating the robot model based on the specified robot dimensions, the following coordinate frame transformations should be set up:
 
 ![Screenshot from 2025-03-03 23-10-37](https://github.com/user-attachments/assets/995d742f-06c9-4ac5-9dd7-c04f061cbb04)
+
+#### **Transformations**
+1. **`base_footprint` → `base_link`**  
+   - Represents the static relationship between the center of the robot base (`base_link`) and the floor (`base_footprint`).
+   - The `base_footprint` frame is usually at ground level, while `base_link` is at the actual center of the robot.
+
+2. **`base_link` → `front_left_wheel_link`**  
+   - Defines the transformation from the robot’s main body (`base_link`) to the **front-left wheel**.
+   - The position is offset forward and to the left, based on the track width and wheelbase dimensions.
+
+3. **`base_link` → `front_right_wheel_link`**  
+   - Defines the transformation from `base_link` to the **front-right wheel**.
+   - The position is offset forward and to the right, similar to the **front-left wheel**, but on the opposite side.
+
+4. **`base_link` → `rear_left_wheel_link`**  
+   - Connects `base_link` to the **rear-left wheel**.
+   - This transformation moves the reference frame to the rear of the robot and offsets it to the left.
+
+5. **`base_link` → `rear_right_wheel_link`**  
+   - Connects `base_link` to the **rear-right wheel**.
+   - This transformation moves the reference frame to the rear of the robot and offsets it to the right.
+
+6. **`base_link` → `depth_camera_link`**  
+   - Represents the transformation from `base_link` to the **depth camera** mounted on the robot.
+   - The camera is typically placed at a fixed height and slightly forward to provide a clear field of view.
+
+7. **`base_link` → `imu_link`**  
+   - Defines the transformation from `base_link` to the **IMU (Inertial Measurement Unit)**.
+   - The IMU is usually mounted at the robot’s center to minimize bias in angular velocity and acceleration readings.
+
+8. **`base_link` → `laser_link`**  
+   - Connects `base_link` to the **laser scanner (LiDAR) sensor**.
+   - The LiDAR is commonly placed at the front or center of the robot, slightly above the base, to provide optimal mapping and obstacle detection.
+
+9. **`depth_camera_link` → `camera_depth_optical_frame`**  
+   - This transformation represents the coordinate change from the **depth camera frame** to its **optical frame**.
+   - It ensures that depth perception calculations align with the camera’s internal processing frame.
+
+10. **`base_link` → `depth_link`**  
+   - Defines a transformation to another reference frame used for depth calculations.
+   - This could be an intermediate frame used for sensor fusion or processing depth images.
+
+<img width="1371" alt="Screenshot 2568-03-03 at 23 49 39" src="https://github.com/user-attachments/assets/e9974f2c-f8a7-4839-95ea-7bbec239c075" />
+
+
+> [!WARNING]   
+> Incorrectly setting up these transformations will affect the robot’s ability to navigate, localize, and process sensor data properly. Ensure the frames are correctly configured before running simulations or real-world applications.
+
+
 
 
 
