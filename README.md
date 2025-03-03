@@ -384,11 +384,54 @@ v_k\\
 x_{k-1} + v_{k-1} \cdot \Delta t \cdot \cos \left(\beta_{k-1} + \theta_{k-1} + \frac{\omega_{k-1} \cdot \Delta t}{2} \right)\\ 
 y_{k-1} + v_{k-1} \cdot \Delta t \cdot \sin \left(\beta_{k-1} + \theta_{k-1} + \frac{\omega_{k-1} \cdot \Delta t}{2} \right)\\ 
 \theta_{k-1} + \omega_{k-1} \cdot \Delta t\\ 
-0\\ 
+0\\
+\frac{\tilde{v}_{RL,k}^\times + \tilde{v}_{RR,k}^\times}{2}\\ 
 \omega_{k-1}
 \end{bmatrix}
 \end{align}
 ```
+
+where:
+
+- \( x_k, y_k \) are the current coordinates of the object.
+- \( \theta_k \) is the current orientation angle.
+- \( \beta_k \) is the slip angle.
+- \( v_k \) is the linear velocity.
+- \( \omega_k \) is the angular velocity.
+- \( \tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times \) are the left and right rear wheel velocities.
+- \( \Delta t \) is the time step.
+
+
+To find $$\omega_{k-1}$$
+
+```math
+\begin{align} 
+\omega = 
+\frac{ v_1\cdot \cos (\delta_2 - \beta) - v_2\cdot \cos (\delta_1 - \beta) }
+{\begin{array}{l} 
+r_{1,x} \cdot \sin (\delta_1) \cos (\delta_2 - \beta) - r_{1,y} \cdot \cos (\delta_1) \cos (\delta_2 - \beta) \\ 
+- r_{2,x} \cdot \sin (\delta_2) \cos (\delta_1 - \beta) + r_{2,y} \cdot \cos (\delta_2) \cos (\delta_1 - \beta) 
+\end{array}} 
+\end{align}
+
+where:
+
+- \( x_k, y_k \) are the current coordinates of the object.
+- \( \theta_k \) is the current orientation angle.
+- \( \beta_k \) is the slip angle.
+- \( v_k \) is the linear velocity.
+- \( \omega_k \) is the angular velocity.
+- \( \tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times \) are the left and right rear wheel velocities.
+- \( \Delta t \) is the time step.
+- \( \omega \) is the calculated angular velocity.
+- \( \delta_1, \delta_2 \) are the front wheel steering angles.
+- \( v_1, v_2 \) are the wheel velocities.
+- \( r_{1,x}, r_{1,y}, r_{2,x}, r_{2,y} \) are the contact points of the wheels.
+
+
+
+
+
 #### Running Double Track Model
 Try running the following commands to test the double track model:
 
