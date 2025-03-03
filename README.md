@@ -15,8 +15,8 @@
 
 - [LAB 1.3](#lab-13)
 
--[Our Team](#our-team)
--[References](#references)
+- [Our Team](#our-team)
+- [References](#references)
 
 
 
