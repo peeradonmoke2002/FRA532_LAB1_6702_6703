@@ -187,7 +187,7 @@ Substituting into the first equation:
 ```
 For more information -> [Bicycle Model References](#bicycle-model-references)
 
-##### Running Bicycle Model
+#### Running Bicycle Model
 Try running the following commands to test the bicycle model:
 
 1) Run simulation
@@ -207,7 +207,8 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ### Ackermann Model
 For the Ackermann model, to prevent the front wheels from slipping, the steering angles of the front wheels cannot be equal.
 
-![image](https://github.com/user-attachments/assets/72521e7d-4b39-4935-9a83-6c75c6fc8b51)
+![image](https://github.com/user-attachments/assets/65b5b864-37c0-40ca-aa54-e12060a3246a)
+
 
 The turning radius of the robot is:
 
@@ -227,9 +228,9 @@ where
 - `WB` is the **wheel_base**
 - `TW` is the **track_width**
 
+For more information -> [Ackermann Model References](#ackermann-model-references)
 
-
-##### Running Ackermann Model
+#### Running Ackermann Model
 Try running the following commands to test the Ackermann model:
 
 1) Run simulation
