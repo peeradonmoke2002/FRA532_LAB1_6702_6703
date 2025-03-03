@@ -310,6 +310,29 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 5) Use the odometry recording and plotting tool to compare results.
 
 #### Single Track Model
+For the single track model the translation motion is determined by average velocity of the rear wheels and for the roation is determind by use $$δ$$ front to calculate rotation rate $$ω$$
+
+```math
+\begin{align} 
+\begin{bmatrix} 
+x_k\\ 
+y_k\\ 
+\theta_k\\ 
+\beta_k\\ 
+v_k\\ 
+\omega_k 
+\end{bmatrix} 
+= 
+\begin{bmatrix} 
+x_{k-1} + v_{k-1} \cdot \Delta t \cdot \cos \left(\beta_{k-1} + \theta_{k-1} + \frac{\omega_{k-1} \cdot \Delta t}{2} \right)\\ 
+y_{k-1} + v_{k-1} \cdot \Delta t \cdot \sin \left(\beta_{k-1} + \theta_{k-1} + \frac{\omega_{k-1} \cdot \Delta t}{2} \right)\\ 
+\theta_{k-1} + \omega_{k-1} \cdot \Delta t\\ 
+\beta^*_{R,k}\\ 
+\frac{\tilde{v}_{RL,k}^\times + \tilde{v}_{RR,k}^\times}{2}\\ 
+\frac{v_{k-1}}{r_b} + \tan (\beta^*_{F,k})
+\end{bmatrix}, 
+\end{align}
+```
 
 
 #### Running Single Track Model
