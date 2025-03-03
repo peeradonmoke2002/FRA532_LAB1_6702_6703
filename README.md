@@ -111,7 +111,7 @@ single track model heading it  too many error  then we use lower R matrix more t
 
 The system state is defined as:
 
-$$
+\[
 X_k =
 \begin{bmatrix}
 p_{x,k} \\
@@ -130,9 +130,9 @@ a_{x,k} \\
 a_{y,k} \\
 a_{z,k}
 \end{bmatrix}
-$$
+\]
 
-$$
+\[
 \begin{aligned}
 p_{x,k}, p_{y,k}, p_{z,k} & \quad \text{represent the position.} \\
 \text{roll}_k, \text{pitch}_k, \text{yaw}_k & \quad \text{represent the orientation.} \\
@@ -140,7 +140,8 @@ v_{x,k}, v_{y,k}, v_{z,k} & \quad \text{represent the linear velocity.} \\
 \omega_{x,k}, \omega_{y,k}, \omega_{z,k} & \quad \text{represent the angular velocity.} \\
 a_{x,k}, a_{y,k}, a_{z,k} & \quad \text{represent the linear acceleration.}
 \end{aligned}
-$$
+\]
+
 
 
 ## State Transition Equations
