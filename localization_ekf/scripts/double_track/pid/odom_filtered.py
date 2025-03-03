@@ -7,36 +7,31 @@ from tf_transformations import quaternion_from_euler, euler_from_quaternion
 import numpy as np
 import math
 
-import tf_transformations
 
 
-
-
-        # odom0_config: [true, true, true,
-        #               true,  true,  true,
-        #               true, true, true,
-        #               true,  true,  true,
-        #               true,  true,  true]
 # -----------------------------
 # Define Noise Covariances
 # -----------------------------
-# Process noise covariance Q (15x15) decrease value = high precision
+# Process noise covariance Q (15x15) decrease value = high precision 
+#initial noise
 Q = np.diag([
-    0.02, 0.02, 0.02,            # position noise
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(3.1),  # orientation noise (rad) roll pitch yaw
+    0.02, 0.02, 2.02,            # position noise
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(2.5),  # orientation noise (rad) roll pitch yaw
     0.1, 0.1, 0.1,               # linear velocity noise
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(3.1),  # angular velocity noise (rad/s)
-    0.1, 0.1, 2.1                # linear acceleration noise อนุญาตให้ yaw เปลี่ยนแปลงได้ดีขึ้น
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(2.5),  # angular velocity noise (rad/s)
+    0.2, 0.2, 0.2                # linear acceleration noise
 ]) ** 2
 
-# Measurement noisecovariance for odometry (6x6): [p (3), v (3)]  increase this matrix because it not accurate
-R_odom = np.diag([1.65, 1.65, 1.65, 1.75, 1.75, 1.75]) ** 2
+# Measurement noise covariance for odometry (6x6): [p (3), v (3)]
+R_odom = np.diag([2.0, 2.0, 2.1,# Position noise (x, y, z)
+                   2.1, 2.1, 2.1]) ** 2 # Velocity noise (vx, vy, vz)
+
 
 # Measurement noise covariance for IMU (9x9): [orientation (3), angular velocity (3), linear acceleration (3)]
 R_imu = np.diag([
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),
-    0.2, 0.2, 0.2
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),# Orientation noise (roll, pitch, yaw)
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),# Angular velocity noise (ωx, ωy, ωz)
+    0.2, 0.2, 0.3 # Linear acceleration noise (ax, ay, az)
 ]) ** 2
 
 print('Noise covariances defined.')
@@ -242,9 +237,7 @@ class OdomFilteredNode(Node):
         # Control input (for angular acceleration update); assume zero control here.
         self.u_alpha = np.zeros((3,1))
         self.last_time = self.get_clock().now()
-        self.dt = 0.02  # 50 Hz prediction rate
-        self.initial_orientation = None
-        self.relative_yaw = 0.0
+        self.dt = 1/100  # 50 Hz prediction rate
 
         # Subscribers for raw odometry and IMU measurements
         self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
@@ -279,27 +272,30 @@ class OdomFilteredNode(Node):
         self.xEst, self.PEst = ekf_update_odom(self.xEst, self.PEst, z, R_odom)
 
     def imu_callback(self, msg):
-        orientation_q = msg.orientation
-        orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
-        if orientation_list == [0.0, 0.0, 0.0, 0.0]:
-            return  # Skip invalid IMU data
-        
-        # แปลง quaternion เป็น Euler angles (roll, pitch, yaw)
-        _, _, yaw = tf_transformations.euler_from_quaternion(orientation_list)
-        
-        # ถ้ายังไม่มีค่าเริ่มต้นให้เซ็ต initial_orientation
-        if self.initial_orientation is None:
-            self.initial_orientation = yaw
-        
-        # คำนวณ relative yaw (heading) จากค่าเริ่มต้น
-        self.relative_yaw = yaw - self.initial_orientation
-
+        # Extract IMU measurement: orientation, angular velocity, and linear acceleration.
+        z = np.zeros((9,1))
+        # Orientation: convert quaternion to Euler angles (roll, pitch, yaw)
+        q = msg.orientation
+        roll, pitch, yaw = euler_from_quaternion([q.x, q.y, q.z, q.w])
+        z[0,0] = roll
+        z[1,0] = pitch
+        z[2,0] = yaw
+        # Angular velocity:
+        z[3,0] = msg.angular_velocity.x
+        z[4,0] = msg.angular_velocity.y
+        z[5,0] = msg.angular_velocity.z
+        # Linear acceleration:
+        z[6,0] = msg.linear_acceleration.x
+        z[7,0] = msg.linear_acceleration.y
+        z[8,0] = msg.linear_acceleration.z
+        # EKF update with IMU measurement
+        self.xEst, self.PEst = ekf_update_imu(self.xEst, self.PEst, z, R_imu)
 
     def publish_filtered_odom(self):
         odom_msg = Odometry()
         odom_msg.header.stamp = self.get_clock().now().to_msg()
         odom_msg.header.frame_id = 'odom'
-        odom_msg.child_frame_id = 'base_footprint'
+        odom_msg.child_frame_id = 'base_footorint'
         # Position from state (first three entries)
         odom_msg.pose.pose.position.x = self.xEst[0,0]
         odom_msg.pose.pose.position.y = self.xEst[1,0]

@@ -70,13 +70,13 @@ def load_and_analyze():
         plt.plot(ekf[:, 0], ekf[:, 1], 'r-', label="EKF Estimated Trajectory")
 
     # Add RMSE and MAE as text annotations
-    error_text = f"RMSE: {rmse:.4f} m\nMAE: {mae:.4f} m" if rmse is not None and mae is not None else "Error metrics unavailable"
-    plt.text(0.05, 0.95, error_text, transform=plt.gca().transAxes, fontsize=12,
-             verticalalignment='top', bbox=dict(facecolor='white', alpha=0.7, edgecolor='black'))
+    # error_text = f"RMSE: {rmse:.4f} m\nMAE: {mae:.4f} m" if rmse is not None and mae is not None else "Error metrics unavailable"
+    # plt.text(0.05, 0.95, error_text, transform=plt.gca().transAxes, fontsize=12,
+    #          verticalalignment='top', bbox=dict(facecolor='white', alpha=0.7, edgecolor='black'))
 
     plt.xlabel("X Position")
     plt.ylabel("Y Position")
-    plt.title("EKF Trajectory Analysis with RMSE & MAE [PID-YAWRATE]")
+    plt.title("EKF Trajectory Analysis with RMSE & MAE [PID-doubletrack-crash]")
     plt.legend()
     plt.grid(True)
     plt.show()
