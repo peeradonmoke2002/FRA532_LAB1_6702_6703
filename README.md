@@ -667,55 +667,55 @@ ros2 launch path_tracking pure_pursuit.launch mode:=noslip
 The Stanley controller is a path-tracking algorithm that calculates a steering angle correction based on both the heading error and the cross-track error.
 
 Lookahead Position (Front Axle Projection)
-The front axle position \( (x_f, y_f) \) is computed using:
+The front axle position $$\(x_f, y_f\)$$ is computed using:
 
 ```math
-x_f = x + L \cos(	heta)
+x_f = x + L \cos(\theta)
 ```
 
 ```math
-y_f = y + L \sin(	heta)
+y_f = y + L \sin(\theta)
 ```
 
 where:
-- \( x, y \) are the current coordinates of the vehicle.
-- \( \theta \) is the vehicle’s heading angle.
-- \( L \) is the distance from the center of mass to the front axle.
+- $$\( x, y \)$$ are the current coordinates of the vehicle.
+- $$\( \theta \)$$ is the vehicle’s heading angle.
+- $$\( L \)$$ is the distance from the center of mass to the front axle.
 
 Cross-Track Error Calculation
-The cross-track error \( e \) is the perpendicular distance from the front axle position to the nearest point on the reference path:
+The cross-track error $$\( e \)$$ is the perpendicular distance from the front axle position to the nearest point on the reference path:
 
 ```math
-e = (x_{	ext{wp}} - x_f) (-\sin(	heta)) + (y_{	ext{wp}} - y_f) \cos(	heta)
+e = (x_{	ext{wp}} - x_f) (-\sin(	\theta)) + (y_{	ext{wp}} - y_f) \cos(\theta)
 ```
 
 where:
-- \( x_{	ext{wp}}, y_{	ext{wp}} \) are the nearest waypoint coordinates.
-- \( x_f, y_f \) are the front axle coordinates.
-- \( e \) is the cross-track error.
+- $$\( x_{	ext{wp}}, y_{	ext{wp}} \)$$ are the nearest waypoint coordinates.
+- $$\( x_f, y_f \)$$ are the front axle coordinates.
+- $$\( e \)$$ is the cross-track error.
 
 Heading Error Calculation
-The heading error \( 	heta_e \) is given by the difference between the path yaw angle and the vehicle’s heading:
+The heading error $$\( \theta_e \)$$ is given by the difference between the path yaw angle and the vehicle’s heading:
 
 ```math
 \theta_e = \theta_{	ext{wp}} - \theta
 ```
 
 where:
-- \( \theta_{	ext{wp}} \) is the yaw angle of the path at the nearest waypoint.
+- $$\( \theta_{	ext{wp}} \)$$ is the yaw angle of the path at the nearest waypoint.
 
 Steering Angle Calculation
-The Stanley controller computes the desired steering angle \( \delta \) as:
+The Stanley controller computes the desired steering angle $$\( \delta \)$$ as:
 
 ```math
 \delta = \theta_e + \tan^{-1} \left( \frac{k e}{v} \right)
 ```
 
 where:
-- \( k \) is the Stanley gain parameter.
-- \( e \) is the cross-track error.
-- \( v \) is the vehicle’s velocity.
-- \( \theta_e \) is the heading error.
+- $$\( k \)$$ is the Stanley gain parameter.
+- $$\( e \)$$ is the cross-track error.
+- $$\( v \)$$ is the vehicle’s velocity.
+- $$\( \theta_e \)$$ is the heading error.
 
 #### Running Stanley Controller
 
