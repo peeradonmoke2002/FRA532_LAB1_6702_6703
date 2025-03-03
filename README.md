@@ -158,26 +158,33 @@ For the bicycle model, the two front wheels as well as the two rear wheels are l
 
 ![image](https://github.com/user-attachments/assets/8084ff17-cbdd-4f04-a37f-424a7ce0a5a1)
 
-From the figure above, we can determine the steering angle \( \delta \) using the geometric relationship:
+From the figure above, we can determine the steering angle $\delta$ using the geometric relationship:
 
-\[ \tan(\delta) = \frac{L}{R} \]
+```math
+\tan(\delta) = \frac{L}{R}
+```
 
 where:
-- \( L \) is the wheelbase (distance between the front and rear axle)
-- \( R \) is the turning radius
+- $L$ is the wheelbase (distance between the front and rear axle)
+- $R$ is the turning radius
 
-We also know the relationship between velocity \( v \) and angular velocity \( \omega_z \):
+We also know the relationship between velocity $v$ and angular velocity $\omega_z$:
 
-\[ v = \omega_z R \]
+```math
+v = \omega_z R
+```
 
-Rearranging for \( R \):
+Rearranging for $R$:
 
-\[ R = \frac{v}{\omega_z} \]
+```math
+R = \frac{v}{\omega_z}
+```
 
 Substituting into the first equation:
 
-\[ \delta = \arctan \left( \frac{L \cdot \omega_z}{v} \right) \]
-
+```math
+\delta = \arctan \left( \frac{L \cdot \omega_z}{v} \right)
+```
 Try running the following commands to test the bicycle model:
 
 1) Run simulation
