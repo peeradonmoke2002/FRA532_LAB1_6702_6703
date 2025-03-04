@@ -1305,31 +1305,31 @@ ros2 launch localization_ekf ekf-doubletrack.launch.py
 ### Control Results
 
 **Figure 1: PID Yaw Basic Control**  
-<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pid-yawrate-basic.png?raw=true" width="300px" alt="PID Yaw Basic Control">  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pid-yawrate-basic.png?raw=true" width="900px" alt="PID Yaw Basic Control">  
 
 **Figure 2: Stanley Yaw Basic Control**  
-<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/stanlee-yawrate-basic.png?raw=true" width="300px" alt="Stanley Yaw Basic Control">  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/stanlee-yawrate-basic.png?raw=true" width="900px" alt="Stanley Yaw Basic Control">  
 
 **Figure 3: PID Single Track Basic Control**  
-<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pid-single-basic.png?raw=true" width="300px" alt="PID Single Track Basic Control">  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pid-single-basic.png?raw=true" width="900px" alt="PID Single Track Basic Control">  
 
 **Figure 4: Pure Pursuit Single Track Basic Control**  
-<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pp-single-basic.png?raw=true" width="300px" alt="Pure Pursuit Single Track Basic Control">  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pp-single-basic.png?raw=true" width="900px" alt="Pure Pursuit Single Track Basic Control">  
 
 **Figure 5: Stanley Single Track Basic Control**  
-<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/stanlee-sinlge-basic.png?raw=true" width="300px" alt="Stanley Single Track Basic Control">  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/stanlee-sinlge-basic.png?raw=true" width="900px" alt="Stanley Single Track Basic Control">  
 
 **Figure 6: PID Yaw Noslip Control**  
-<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pid-yawrate-noslip.png?raw=true" width="300px" alt="PID Yaw Noslip Control">  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pid-yawrate-noslip.png?raw=true" width="900px" alt="PID Yaw Noslip Control">  
 
 **Figure 7: Pure Pursuit Yaw Noslip Control**  
-<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pp_yawrate_noslip.png?raw=true" width="300px" alt="Pure Pursuit Yaw Noslip Control">  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pp_yawrate_noslip.png?raw=true" width="900px" alt="Pure Pursuit Yaw Noslip Control">  
 
 **Figure 8: Stanley Yaw Noslip Control**  
-<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/stanlee-yawrate-noslip.png?raw=true" width="300px" alt="Stanley Yaw Noslip Control">  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/stanlee-yawrate-noslip.png?raw=true" width="900px" alt="Stanley Yaw Noslip Control">  
 
 **Figure 9: Pure Pursuit Single Track Noslip Control**  
-<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pp-single-noslip.png?raw=true" width="300px" alt="Pure Pursuit Single Track Noslip Control">  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pp-single-noslip.png?raw=true" width="900px" alt="Pure Pursuit Single Track Noslip Control">  
 
 
 
