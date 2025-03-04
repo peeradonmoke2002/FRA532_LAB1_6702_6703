@@ -483,17 +483,17 @@ ros2 launch robot_controller noslip_model+all_odom.launch.py
 
 3) Use the odometry recording  `record_odom_all.py` and plotting tool `plot_all.py` to compare results.
 
-cd to folder `data_analysis`
+- cd to folder `data_analysis`
 ```bash
 cd ~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller/scripts/data_analysis/
 ```
 
-run record odom for collect data
+- run record odom for collect data
 ```bash
 python3 record_odom_all.py
 ```
 
-run plot all for plot data
+- run plot all for plot data
 ```bash
 python3 plot_all.py
 ```
@@ -844,7 +844,8 @@ For case don't want record data comment the following line in each launch file:
 it will show the result in the `path_tracking/path_data/record_data` folder use the `plot_data_path` to plot the result.
 
 > [!WARNING] 
-> the data will be overwrite if you run the launch file again.
+> Running a launch file without commenting out the recording line will overwrite previous data.
+> If you want to keep existing data, make sure to disable recording before running a new test.
 
 ### **Results**
 We conducted tests on the tracking controllers by making the robot complete one full round and analyzed the results.
