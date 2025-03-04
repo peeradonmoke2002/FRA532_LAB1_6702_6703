@@ -935,7 +935,7 @@ H = \frac{\partial h}{\partial X}
 $$
 
 where:
-- $`( h(X) )`$ is the nonlinear measurement function
+- \( h(X) \) is the nonlinear measurement function
 
 
 
@@ -1029,7 +1029,9 @@ S = H P H^T + R is the innovation covariance.
 - Lower \( R \) → Higher trust in sensor.  
 - Lower \( Q \) → Higher trust in model.  
 -  Start with large Q R and gradually decrease while monitoring performance.
-- Check innovation covariance $` S=HPH T+R`$
+- Check innovation covariance $$ S=HPH 
+T
+ +R$$
 
 ### imprementation
 
@@ -1071,7 +1073,7 @@ Q = np.diag([
 ]) ** 2
 
 # Measurement noise covariance for odometry (6x6): [p (3), v (3)]
-R_odom = np.diag([0.1, 0.1, 0.1,# Position noise (x, y, z)
+R_odom = np.diag([0.1, 0.1, 0.1, # Position noise (x, y, z)
                    0.1, 0.1, 0.1]) ** 2 # Velocity noise (vx, vy, vz)
 
 
@@ -1082,10 +1084,73 @@ R_imu = np.diag([
     0.2, 0.2, 0.2 # Linear acceleration noise (ax, ay, az)
 ]) ** 2
 ``` 
+### RESULT
+
+![PID Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/PID/pid-yawrate.png)
+![Purepursuit Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/purepursuit/purepursuit_yawrate.png)
+![Stanlee Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/stanlee/stanlee-yawrate.png) 
 ## Single track Q and R tuning
+
+```bash 
+Q = np.diag([
+    0.02, 0.02, 2.02,            # position noise
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(2.5),  # orientation noise (rad) roll pitch yaw
+    0.1, 0.1, 0.1,               # linear velocity noise
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(2.5),  # angular velocity noise (rad/s)
+    0.2, 0.2, 0.2                # linear acceleration noise
+]) ** 2
+
+# Measurement noise covariance for odometry (6x6): [p (3), v (3)]
+R_odom = np.diag([1.0, 1.0, 1.1,# Position noise (x, y, z)
+                   1.1, 1.1, 1.1]) ** 2 # Velocity noise (vx, vy, vz)
+
+
+# Measurement noise covariance for IMU (9x9): [orientation (3), angular velocity (3), linear acceleration (3)]
+R_imu = np.diag([
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),# Orientation noise (roll, pitch, yaw)
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),# Angular velocity noise (ωx, ωy, ωz)
+    0.2, 0.2, 0.3 # Linear acceleration noise (ax, ay, az)
+]) ** 2
+
+```
+![PID-single ](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/single_track/PID/PID-singletrack.png)
+
+![pp-single](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/single_track/purepursuit/purepursuit_singletrack.png) 
+
+![stanle-single](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/single_track/stanlee/stanlee_singletrack.png)
 
 
 ## Double  track Q and R tuning
+
+```bash 
+Q = np.diag([
+    0.02, 0.02, 2.02,            # position noise
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(2.5),  # orientation noise (rad) roll pitch yaw
+    0.1, 0.1, 0.1,               # linear velocity noise
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(2.5),  # angular velocity noise (rad/s)
+    0.2, 0.2, 0.2                # linear acceleration noise
+]) ** 2
+
+# Measurement noise covariance for odometry (6x6): [p (3), v (3)]
+R_odom = np.diag([2.0, 2.0, 2.1,# Position noise (x, y, z)
+                   2.1, 2.1, 2.1]) ** 2 # Velocity noise (vx, vy, vz)
+
+
+# Measurement noise covariance for IMU (9x9): [orientation (3), angular velocity (3), linear acceleration (3)]
+R_imu = np.diag([
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),# Orientation noise (roll, pitch, yaw)
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),# Angular velocity noise (ωx, ωy, ωz)
+    0.2, 0.2, 0.3 # Linear acceleration noise (ax, ay, az)
+]) ** 2
+```
+
+![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/PID/PID-doubletrack-crash.png)
+![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/pp/purepursuit-doubletrack.png)
+![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/stanlee/stanlee-doubletrack.png)
+
+image
+image
+image
 
 
 
