@@ -1333,8 +1333,6 @@ ros2 launch localization_ekf ekf-doubletrack.launch.py
 
 
 
-### Summary of EKF Localization Performance
-
 This table presents the **Root Mean Squared Error (RMSE)** and **Mean Absolute Error (MAE)** values, which measure localization accuracy. Lower values indicate better performance.
 
 RMSE Results (Lower is Better) 
@@ -1394,9 +1392,34 @@ Avg % rear wheel slip Results (Lower is Better)
 | **Stanley-noslip**     | 1.6 %  | Failure | Failure |
 
 
+### Summary of EKF Localization Performance
 
+- Noslip vs. Basic
 
+* In most cases, the noslip mode achieves lower RMSE and MAE than basic, indicating more accurate tracking of the trajectory
+* Steering angle percent changes also tend to be lower with noslip, suggesting less abrupt steering corrections
 
+- Double Track
+* all failure bacause heading  is error then robot cresh the wall
+
+- Single Track vs. Yaw Rate
+* Single Track results are mixed: sometimes the RMSE/MAE are higher than Yaw Rate, sometimes lower. However, noslip consistently improves performance in Single Track relative to basic
+
+- RMSE and MAE
+
+* Lowest RMSE
+
+* Often 0.07 for Yaw Rate with noslip (PID-noslip, Pure Pursuit-noslip)
+
+* Single Track can have a moderate RMSE (e.g., 0.263 for Pure Pursuit-noslip)
+
+* Lowest MAE
+
+* Also around 0.08 for some noslip Yaw Rate models (PID-noslip, Pure Pursuit-noslip).
+
+* Single Track MAE is generally higher but still improves with noslip.
+
+- Conclusion: If minimizing RMSE/MAE is the primary goal, noslip mode outperforms basic in both Yaw Rate and Single Track setups.
 
 
 
