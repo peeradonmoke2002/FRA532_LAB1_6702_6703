@@ -1143,9 +1143,9 @@ imu0_config:  [false, false, false,  # Ignore x, y, z position
 ### 1. create workspace n clone 
 
 ``` bash
-mkdir ros2_ws
+mkdir ROS_WORKSPACE
 
-cd ros2_ws && mkdir src && cd src 
+cd ROS_WORKSPACE && mkdir src && cd src 
 
 git clone https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703.git -b robot-controller
 
@@ -1180,7 +1180,7 @@ step 2 : if you lauch launch localization_ekf ekf-yawrate.launch.py  then use
 
 ```bash 
 
-cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/yawrate
+cd ROS_WORKSPACE/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/yawrate
 
 ```
 
@@ -1202,7 +1202,7 @@ step 3.1 : if you lauch launch localization_ekf ekf-singletrack.launch.py  then 
 
 ```bash 
 
-cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/singletrack
+cd ROS_WORKSPACE/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/singletrack
 
 ```
 
@@ -1222,7 +1222,7 @@ step 3.1 : if you lauch launch localization_ekf ekf-doubletrack.launch.py  then 
 
 ```bash 
 
-cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/doubletrack
+cd ROS_WORKSPACE/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/doubletrack
 
 ```
 
@@ -1248,7 +1248,7 @@ python3 stanlee_doubletrack.py
 
 ```bash 
 
-cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/yawrate
+cd ROS_WORKSPACE/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/yawrate
 
 python3 pp_yawrate.py  
 
@@ -1274,7 +1274,7 @@ frist go to
 
 ```bash
 
-cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts
+cd ROS_WORKSPACE/src/FRA532_LAB1_6702_6703/localization_ekf/scripts
 
 ```
 for yawrate there is 4 main file you need to run
@@ -1416,6 +1416,29 @@ R_imu = np.diag([
 ## Single track Q and R tuning [ noslip model ]
 ## Double  track Q and R tuning [ noslip model ]
 
+
+### Summary of EKF Localization Performance
+
+-This table presents the Root Mean Squared Error (RMSE) and Mean Absolute Error (MAE)
+
+| Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
+|-------------|----------------|----------------------|----------------------|
+| **PID** | 10.0114 | 12.8260 | CRASH!|
+| **PUREPURSUIT** | 11.7663 | 13.3210 | CRASH! |
+| **STANLEE** |11.6688 |13.2063 | CRASH! |
+
+
+
+| Model Type  | Yaw Rate (MAE) | Single Track (MAE) | Double Track (MAE) |
+|-------------|----------------|----------------------|----------------------|
+| **PID** | 9.9287 | 13.0974 | CRASH!|
+| **PUREPURSUIT** | 12.2698 | 14.5055 | CRASH! |
+| **STANLEE** |12.9098 |13.7231 | CRASH! |
+
+
+#### Observations
+
+
 ## Our Team
 - **67340700402** พงษ์พัฒน์ วงศ์กำแหงหาญ
 - **67340700403** พีรดนย์ เรืองแก้ว
@@ -1440,30 +1463,17 @@ R_imu = np.diag([
 - [Pure Pursuit Controller](https://thomasfermi.github.io/Algorithms-for-Automated-Driving/Control/PurePursuit.html)
 - [Stanley Controller](https://www.ri.cmu.edu/pub_files/2009/2/Automatic_Steering_Methods_for_Autonomous_Automobile_Path_Tracking.pdf)
 
+### EKF References
 
-### Summary of EKF Localization Performance
+[EFK2](https://github.com/AtsushiSakai/PythonRobotics/blob/master/docs/modules/2_localization/extended_kalman_filter_localization_files/extended_kalman_filter_localization_main.rst)
 
--This table presents the Root Mean Squared Error (RMSE) and Mean Absolute Error (MAE)
-
-| Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
-|-------------|----------------|----------------------|----------------------|
-| **PID** | 10.0114 | 12.8260 | CRASH!|
-| **PUREPURSUIT** | 11.7663 | 13.3210 | CRASH! |
-| **STANLEE** |11.6688 |13.2063 | CRASH! |
+[EKF-package](https://github.com/cra-ros-pkg/robot_localization)
 
 
+- PID outperforms other models in both Yaw Rate and Single Track scenarios, making it the most accurate and stable controller
 
-| Model Type  | Yaw Rate (MAE) | Single Track (MAE) | Double Track (MAE) |
-|-------------|----------------|----------------------|----------------------|
-| **PID** | 9.9287 | 13.0974 | CRASH!|
-| **PUREPURSUIT** | 12.2698 | 14.5055 | CRASH! |
-| **STANLEE** |12.9098 |13.7231 | CRASH! |
+- PPure Pursuit has the worst performance in both RMSE and MAE, suggesting poor localization accuracy.
 
-
-- PID performs the best in both Yaw Rate and Single Track models, making it the most reliable option
-
-- Pure Pursuit has the worst accuracy (highest RMSE & MAE)
-
-- All models failed on the Double Track setup because heading from odom not percise i try too increase R in odom and lower R from imu and i still error
+- All models fail in the Double Track setup, indicating instability in handling a more complex trajectory.
 
 - Stanley performs slightly better than Pure Pursuit but still struggles in Single Track
