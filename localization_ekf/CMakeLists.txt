@@ -28,13 +28,20 @@ ament_python_install_package(${PROJECT_NAME})
 # Install Python executables
 install(PROGRAMS
   scripts/dummy_script.py
-  scripts/gps.py
-  scripts/yawrate/ackerman_yaw_rate_odom.py
   scripts/yawrate/odom_filtered_yawrate.py
-  scripts/single_track/ackerman_odom_single_track.py
-  scripts/single_track/odom_filtered_singletrack.py
-  scripts/double_track/ackerman_odom_double_track.py
+  scripts/yawrate/gps.py
+  scripts/yawrate/ackerman_yaw_rate_odom.py
+  scripts/yawrate/pid_yawrate.py
+
   scripts/double_track/odom_filtered_doubletrack.py
+  scripts/double_track/gps.py
+  scripts/double_track/ackerman_odom_double_track.py
+  scripts/double_track/pid_doubletrack.py
+
+  scripts/single_track/odom_filtered_singletrack.py
+  scripts/single_track/gps.py
+  scripts/single_track/ackerman_odom_single_track.py
+  scripts/single_track/pid_singletrack.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
