@@ -9,6 +9,7 @@ from nav_msgs.msg import  Odometry  # Only used for publishing path and receivin
 from std_msgs.msg import Float64MultiArray
 from geometry_msgs.msg import PoseStamped, Quaternion
 from tf_transformations import quaternion_from_euler, euler_from_quaternion
+from ament_index_python.packages import get_package_share_directory
 
 class StanleyNode(Node):
     def __init__(self):
@@ -60,24 +61,13 @@ class StanleyNode(Node):
         self.robot_pose = None
 
     def load_path(self, filename):
-        """
-        Loads a YAML file containing a list of points.
-        Each point must have keys 'x' and 'y'.
-        Returns a NumPy array of shape (n, 2), where each row is [x, y].
-        """
+        # If the filename is not absolute, look it up in the package share directory.
         if not os.path.isabs(filename):
-            ros_workspace = os.getenv("ROS_WORKSPACE")
-            if ros_workspace is None:
-                script_dir = os.path.dirname(os.path.realpath(__file__))
-                ros_workspace = script_dir.split('/src/')[0]
-            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "path_data", filename)
-        try:
-            with open(filename, 'r') as file:
-                data = yaml.safe_load(file)
-            return np.array([(point['x'], point['y']) for point in data['path']])
-        except Exception as e:
-            self.get_logger().error(f"Error loading path: {e}")
-            return None
+            path_tracking_package = get_package_share_directory("path_tracking")
+            filename = os.path.join(path_tracking_package, "path_data", filename)
+        with open(filename, 'r') as file:
+            data = yaml.safe_load(file)
+        return [(wp['x'], wp['y'], wp.get('yaw', 0.0)) for wp in data]
 
     def compute_path_yaw(self, path):
         """

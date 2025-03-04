@@ -9,6 +9,7 @@ import yaml
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+from ament_index_python.packages import get_package_share_directory
 import os
 
 
@@ -51,18 +52,13 @@ class PurePursuitROS(Node):
         self.fig, self.ax = plt.subplots(figsize=(8, 6))
 
     def load_path(self, filename):
+        # If the filename is not absolute, look it up in the package share directory.
         if not os.path.isabs(filename):
-            ros_workspace = os.getenv("ROS_WORKSPACE")
-            if ros_workspace is None:
-                script_dir = os.path.dirname(os.path.realpath(__file__))
-                ros_workspace = script_dir.split('/src/')[0]
-
-            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "path_data", filename)
-        
+            path_tracking_package = get_package_share_directory("path_tracking")
+            filename = os.path.join(path_tracking_package, "path_data", filename)
         with open(filename, 'r') as file:
             data = yaml.safe_load(file)
-        
-        return np.array([(point['x'], point['y']) for point in data['path']])
+        return [(wp['x'], wp['y'], wp.get('yaw', 0.0)) for wp in data]
 
 
     def search_target_index(self):
