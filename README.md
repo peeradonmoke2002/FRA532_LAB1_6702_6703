@@ -1134,11 +1134,9 @@ imu0_config:  [false, false, false,  # Ignore x, y, z position
 
 ```
 
-### Methodology and Results lab 1.3
+### Methodology 
 
 ## use launch file
-
-
 
 ### 1. create workspace n clone 
 
@@ -1164,9 +1162,9 @@ source  ~/.bashrc
 
 ```
 
-### 1.1 runfile using launch 
+### 1.1 run file using launch 
 
-step 1: select only one to launch ekf ** dont run this launch together **
+step 1: select only one to launch ekf **dont run this launch together**
 
 ```bash 
 
@@ -1176,6 +1174,54 @@ ros2 launch localization_ekf ekf-singletrack.launch.py
 
 ros2 launch localization_ekf ekf-doubletrack.launch.py
 ```
+
+step 2.1 : if you use launch localization_ekf ekf-yawrate.launch.py  **select only one**
+
+
+```bash 
+
+ros2 run localization_ekf pid_yawrate.py
+
+ros2 run localization_ekf pp_yawrate.py
+
+ros2 run localization_ekf stanlee_yawrate.py
+
+
+```
+
+
+step 2.2 : if you use launch localization_ekf ros2 launch localization_ekf ekf-singletrack.launch.py  **select only one**
+
+```bash 
+
+ros2 run localization_ekf pid_singletrack.py
+
+ros2 run localization_ekf pp_singletrack.py
+
+ros2 run localization_ekf stanlee_singletrack.py
+
+
+```
+
+step 2.3 : if you use ros2 launch localization_ekf ekf-doubletrack.launch.py  **select only one**
+
+```bash 
+
+ros2 run localization_ekf pid_singletrack.py
+
+ros2 run localization_ekf pp_singletrack.py
+
+ros2 run localization_ekf stanlee_singletrack.py
+
+
+```
+
+
+
+
+### manual run [ alternative ]
+
+
 step 2 : if you lauch launch localization_ekf ekf-yawrate.launch.py  then use 
 
 ```bash 
@@ -1238,12 +1284,6 @@ python3 stanlee_doubletrack.py
 
 
 ```
-
-
-
-
-
-
 
 
 ```bash 
@@ -1348,7 +1388,7 @@ R_imu = np.diag([
 ]) ** 2
 ``` 
 
-### Methodology and Results lab 1.3
+###  Results lab 1.3
 
 
 
