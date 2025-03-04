@@ -571,11 +571,14 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 ---
 
 ### **Observations**
-- The **Basic Model** has a **higher yaw rate RMSE** but shows **better position tracking** than the No-Slip Model in the **Single Track and Double Track** configurations.
-- The **No-Slip Model** has a **lower yaw rate RMSE**, which suggests it provides a more stable and accurate heading estimation.
-- In **XY Position RMSE**, the **No-Slip Model performs better** in the **Double Track** configuration, showing the lowest RMSE (0.1599), while the Basic Model performs better in the **Single Track** configuration.
-- In **Yaw Orientation RMSE**, the **Basic Model has significantly higher errors** in the **Single Track and Double Track** configurations, whereas the **No-Slip Model shows more stable yaw tracking**, especially in the **Yaw Rate** configuration with an RMSE of just **0.0037 radians**.
-- Overall, the **No-Slip Model provides better yaw stability**, while the **Basic Model maintains better positional accuracy** in certain cases.
+- The **Basic Model** has a **higher yaw rate RMSE** but performs **better in position tracking** than the No-Slip Model in the **Single Track and Double Track** configurations.  
+- The **No-Slip Model** maintains a **lower yaw rate RMSE**, indicating it provides a more **stable and accurate heading estimation** across all speeds.  
+- At **lower speeds (`v = 0.32 m/s`)**, both models perform **similarly** in terms of position tracking, but the **No-Slip Model shows better yaw stability**.  
+- As speed increases (**`v = 0.5 m/s` to `v = 0.72 m/s`**), the **Basic Model struggles with yaw drift**, especially in **Double Track mode**, whereas the **No-Slip Model maintains a more stable yaw rate**.  
+- In **XY Position RMSE**, the **No-Slip Model outperforms** in the **Double Track** configuration, achieving the **lowest RMSE (0.1599)**, while the Basic Model performs better in the **Single Track** configuration.  
+- In **Yaw Orientation RMSE**, the **Basic Model shows significantly higher errors** in **Single Track and Double Track** setups. The **No-Slip Model maintains more stable yaw tracking**, particularly in the **Yaw Rate** configuration, with an RMSE of just **0.0037 radians**.  
+- **Higher speeds amplify the differences** between the models—**yaw errors increase in the Basic Model**, while the **No-Slip Model holds its accuracy better**, particularly in yaw tracking.  
+- Overall, the **No-Slip Model delivers better yaw stability**, while the **Basic Model maintains stronger positional accuracy** in certain scenarios.  
 
 ## LAB 1.2
 > [!NOTE]  
@@ -826,17 +829,24 @@ We conducted tests on the tracking controllers by making the robot complete one 
 
 #### PID Controller Results
 ##### Path Tracking and Speed Profile
+- use dynamically speed for pid controller
+
 ![PID Controller Path Tracking](/results_data/lab1.2/pid_results.png)
 
 #### Pure Pursuit Controller Results
 ##### Path Tracking and Speed Profile
+- use speed at `0.5 m/s` for pure pursuit controller
+
 ![Pure Pursuit Controller Path Tracking](/results_data/lab1.2/purepursuit_results.png)
 
 #### Stanley Controller Results
 ##### Path Tracking and Speed Profile
+- use speed at `0.5 m/s` for stanley controller
+
 ![Stanley Controller Path Tracking](/results_data/lab1.2/stanley_results.png)
 
-
+> [!NOTE] 
+> can't compare in term of speed different due to PID use dynamically speed and Pure Pursuit and Stanley use fixed speed
 
 ### **RMSE Results**
 The following table presents the **Root Mean Square Error (RMSE)** values comparing the path tracking controllers in different invese kinematics model from **Lab 1.1**.  
