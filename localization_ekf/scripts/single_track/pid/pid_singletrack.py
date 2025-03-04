@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 import rclpy
 from rclpy.node import Node
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
@@ -13,8 +14,7 @@ import os
 class PIDBicycleController(Node):
     def __init__(self):
         super().__init__('pid_bicycle_controller')
-        self.dt_loop = 1 / 50  # Loop time in seconds (50 Hz)
-
+        self.dt_loop = 1 / 100  
         self.wheel_base = 0.2      # Distance between front and rear axles (meters)
         self.wheel_radius = 0.045  # Rear wheel radius (meters)
         self.max_steering_angle = 0.523598767  # Limit steering angle
