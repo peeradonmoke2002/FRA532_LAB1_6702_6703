@@ -987,8 +987,6 @@ step 3: another tab
 
 ```bash 
 
-python3 
-
 python3 ackerman_yaw_rate_odom.py
 
 ```
