@@ -929,7 +929,7 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 
 ## LAB 1.3
 
-
+In this lab, we extend the odometry models from LAB 1.1 by fusing GPS data using an Extended Kalman Filter (EKF). The EKF output provides a pose estimate, which we then use as the input for path tracking, similar to LAB 1.2, but now relying on the EKF-estimated pose instead of raw odometry data.
 
 ## State Vector Representation
 
