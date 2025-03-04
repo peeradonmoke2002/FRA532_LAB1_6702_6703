@@ -929,194 +929,6 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 
 ## LAB 1.3
 
-## Installation
-
-## use launch file
-
-
-
-### 1. create workspace n clone 
-
-``` bash
-mkdir ros2_ws
-
-cd ros2_ws && mkdir src && cd src 
-
-git clone https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703.git -b robot-controller
-
-cd ..
-
-colcon build 
-
-source isntall/setup.bash
-
-cd 
-
-export ROS_WORKSPACE=~/ros2_ws
-
-source  ~/.bashrc
-
-
-```
-
-### 1.1 runfile using launch 
-
-step 1: select only one to launch ekf ** dont run this launch together **
-
-```bash 
-
-ros2 launch localization_ekf ekf-yawrate.launch.py  
-
-ros2 launch localization_ekf ekf-singletrack.launch.py
-
-ros2 launch localization_ekf ekf-doubletrack.launch.py
-```
-step 2 : if you lauch launch localization_ekf ekf-yawrate.launch.py  then use 
-
-```bash 
-
-cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/yawrate
-
-```
-
-step 2.2 then select 1 controller ** only 1 controller per round **
-
-```bash 
-
-python3 pid_yawrate.py
-
-python3 pp_yawrate.py  
-
-python3 stanlee_yawrate.py
-
-
-```
-
-
-step 3.1 : if you lauch launch localization_ekf ekf-singletrack.launch.py  then use 
-
-```bash 
-
-cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/singletrack
-
-```
-
-step 3.2 then select 1 controller ** only 1 controller per round **
-
-```bash 
-
-python3 pid_singletrack.py
-
-python3 pp_singletrack.py  
-
-python3 stanlee_singletrack.py
-
-
-```
-step 3.1 : if you lauch launch localization_ekf ekf-doubletrack.launch.py  then use 
-
-```bash 
-
-cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/doubletrack
-
-```
-
-step 3.2 then select 1 controller ** only 1 controller per round **
-
-```bash 
-
-python3 pid_doubletrack.py
-
-python3 pp_doubletrack.py  
-
-python3 stanlee_doubletrack.py
-
-
-```
-
-
-
-
-
-
-
-
-```bash 
-
-cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/yawrate
-
-python3 pp_yawrate.py  
-
-ctrl + shift + z  [ for close ]
-
-```
-
-step5 : [optional visualyzed data]
-
-``` bash 
-
-cd FRA532_LAB1_6702_6703/localization_ekf/scripts/Visualization_test.py
-
-python3 Visualization_test.py
-
-```
-
-
-
-### 2 if launch file didn't work try to run manually
-
-frist go to 
-
-```bash
-
-cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts
-
-```
-for yawrate there is 4 main file you need to run
-
-step 1: this odom_filter node [ekf]
-
-``` bash 
-
-cd yawrate 
-
-python3 odom_filtered_yawrate.py
-
-```
-step 2:  in another tab 
-
-``` bash
-
-python3 gps.py
-
-```
-
-step 3: another tab 
-
-```bash 
-
-python3 ackerman_yaw_rate_odom.py
-
-```
-
-step 4: choose 1 controlller eg. pid  [ if you want to change controller you need to close all step 1-3 and run again before change controller] also repeat step 1-3 again if you want to run single track but change name to match with single track folder
-
-``` bash
-
-python3 pid_yawrate.py
-
-```
-
-step5 : [optional visualyzed data]
-
-``` bash 
-
-python3 Visualization_test.py
-
-```
-
-
-
 
 
 ## State Vector Representation
@@ -1350,6 +1162,191 @@ R_imu = np.diag([
 ``` 
 ### Methodology and Results lab 1.3
 
+## use launch file
+
+
+
+### 1. create workspace n clone 
+
+``` bash
+mkdir ros2_ws
+
+cd ros2_ws && mkdir src && cd src 
+
+git clone https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703.git -b robot-controller
+
+cd ..
+
+colcon build 
+
+source isntall/setup.bash
+
+cd 
+
+export ROS_WORKSPACE=~/ros2_ws
+
+source  ~/.bashrc
+
+
+```
+
+### 1.1 runfile using launch 
+
+step 1: select only one to launch ekf ** dont run this launch together **
+
+```bash 
+
+ros2 launch localization_ekf ekf-yawrate.launch.py  
+
+ros2 launch localization_ekf ekf-singletrack.launch.py
+
+ros2 launch localization_ekf ekf-doubletrack.launch.py
+```
+step 2 : if you lauch launch localization_ekf ekf-yawrate.launch.py  then use 
+
+```bash 
+
+cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/yawrate
+
+```
+
+step 2.2 then select 1 controller ** only 1 controller per round **
+
+```bash 
+
+python3 pid_yawrate.py
+
+python3 pp_yawrate.py  
+
+python3 stanlee_yawrate.py
+
+
+```
+
+
+step 3.1 : if you lauch launch localization_ekf ekf-singletrack.launch.py  then use 
+
+```bash 
+
+cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/singletrack
+
+```
+
+step 3.2 then select 1 controller ** only 1 controller per round **
+
+```bash 
+
+python3 pid_singletrack.py
+
+python3 pp_singletrack.py  
+
+python3 stanlee_singletrack.py
+
+
+```
+step 3.1 : if you lauch launch localization_ekf ekf-doubletrack.launch.py  then use 
+
+```bash 
+
+cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/doubletrack
+
+```
+
+step 3.2 then select 1 controller ** only 1 controller per round **
+
+```bash 
+
+python3 pid_doubletrack.py
+
+python3 pp_doubletrack.py  
+
+python3 stanlee_doubletrack.py
+
+
+```
+
+
+
+
+
+
+
+
+```bash 
+
+cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/yawrate
+
+python3 pp_yawrate.py  
+
+ctrl + shift + z  [ for close ]
+
+```
+
+step5 : [optional visualyzed data]
+
+``` bash 
+
+cd FRA532_LAB1_6702_6703/localization_ekf/scripts/Visualization_test.py
+
+python3 Visualization_test.py
+
+```
+
+
+
+### 2 if launch file didn't work try to run manually
+
+frist go to 
+
+```bash
+
+cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts
+
+```
+for yawrate there is 4 main file you need to run
+
+step 1: this odom_filter node [ekf]
+
+``` bash 
+
+cd yawrate 
+
+python3 odom_filtered_yawrate.py
+
+```
+step 2:  in another tab 
+
+``` bash
+
+python3 gps.py
+
+```
+
+step 3: another tab 
+
+```bash 
+
+python3 ackerman_yaw_rate_odom.py
+
+```
+
+step 4: choose 1 controlller eg. pid  [ if you want to change controller you need to close all step 1-3 and run again before change controller] also repeat step 1-3 again if you want to run single track but change name to match with single track folder
+
+``` bash
+
+python3 pid_yawrate.py
+
+```
+
+step5 : [optional visualyzed data]
+
+``` bash 
+
+python3 Visualization_test.py
+
+```
+
+
 ![PID Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/PID/pid-yawrate.png)
 ![Purepursuit Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/purepursuit/purepursuit_yawrate.png)
 ![Stanlee Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/stanlee/stanlee-yawrate.png) 
@@ -1412,10 +1409,6 @@ R_imu = np.diag([
 ![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/pp/purepursuit-doubletrack.png)
 ![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/stanlee/stanlee-doubletrack.png)
 
-image
-image
-image
-
 
 
 
@@ -1452,7 +1445,7 @@ image
 |-------------|----------------|----------------------|----------------------|
 | **PID** | 10.0114 | 12.8260 | CRASH!|
 | **PUREPURSUIT** | 11.7663 | 13.3210 | CRASH! |
-| **STANLEE** |11.6688 |13.2063 |!CRASH |
+| **STANLEE** |11.6688 |13.2063 | CRASH! |
 
 
 
@@ -1460,7 +1453,7 @@ image
 |-------------|----------------|----------------------|----------------------|
 | **PID** | 9.9287 | 13.0974 | CRASH!|
 | **PUREPURSUIT** | 12.2698 | 14.5055 | CRASH! |
-| **STANLEE** |12.9098 |13.7231 |!CRASH |
+| **STANLEE** |12.9098 |13.7231 | CRASH! |
 
 
 - PID performs the best in both Yaw Rate and Single Track models, making it the most reliable option
