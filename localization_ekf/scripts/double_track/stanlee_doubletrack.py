@@ -68,7 +68,14 @@ class StanleyNode(Node):
             filename = os.path.join(path_tracking_package, "path_data", filename)
         with open(filename, 'r') as file:
             data = yaml.safe_load(file)
-        return [(wp['x'], wp['y'], wp.get('yaw', 0.0)) for wp in data]
+        # Check if the YAML data is a dictionary with a "path" key,
+        # otherwise assume it's a list of waypoints.
+        if isinstance(data, dict) and "path" in data:
+            waypoints = data["path"]
+        else:
+            waypoints = data
+        # Return a NumPy array of waypoints with only x and y values.
+        return np.array([(wp['x'], wp['y']) for wp in waypoints])
 
     def compute_path_yaw(self, path):
         """

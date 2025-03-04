@@ -35,7 +35,7 @@ class StanleyNode(Node):
 
 
         # Load the path from YAML; each row: [x, y]
-        self.path = self.load_path("path2.yaml")
+        self.path = self.load_path("path.yaml")
         if self.path is not None:
             self.get_logger().info(f"Loaded path with {self.path.shape[0]} points.")
         else:
@@ -67,7 +67,14 @@ class StanleyNode(Node):
             filename = os.path.join(path_tracking_package, "path_data", filename)
         with open(filename, 'r') as file:
             data = yaml.safe_load(file)
-        return [(wp['x'], wp['y'], wp.get('yaw', 0.0)) for wp in data]
+        # Check if the YAML data is a dictionary with a "path" key,
+        # otherwise assume it's a list of waypoints.
+        if isinstance(data, dict) and "path" in data:
+            waypoints = data["path"]
+        else:
+            waypoints = data
+        # Return a NumPy array of waypoints with only x and y values.
+        return np.array([(wp['x'], wp['y']) for wp in waypoints])
 
     def compute_path_yaw(self, path):
         """

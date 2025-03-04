@@ -29,7 +29,11 @@ class PurePursuitROS(Node):
         self.waypoints = self.load_path("path.yaml")
 
         # Publishers for control commands
-        self.pub_steering = self.create_publisher(JointTrajectory, '/joint_trajectory_position_controller/joint_trajectory', 10)
+        self.pub_steering = self.create_publisher(
+            Float64MultiArray,
+            "/position_controllers/commands",
+            10
+        )
         self.pub_wheel_spd = self.create_publisher(Float64MultiArray, '/velocity_controllers/commands', 10)
 
         # Robot state variables (will be updated from filtered odometry)
@@ -53,7 +57,15 @@ class PurePursuitROS(Node):
             filename = os.path.join(path_tracking_package, "path_data", filename)
         with open(filename, 'r') as file:
             data = yaml.safe_load(file)
-        return [(wp['x'], wp['y'], wp.get('yaw', 0.0)) for wp in data]
+        # Check if the YAML data is a dictionary with a "path" key,
+        # otherwise assume it's a list of waypoints.
+        if isinstance(data, dict) and "path" in data:
+            waypoints = data["path"]
+        else:
+            waypoints = data
+        # Return a NumPy array of waypoints with only x and y values.
+        return np.array([(wp['x'], wp['y']) for wp in waypoints])
+
 
 
     def search_target_index(self):
@@ -119,7 +131,8 @@ class PurePursuitROS(Node):
         self.v = min(self.v, 15.5)  # Limit maximum speed
 
         # Publish control commands
-        self.publish_steering(steering_cmd)
+        self.publish_steering(steering_cmd, steering_cmd)
+
         self.publish_wheel_speed(self.v)
 
         self.get_logger().info(f"Pose: x={self.x:.3f}, y={self.y:.3f}, yaw={math.degrees(self.yaw):.2f}° | Steering: {math.degrees(steering_cmd):.2f}° | Speed: {self.v:.2f} m/s")
@@ -129,14 +142,11 @@ class PurePursuitROS(Node):
         self.robot_y.append(self.y)
         self.update_plot()
 
-    def publish_steering(self, steering):
-        """Publish steering commands."""
-        traj_msg = JointTrajectory()
-        traj_msg.joint_names = ['front_left_steering', 'front_right_steering']
-        point = JointTrajectoryPoint()
-        point.positions = [steering, steering]
-        traj_msg.points.append(point)
-        self.pub_steering.publish(traj_msg)
+    def publish_steering(self, front_left_steering, front_right_steering):
+        """Publish steering angles using Float64MultiArray."""
+        steering_msg = Float64MultiArray()
+        steering_msg.data = [front_left_steering, front_right_steering]  # Array of steering angles
+        self.pub_steering.publish(steering_msg)
 
     def publish_wheel_speed(self, speed):
         """Publish wheel speed commands."""

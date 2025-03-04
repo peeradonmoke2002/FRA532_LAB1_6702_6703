@@ -67,7 +67,7 @@ class PIDBicycleController(Node):
         with open(filename, 'r') as file:
             data = yaml.safe_load(file)
         return [(wp['x'], wp['y'], wp.get('yaw', 0.0)) for wp in data]
-    
+        
     def nearest_waypoint(self, x, y, yaw):
         tolerance = 0.05  # Ignore waypoints closer than 5 cm
         forward_threshold = 0.1  # The waypoint must be in front of the robot
