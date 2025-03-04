@@ -1467,6 +1467,6 @@ image
 
 - Pure Pursuit has the worst accuracy (highest RMSE & MAE)
 
--All models failed on the Double Track setup because heading from odom not percise i try too increase R in odom and lower R from imu and i still error
+- All models failed on the Double Track setup because heading from odom not percise i try too increase R in odom and lower R from imu and i still error
 
 - Stanley performs slightly better than Pure Pursuit but still struggles in Single Track
