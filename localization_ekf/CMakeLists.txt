@@ -47,6 +47,8 @@ install(PROGRAMS
   scripts/single_track/pid_singletrack.py
   scripts/single_track/stanlee_singletrack.py
   scripts/single_track/pp_singletrack.py
+  scripts/singletrack-noslip/ekf-single-noslip.py
+  scripts/yawrate-noslip/ekf-yawrate-noslip.py
 
   scripts/gps.py
   scripts/plot_data.py

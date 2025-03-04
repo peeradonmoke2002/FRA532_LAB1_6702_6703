@@ -946,171 +946,199 @@ In this lab, we extend the odometry models from LAB 1.1 by fusing GPS data using
 
 ## State Vector Representation
 
+$$
+x= 
+​
+  
+x
+y
+θ
+​
+  
+​
+$$
 
 
-The system state is defined as:
-
-```math
-X_k =
-\begin{bmatrix}
-p_{x,k} \\
-p_{y,k} \\
-p_{z,k} \\
-\text{roll}_k \\
-\text{pitch}_k \\
-\text{yaw}_k \\
-v_{x,k} \\
-v_{y,k} \\
-v_{z,k} \\
-\omega_{x,k} \\
-\omega_{y,k} \\
-\omega_{z,k} \\
-a_{x,k} \\
-a_{y,k} \\
-a_{z,k}
-\end{bmatrix}
-```
-where:
-- $`p_{x,k}, p_{y,k}, p_{z,k}`$ represent the **position**.
-- $`\text{roll}_k, \text{pitch}_k, \text{yaw}_k`$ represent the **orientation**.
-- $`v_{x,k}, v_{y,k}, v_{z,k}`$ represent the **linear velocity**.
-- $`\omega_{x,k}, \omega_{y,k}, \omega_{z,k}`$ represent the **angular velocity**.
-- $`a_{x,k}, a_{y,k}, a_{z,k}`$ represent the **linear acceleration**.
+- x, y: Position coordinates
+- θ: Heading angle
 
 
 
 ## State Transition Equations
 
+The state transition (or motion) model follows a simple kinematic model for a mobile robot. Given a control input:
+
 $$
-p_{k+1} = p_k + R(r_k) \left[ v_k dt + \frac{1}{2} a_k dt^2 \right]
+\mathbf{u} =
+\begin{bmatrix}
+v \\
+\omega
+\end{bmatrix}
+$$
+
+where:
+- \( v \) is the linear velocity
+- \( \omega \) is the angular velocity
+
+The state update equations are:
+
+$$
+x_{k+1} = x_k + v \cos(\theta_k) \Delta t
 $$
 
 $$
-r_{k+1} = r_k + J(r_k) \cdot \omega_k \cdot dt
+y_{k+1} = y_k + v \sin(\theta_k) \Delta t
 $$
 
 $$
-v_{k+1} = v_k + a_k dt
+\theta_{k+1} = \theta_k + \omega \Delta t
 $$
 
-$$
-\omega_{k+1} = \omega_k + u_{\alpha} dt
-$$
+where:
+- \( x_k, y_k \) are the position coordinates at time step \( k \),
+- \( \theta_k \) is the orientation (heading angle),
+- \( \Delta t \) is the time step.
 
-$$
-a_{k+1} = a_k
-$$
+
+- This is implemented in the motion_model function:
+
+```bash 
+def motion_model(self, x, u):
+    v, omega = u
+    theta = x[2]
+    x_next = np.zeros(3)
+    x_next[0] = x[0] + v * math.cos(theta) * self.dt
+    x_next[1] = x[1] + v * math.sin(theta) * self.dt
+    x_next[2] = x[2] + omega * self.dt
+    return x_next
+```
 
 ##  How EKF Handles Nonlinearity
 
 EKF is designed to work with nonlinear systems by approximating them linearly at each time step using Jacobian matrices.
 
-### **Jacobian of the State Transition:**
-To approximate the system dynamics, EKF computes the Jacobian matrix of the state transition function. These Jacobian matrices help linearize the nonlinear motion and measurement models so that EKF can estimate the state accurately.
+
+### **Jacobian of the State Transition**
+The **Jacobian matrix** \( \mathbf{F} \) of the motion model with respect to the state is computed to approximate the transition. For the state transition model given above, the **Jacobian** is:
 
 $$
-F = \frac{\partial f}{\partial X}
+\mathbf{F} =
+\begin{bmatrix}
+1 & 0 & -v \sin(\theta) \Delta t \\
+0 & 1 & v \cos(\theta) \Delta t \\
+0 & 0 & 1
+\end{bmatrix}
 $$
 
-where:
-- $`( X )`$ is the state vector
-- $`( f(X) )`$ is the nonlinear motion model
+This matrix linearizes the nonlinear motion model, allowing **Extended Kalman Filter (EKF)** to work efficiently.
 
-### **Jacobian of the Measurement Model:**
-Similarly, the measurement function is linearized using the Jacobian:
+### **Implementation in Python**
+This is implemented in the `jacobian_F` function:
 
-$$
-H = \frac{\partial h}{\partial X}
-$$
+```python
+import numpy as np
+import math
 
-where:
-- $`( h(X) )`$ is the nonlinear measurement function
-
-
+def jacobian_F(self, x, u):
+    """
+    Compute the Jacobian matrix F for the state transition model.
+    
+    Parameters:
+        x (numpy array): The current state [x, y, theta]
+        u (numpy array): The control input [v, omega]
+    
+    Returns:
+        numpy array: The Jacobian matrix F (3x3)
+    """
+    v, _ = u
+    theta = x[2]
+    
+    # Initialize F as an identity matrix
+    F = np.eye(3)
+    
+    # Compute the Jacobian terms for x and y with respect to theta
+    F[0, 2] = -v * math.sin(theta) * self.dt
+    F[1, 2] =  v * math.cos(theta) * self.dt
+    
+    return F
+```
 
 
 ## Design the Process Noise Matrix
 
-covaraince uncertainty in the motion model.
+The process noise covariance matrix 
+𝑄
+Q represents the uncertainty in the state prediction. This uncertainty can come from model imperfections or unmodeled dynamics. In our implementation, 
 ```bash 
-Q = np.diag([
-    0.02, 0.02, 0.02,        # position noise
-    np.deg2rad(0.1), ...,    # orientation noise
-    0.1, 0.1, 0.1,           # velocity noise
-    np.deg2rad(0.1), ...,    # angular velocity noise
-    0.2, 0.2, 0.2            # linear acceleration noise
-]) ** 2
+
+self.Q = np.diag([0.015, 0.015, 0.015])
 
 ```
-
-## Design the Control Function
-
-```bash
-self.u_alpha = np.zeros((3,1))  # Assumed zero if no external angular acceleration
-
-```
-Integrated in the state transition to update angular velocity
-
-$$
-\omega_{k+1} = \omega_k + u_{\alpha} dt
-$$
 
 ## Design the Measurement Function
 
-
-The function `ekf_update_odom(...)` processes a 6D measurement vector, which is then used in the Kalman Gain computation to correct the state estimate.
-
-$$
-\mathbf{z} =
-\begin{bmatrix}
-p_x \\
-p_y \\
-p_z \\
-v_x \\
-v_y \\
-v_z
-\end{bmatrix}
-$$
-
- EKF Update - Odometry Measurement (6D)
-
-The function `ekf_update_imu(...)` processes a **9D measurement vector**:
+The measurement function maps the state vector into the measurement space. In our implementation, the measurement function is assumed to be:
 
 $$
 \mathbf{z} =
 \begin{bmatrix}
-\text{roll} \\
-\text{pitch} \\
-\text{yaw} \\
-\omega_x \\
-\omega_y \\
-\omega_z \\
-a_x \\
-a_y \\
-a_z
+x \\
+y
 \end{bmatrix}
 $$
 
+This means that our sensor (e.g., GPS) provides only the \(x\) and \(y\) positions. Since the measurement model is linear, its Jacobian \( \mathbf{H} \) is constant:
+
+$$
+\mathbf{H} =
+\begin{bmatrix}
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 0
+\end{bmatrix}
+$$
+
+*Note:* In our EKF update step for GPS, only \(x\) and \(y\) are used, so \( \mathbf{H} \) is effectively:
+
+$$
+\mathbf{H} =
+\begin{bmatrix}
+1 & 0 & 0 \\
+0 & 1 & 0
+\end{bmatrix}
+$$
+
+This measurement function is used directly in the EKF update step to compare the predicted state with the sensor measurements.
+
+---
 
 ## Design the Measurement Noise Matrix
 
-Captures sensor noise in odometry and IMU measurements.
+Two measurement noise covariance matrices are defined to model the uncertainty of our sensors:
 
-```bash
-R_odom = np.diag([...]) ** 2  # 6x6
-R_imu  = np.diag([...]) ** 2  # 9x9
+1. **For GPS (which measures \(x\) and \(y\)):**
 
+$$
+\mathbf{R} = \operatorname{diag}(0.025,\ 0.025)
+$$
+
+2. **For odometry (which is assumed to provide the full state \(x\), \(y\), and \(\theta\)):**
+
+$$
+\mathbf{R}_{odom} = \operatorname{diag}(0.055,\ 0.055,\ 0.055)
+$$
+
+These matrices are designed based on the expected noise characteristics of the sensors.
+
+### Implementation in Python
+
+```python
+self.R = np.diag([0.025, 0.025])
+self.R_odom = np.diag([0.055, 0.055, 0.055])
 ```
 
-## Explain the Kalman Gain Computation
-$$
-K = P H^T (H P H^T + R)^{-1}
-$$
 
-P = Current state covariance (uncertainty in prediction)  
-H = Measurement function Jacobian  
-R = Measurement noise covariance  
-S = H P H^T + R is the innovation covariance.  
+## Explain the Kalman Gain Computation
 
 
 
@@ -1125,27 +1153,6 @@ T
 ### Implementation
 
 
-
-config in yaml
-```bash  
-
-
-odom0_config: [true,  true,  false,   # Use x, y position from Odometry
-               false, false, true,    # Use Yaw from Odometry (Disable Roll, Pitch)
-               true, true, false,     # Use velocity (vx, vy) from Odometry
-               false, false, true,    # Use vyaw from Odometry
-               false, false, false]   # Ignore linear acceleration
-
-
-imu0_config:  [false, false, false,  # Ignore x, y, z position
-               true,  true,  false,   # Use only Roll, Pitch from IMU (Yaw from Odometry)
-               false, false, false,  # Ignore linear velocities (vx, vy, vz)
-               false, false, false,  # Ignore angular velocity from IMU (Odometry handles it)
-               false, false, false]  # Ignore linear acceleration
-
-
-
-```
 
 ## YAW rate Q and R tuning [ bicyble model ]
 - becase odom forn yaw rate it are very percise so we can lower R odom for make it trust odom more then imu 
