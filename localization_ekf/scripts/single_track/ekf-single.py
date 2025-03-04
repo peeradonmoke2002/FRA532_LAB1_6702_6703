@@ -86,7 +86,7 @@ class MinimalEKF:
 
         # Process noise covariance matrix (3x3)
         # Lower values indicate higher confidence in the motion model.
-        self.Q = np.diag([0.015, 0.015, 0.015])
+        self.Q = np.diag([0.215, 0.215, 0.215])
         
         # Measurement noise covariance matrix for GPS (2x2)
         self.R = np.diag([0.025, 0.025])

@@ -1,61 +1,48 @@
+#!/usr/bin/env python3
 import os
-from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 
 def generate_launch_description():
-
     package_name = "localization_ekf"
 
-    config_folder = os.path.join(get_package_share_directory(package_name), "config")
-
-    ekf_config_arg = DeclareLaunchArgument(
-        'config_file',
-        default_value='ekf-singletrack.yaml',
-        description='Select EKF configuration file'
-    )
-
-    ekf_config_path = PathJoinSubstitution([config_folder, LaunchConfiguration('config_file')])
-
+    # EKF node from robot_localization package (using inline parameters)
     ekf_localization = Node(
-        package="robot_localization",
+        package="localization_ekf",
         executable="ekf_node",
         name="ekf_localization",
         output="screen",
-        parameters=[{"use_sim_time": True, "ekf_config_path": ekf_config_path}]
+        parameters=[{"use_sim_time": True}]
     )
 
-    yawrate_script_path = os.path.join(get_package_share_directory(package_name), "scripts/single_track")
-
+    # Local nodes from your package "localization_ekf"
     gps_node = Node(
-        package="localization_ekf",
+        package=package_name,
         executable="gps.py",
         name="gps_node",
         output="screen"
     )
 
     ekf_node = Node(
-        package="localization_ekf",
-        executable="odom_filtered_singletrack.py",
+        package=package_name,
+        executable="ekf-single.py",
         name="ekf_node",
         output="screen"
     )
 
     ackerman_odom_node = Node(
-        package="localization_ekf",
-        executable="ackerman_odom_single_track.py",
+        package=package_name,
+        executable="ackerman_yaw_rate_odom.py",
         name="ackerman_odom_node",
         output="screen"
     )
 
-
-
     return LaunchDescription([
-        ekf_config_arg,
         ekf_localization,
         ekf_node,
         gps_node,
         ackerman_odom_node,
     ])
+
+if __name__ == '__main__':
+    generate_launch_description()

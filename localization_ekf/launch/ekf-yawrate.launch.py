@@ -8,7 +8,7 @@ def generate_launch_description():
 
     # EKF node from robot_localization package (using inline parameters)
     ekf_localization = Node(
-        package="robot_localization",
+        package="localization_ekf",
         executable="ekf_node",
         name="ekf_localization",
         output="screen",

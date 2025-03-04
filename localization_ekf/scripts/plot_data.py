@@ -76,7 +76,7 @@ def load_and_analyze():
 
     plt.xlabel("X Position")
     plt.ylabel("Y Position")
-    plt.title("EKF Trajectory Analysis with RMSE & MAE [PID-singletrack-noslip]")
+    plt.title("EKF Trajectory Analysis with RMSE & MAE [stanley-yawrate-basic]")
     plt.legend()
     plt.grid(True)
     plt.show()
