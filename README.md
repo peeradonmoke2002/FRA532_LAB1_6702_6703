@@ -928,6 +928,8 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 
 
 ## LAB 1.3
+> [!NOTE]  
+> The lab 1.3 package folder is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/localization_ekf`
 
 In this lab, we extend the odometry models from LAB 1.1 by fusing GPS data using an Extended Kalman Filter (EKF). The EKF output provides a pose estimate, which we then use as the input for path tracking, similar to LAB 1.2, but now relying on the EKF-estimated pose instead of raw odometry data.
 
@@ -1000,8 +1002,8 @@ F = \frac{\partial f}{\partial X}
 $$
 
 where:
-- \( X \) is the state vector
-- \( f(X) \) is the nonlinear motion model
+- $`( X )`$ is the state vector
+- $`( f(X) )`$ is the nonlinear motion model
 
 ### **Jacobian of the Measurement Model:**
 Similarly, the measurement function is linearized using the Jacobian:
@@ -1011,7 +1013,7 @@ H = \frac{\partial h}{\partial X}
 $$
 
 where:
-- \( h(X) \) is the nonlinear measurement function
+- $`( h(X) )`$ is the nonlinear measurement function
 
 
 
@@ -1102,12 +1104,12 @@ S = H P H^T + R is the innovation covariance.
 
 
 ### How to Tune \( K \)
-- Lower \( R \) → Higher trust in sensor.  
-- Lower \( Q \) → Higher trust in model.  
+- Lower $`( R )`$ → Higher trust in sensor.  
+- Lower $`( Q )`$ → Higher trust in model.  
 -  Start with large Q R and gradually decrease while monitoring performance.
-- Check innovation covariance $$ S=HPH 
+- Check innovation covariance $` S=HPH 
 T
- +R$$
+ +R`$
 
 ### Implementation
 
