@@ -1320,7 +1320,7 @@ python3 Visualization_test.py
 
 ```
 
-## YAW rate Q and R tuning
+## YAW rate Q and R tuning [ bicyble model ]
 - becase odom forn yaw rate it are very percise so we can lower R odom for make it trust odom more then imu 
 
 ```bash
@@ -1352,7 +1352,7 @@ R_imu = np.diag([
 
 
 
-## Single track Q and R tuning
+## Single track Q and R tuning [ bicyble model ]
 
 ```bash 
 Q = np.diag([
@@ -1383,7 +1383,7 @@ R_imu = np.diag([
 ![stanle-single](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/single_track/stanlee/stanlee_singletrack.png)
 
 
-## Double  track Q and R tuning
+## Double  track Q and R tuning [ bicyble model ]
 
 ```bash 
 Q = np.diag([
@@ -1412,7 +1412,9 @@ R_imu = np.diag([
 ![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/stanlee/stanlee-doubletrack.png)
 
 
-
+## YAW rate Q and R tuning [ noslip model ]
+## Single track Q and R tuning [ noslip model ]
+## Double  track Q and R tuning [ noslip model ]
 
 ## Our Team
 - **67340700402** พงษ์พัฒน์ วงศ์กำแหงหาญ
