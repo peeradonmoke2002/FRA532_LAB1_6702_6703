@@ -7,12 +7,12 @@ def generate_launch_description():
     package_name = "localization_ekf"
 
     # Local nodes from your package "localization_ekf"
-    # gps_node = Node(
-    #     package=package_name,
-    #     executable="gps.py",
-    #     name="gps_node",
-    #     output="screen"
-    # )
+    gps_node = Node(
+        package=package_name,
+        executable="gps.py",
+        name="gps_node",
+        output="screen"
+    )
 
     # Use the EKF node from your single_track folder (ensure the file is installed as ekf-single.py)
     ekf_node = Node(
@@ -30,8 +30,8 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        gps_node,
         ekf_node,
-        # gps_node,
         ackerman_odom_node,
     ])
 

@@ -6,15 +6,6 @@ from launch_ros.actions import Node
 def generate_launch_description():
     package_name = "localization_ekf"
 
-    # EKF node from robot_localization package (using inline parameters)
-    ekf_localization = Node(
-        package="localization_ekf",
-        executable="ekf_node",
-        name="ekf_localization",
-        output="screen",
-        parameters=[{"use_sim_time": True}]
-    )
-
     # Local nodes from your package "localization_ekf"
     gps_node = Node(
         package=package_name,
@@ -23,24 +14,24 @@ def generate_launch_description():
         output="screen"
     )
 
+    # Use the EKF node from your single_track folder (ensure the file is installed as ekf-single.py)
     ekf_node = Node(
         package=package_name,
-        executable="ekf.py",
+        executable="ekf-double.py",  # This must match the installed file name!
         name="ekf_node",
         output="screen"
     )
 
     ackerman_odom_node = Node(
         package=package_name,
-        executable="ekf-double.py",
+        executable="ackerman_odom_double_track.py",
         name="ackerman_odom_node",
         output="screen"
     )
 
     return LaunchDescription([
-        ekf_localization,
-        ekf_node,
         gps_node,
+        ekf_node,
         ackerman_odom_node,
     ])
 
