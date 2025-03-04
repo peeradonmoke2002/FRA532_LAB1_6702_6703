@@ -1214,9 +1214,6 @@ R_imu = np.diag([
 #### Steps for Testing
 
 #### **Step 1: Launch EKF (Select Only One)**  
-> [!WARNING]  
-> **Do not run these launch files together. Choose only one.**
-
 Select the kinematic model you want to test:
 
 For `yaw rate`:  
