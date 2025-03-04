@@ -2,26 +2,22 @@
 
 import rclpy
 from rclpy.node import Node
-from nav_msgs.msg import Odometry
-from sensor_msgs.msg import JointState, Imu
-from geometry_msgs.msg import PoseStamped, Quaternion, Twist, TransformStamped
+from geometry_msgs.msg import PoseStamped
 from gazebo_msgs.msg import ModelStates
+
 import math
-import tf_transformations 
-from tf2_ros import TransformBroadcaster
-from nav2_msgs.srv import SetInitialPose
 import random
 
 class DummyNode(Node):
     def __init__(self):
         super().__init__('gps')
-        self.ground_truth_subscriber = self.create_subscription(ModelStates, '/gazebo/model_states', self.ground_truth_callback, 10)
+        self.ground_truth_subscriber = self.create_subscription(ModelStates, '/gazebo/model_states', self.gazebo_callback, 10)
         self.gps_pub = self.create_publisher(PoseStamped, '/gps', 10)
 
         self.position_noise_stddev = 0.001  # Standard deviation for position noise (meters)
         self.orientation_noise_stddev = 0.001  # Standard deviation for quaternion noise
 
-    def ground_truth_callback(self, msg: ModelStates):
+    def gazebo_callback(self, msg: ModelStates):
         index = msg.name.index("limo")
         posX = msg.pose[index].position.x
         posY = msg.pose[index].position.y

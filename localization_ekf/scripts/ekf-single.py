@@ -80,19 +80,42 @@ class MinimalEKFNode(Node):
 
 class MinimalEKF:
     def __init__(self):
+        
+
+
+
+        # PID basic
         # State vector: [x, y, theta]
-        self.x_est = np.array([0.0, 0.0, 0.0])  # initial estimate
+        self.x_est = np.array([0.0, 0.0, 0.0015])  # initial estimate
         self.P_est = np.eye(3) * 1.0            # initial covariance matrix
 
         # Process noise covariance matrix (3x3)
         # Lower values indicate higher confidence in the motion model.
-        self.Q = np.diag([0.015, 0.015, 0.015])
+        self.Q = np.diag([0.0155, 0.0155, 0.0155])
         
         # Measurement noise covariance matrix for GPS (2x2)
-        self.R = np.diag([0.025, 0.025])
+        self.R = np.diag([0.02, 0.02])
         
         # Measurement noise covariance for odometry (3x3)
-        self.R_odom = np.diag([0.055, 0.055, 0.055])
+        self.R_odom = np.diag([0.048, 0.048, 0.048])
+        
+        # Time step (s)
+        self.dt = 0.01
+
+        # purepursuit and stanley basic
+
+        self.x_est = np.array([0.0, 0.0, 0.001])  # initial estimate
+        self.P_est = np.eye(3) * 1.0            # initial covariance matrix
+
+        # Process noise covariance matrix (3x3)
+        # Lower values indicate higher confidence in the motion model.
+        self.Q = np.diag([0.010, 0.010, 0.010])
+        
+        # Measurement noise covariance matrix for GPS (2x2)
+        self.R = np.diag([0.02, 0.02])
+        
+        # Measurement noise covariance for odometry (3x3)
+        self.R_odom = np.diag([0.05, 0.05, 0.05])
         
         # Time step (s)
         self.dt = 0.01

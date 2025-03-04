@@ -1143,7 +1143,7 @@ self.R_odom = np.diag([0.055, 0.055, 0.055])
 
 
 ### How to Tune \( K \)
-- Lower $`( R )`$ → Higher trust in sensor.  
+- Lower $`( R )`$ → Higher trust in gps.  
 - Lower $`( Q )`$ → Higher trust in model.  
 -  Start with large Q R and gradually decrease while monitoring performance.
 - Check innovation covariance $` S=HPH 
@@ -1152,84 +1152,130 @@ T
 
 ### Implementation
 
-
-
-## YAW rate Q and R tuning [ bicyble model ]
+## YAW rate Q and R tuning [ PID - purepursuit - stanlee bicyble model ]
 - becase odom forn yaw rate it are very percise so we can lower R odom for make it trust odom more then imu 
 
 ```bash
 
+        # State vector: [x, y, theta]
+        self.x_est = np.array([0.0, 0.0, 0.0])  # initial estimate
+        self.P_est = np.eye(3) * 1.0            # initial covariance matrix
 
+        # Process noise covariance matrix (3x3)
+        # Lower values indicate higher confidence in the motion model.
+        self.Q = np.diag([0.015, 0.015, 0.015])
+        
+        # Measurement noise covariance matrix for GPS (2x2)
+        self.R = np.diag([0.025, 0.025])
+        
+        # Measurement noise covariance for odometry (3x3)
+        self.R_odom = np.diag([0.055, 0.055, 0.055])
+        
+        # Time step (s)
+        self.dt = 0.01
 
-Q = np.diag([
-    0.02, 0.02, 0.02,            # position noise
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),  # orientation noise (rad) roll pitch yaw
-    0.1, 0.1, 0.1,               # linear velocity noise
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),  # angular velocity noise (rad/s)
-    0.2, 0.2, 0.2                # linear acceleration noise
-]) ** 2
-
-# Measurement noise covariance for odometry (6x6): [p (3), v (3)]
-R_odom = np.diag([0.1, 0.1, 0.1, # Position noise (x, y, z)
-                   0.1, 0.1, 0.1]) ** 2 # Velocity noise (vx, vy, vz)
-
-
-# Measurement noise covariance for IMU (9x9): [orientation (3), angular velocity (3), linear acceleration (3)]
-R_imu = np.diag([
-    np.deg2rad(1.0), np.deg2rad(1.0), np.deg2rad(1.0),# Orientation noise (roll, pitch, yaw)
-    np.deg2rad(0.5), np.deg2rad(0.5), np.deg2rad(0.5),# Angular velocity noise (ωx, ωy, ωz)
-    0.2, 0.2, 0.2 # Linear acceleration noise (ax, ay, az)
-]) ** 2
 ``` 
-## Single track Q and R tuning [ bicyble model ]
+## Single track Q and R tuning [ PID - bicyble model ]
+
+- Different control strategies (PID-based and pure pursuit/Stanley) require slight adjustments in these matrices to balance the trust between model prediction and sensor measurement
+
 
 ```bash 
-Q = np.diag([
-    0.02, 0.02, 2.02,            # position noise
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(2.5),  # orientation noise (rad) roll pitch yaw
-    0.1, 0.1, 0.1,               # linear velocity noise
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(2.5),  # angular velocity noise (rad/s)
-    0.2, 0.2, 0.2                # linear acceleration noise
-]) ** 2
+        # State vector: [x, y, theta]
+        self.x_est = np.array([0.0, 0.0, 0.0015])  # initial estimate
+        self.P_est = np.eye(3) * 1.0            # initial covariance matrix
 
-# Measurement noise covariance for odometry (6x6): [p (3), v (3)]
-R_odom = np.diag([1.0, 1.0, 1.1,# Position noise (x, y, z)
-                   1.1, 1.1, 1.1]) ** 2 # Velocity noise (vx, vy, vz)
-
-
-# Measurement noise covariance for IMU (9x9): [orientation (3), angular velocity (3), linear acceleration (3)]
-R_imu = np.diag([
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),# Orientation noise (roll, pitch, yaw)
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),# Angular velocity noise (ωx, ωy, ωz)
-    0.2, 0.2, 0.3 # Linear acceleration noise (ax, ay, az)
-]) ** 2
+        # Process noise covariance matrix (3x3)
+        # Lower values indicate higher confidence in the motion model.
+        self.Q = np.diag([0.0155, 0.0155, 0.0155])
+        
+        # Measurement noise covariance matrix for GPS (2x2)
+        self.R = np.diag([0.02, 0.02])
+        
+        # Measurement noise covariance for odometry (3x3)
+        self.R_odom = np.diag([0.048, 0.048, 0.048])
+        
+        # Time step (s)
+        self.dt = 0.01
 
 ```
-## Double  track Q and R tuning [ bicyble model ]
+## Single track Q and R tuning [ purepursuit and stanley - ]
 
-```bash 
-Q = np.diag([
-    0.02, 0.02, 2.02,            # position noise
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(2.5),  # orientation noise (rad) roll pitch yaw
-    0.1, 0.1, 0.1,               # linear velocity noise
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(2.5),  # angular velocity noise (rad/s)
-    0.2, 0.2, 0.2                # linear acceleration noise
-]) ** 2
+```bash
 
-# Measurement noise covariance for odometry (6x6): [p (3), v (3)]
-R_odom = np.diag([2.0, 2.0, 2.1,# Position noise (x, y, z)
-                   2.1, 2.1, 2.1]) ** 2 # Velocity noise (vx, vy, vz)
+        self.x_est = np.array([0.0, 0.0, 0.001])  # initial estimate
+        self.P_est = np.eye(3) * 1.0            # initial covariance matrix
 
+        # Process noise covariance matrix (3x3)
+        # Lower values indicate higher confidence in the motion model.
+        self.Q = np.diag([0.010, 0.010, 0.010])
+        
+        # Measurement noise covariance matrix for GPS (2x2)
+        self.R = np.diag([0.02, 0.02])
+        
+        # Measurement noise covariance for odometry (3x3)
+        self.R_odom = np.diag([0.05, 0.05, 0.05])
+        
+        # Time step (s)
+        self.dt = 0.01
 
-# Measurement noise covariance for IMU (9x9): [orientation (3), angular velocity (3), linear acceleration (3)]
-R_imu = np.diag([
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),# Orientation noise (roll, pitch, yaw)
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),# Angular velocity noise (ωx, ωy, ωz)
-    0.2, 0.2, 0.3 # Linear acceleration noise (ax, ay, az)
-]) ** 2
 ```
+
+
 
 ### Methodology and Results lab 1.3
+
+select only one launch
+
+```bash
+
+ros2 launch localization_ekf ekf-yawrate.launch.py 
+
+ros2 launch localization_ekf ekf-singletrack.launch.py 
+
+ros2 launch localization_ekf ekf-doubletrack.launch.py 
+
+
+```
+select only one controller
+
+pp = purepursuit
+
+basic = bicycle model
+
+```bash
+
+ros2 run localization_ekf pid-basic.py
+
+ros2 run localization_ekf pp-basic.py
+
+ros2 run localization_ekf stanlee-basic.py
+
+ros2 run localization_ekf pid-noslip.py
+
+ros2 run localization_ekf pp-noslip.py
+
+ros2 run localization_ekf stanlee-noslip.py
+
+
+```
+* optinal run save data for visualized and save data 
+
+```bash
+
+ros2 run localization_ekf save_data.py
+
+```
+
+then use this command after we want to know result
+
+```bash
+
+ros2 run localization_ekf plot_daat.py
+
+```
+
+
 
 #### Steps for Testing
 
@@ -1252,67 +1298,6 @@ ros2 launch localization_ekf ekf-doubletrack.launch.py
 ---
 
 #### **Step 2: Run Control Method (Select Only One)**
-
-##### **For `ekf-yawrate.launch.py`**
-Select the path tracking controller you want to test:
-
-Case PID:
-```bash
-ros2 run localization_ekf pid_yawrate.py
-```
-
-Case Pure Pursuit:
-```bash
-ros2 run localization_ekf pp_yawrate.py
-```
-
-Case Stanley:
-```bash
-ros2 run localization_ekf stanlee_yawrate.py
-```
-
-##### **For `ekf-singletrack.launch.py`**
-Select the path tracking controller you want to test:
-
-Case PID:
-```bash
-ros2 run localization_ekf pid_singletrack.py
-```
-
-Case Pure Pursuit:
-```bash
-ros2 run localization_ekf pp_singletrack.py
-```
-
-Case Stanley:
-```bash
-ros2 run localization_ekf stanlee_singletrack.py
-```
-
-##### **For `ekf-doubletrack.launch.py`**
-Select the path tracking controller you want to test:
-
-Case PID:
-```bash
-ros2 run localization_ekf pid_doubletrack.py
-```
-
-Case Pure Pursuit:
-```bash
-ros2 run localization_ekf pp_doubletrack.py
-```
-
-Case Stanley:
-```bash
-ros2 run localization_ekf stanlee_doubletrack.py
-```
-
----
-
-#### **Step 3: [Optional] Visualize Data**
-```bash
-ros2 run localization_ekf Visualization_test.py
-```
 
 
 

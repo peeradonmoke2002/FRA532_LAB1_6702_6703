@@ -28,27 +28,17 @@ ament_python_install_package(${PROJECT_NAME})
 # Install Python executables
 install(PROGRAMS
   scripts/dummy_script.py
-  scripts/yawrate/odom_filtered_yawrate.py
-  scripts/yawrate/ackerman_yaw_rate_odom.py
-  scripts/yawrate/pid_yawrate.py
+  scripts/basic-model/pid-basic.py
+  scripts/basic-model/pp-basic.py
+  scripts/basic-model/stanlee-basic.py
 
-  scripts/yawrate/stanlee_yawrate.py
-  scripts/yawrate/pp_yawrate.py
-  scripts/yawrate/ekf-yawrate.py
-  scripts/single_track/ekf-single.py
+  scripts/noslip-model/pid-noslip.py
+  scripts/noslip-model/pp-noslip.py
+  scripts/noslip-model/stanlee-noslip.py
 
-  scripts/double_track/ekf-double.py
-
-  scripts/double_track/ackerman_odom_double_track.py
-  scripts/double_track/pid_doubletrack.py
-  scripts/double_track/stanlee_doubletrack.py
-  scripts/double_track/pp_doubletrack.py
-  scripts/single_track/ackerman_odom_single_track.py
-  scripts/single_track/pid_singletrack.py
-  scripts/single_track/stanlee_singletrack.py
-  scripts/single_track/pp_singletrack.py
-  scripts/singletrack-noslip/ekf-single-noslip.py
-  scripts/yawrate-noslip/ekf-yawrate-noslip.py
+  scripts/ekf-double.py
+  scripts/ekf-single.py
+  scripts/ekf-yawrate.py
 
   scripts/gps.py
   scripts/plot_data.py
