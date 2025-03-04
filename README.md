@@ -1392,34 +1392,50 @@ Avg % rear wheel slip Results (Lower is Better)
 | **Stanley-noslip**     | 1.6 %  | Failure | Failure |
 
 
-### Summary of EKF Localization Performance
+# Summary of EKF Localization Performance
 
-- Noslip vs. Basic
+## 1. Noslip vs. Basic
+- Noslip mode provides better accuracy:
+  - Lower RMSE and MAE compared to Basic, indicating improved trajectory tracking.
+  - Lower steering angle percent changes, meaning smoother steering corrections and less abrupt movements.
 
-* In most cases, the noslip mode achieves lower RMSE and MAE than basic, indicating more accurate tracking of the trajectory
-* Steering angle percent changes also tend to be lower with noslip, suggesting less abrupt steering corrections
+---
 
-- Double Track
-* all failure bacause heading  is error then robot cresh the wall
+## 2. Double Track
+- All Double Track models failed due to:
+  - Heading estimation errors, leading to the robot crashing into walls.
+  - Suggests further improvements needed for handling heading estimation.
 
-- Single Track vs. Yaw Rate
-* Single Track results are mixed: sometimes the RMSE/MAE are higher than Yaw Rate, sometimes lower. However, noslip consistently improves performance in Single Track relative to basic
+---
 
-- RMSE and MAE
+## 3. Single Track vs. Yaw Rate
+- Performance varies:
+  - Sometimes Single Track RMSE/MAE is higher than Yaw Rate, sometimes lower.
+  - Noslip consistently improves Single Track performance compared to Basic.
 
-* Lowest RMSE
+---
 
-* Often 0.07 for Yaw Rate with noslip (PID-noslip, Pure Pursuit-noslip)
+## 4. RMSE and MAE (Lower is Better)
+### Lowest RMSE  
+- 0.07 for Yaw Rate with Noslip (PID-noslip, Pure Pursuit-noslip)  
+- 0.263 for Single Track (Pure Pursuit-noslip)  
 
-* Single Track can have a moderate RMSE (e.g., 0.263 for Pure Pursuit-noslip)
+### Lowest MAE  
+- 0.08 for some Noslip Yaw Rate models (PID-noslip, Pure Pursuit-noslip).
+- Single Track MAE is generally higher but still improves with Noslip.
 
-* Lowest MAE
+---
 
-* Also around 0.08 for some noslip Yaw Rate models (PID-noslip, Pure Pursuit-noslip).
+## 5. Conclusion
+- Noslip mode outperforms Basic in minimizing RMSE/MAE:
+  - Works better in both Yaw Rate and Single Track setups.
+  - Reduces steering oscillations, leading to smoother control.
+  - Improves overall accuracy and stability in EKF localization.
 
-* Single Track MAE is generally higher but still improves with noslip.
+---
 
-- Conclusion: If minimizing RMSE/MAE is the primary goal, noslip mode outperforms basic in both Yaw Rate and Single Track setups.
+### Key Takeaway
+- Use Noslip mode for better accuracy, smoother steering, and improved localization performance.
 
 
 
@@ -1466,10 +1482,3 @@ Avg % rear wheel slip Results (Lower is Better)
 
 
 
-- PID outperforms other models in both Yaw Rate and Single Track scenarios, making it the most accurate and stable controller
-
-- PPure Pursuit has the worst performance in both RMSE and MAE, suggesting poor localization accuracy.
-
-- All models fail in the Double Track setup, indicating instability in handling a more complex trajectory.
-
-- Stanley performs slightly better than Pure Pursuit but still struggles in Single Track
