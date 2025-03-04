@@ -931,6 +931,10 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 
 ## Installation
 
+## use launch file
+
+
+
 ### 1. create workspace n clone 
 
 ``` bash
@@ -955,7 +959,111 @@ source  ~/.bashrc
 
 ```
 
-### 2. how to run file yawrate  
+### 1.1 runfile using launch 
+
+step 1: select only one to launch ekf ** dont run this launch together **
+
+```bash 
+
+ros2 launch localization_ekf ekf-yawrate.launch.py  
+
+ros2 launch localization_ekf ekf-singletrack.launch.py
+
+ros2 launch localization_ekf ekf-doubletrack.launch.py
+```
+step 2 : if you lauch launch localization_ekf ekf-yawrate.launch.py  then use 
+
+```bash 
+
+cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/yawrate
+
+```
+
+step 2.2 then select 1 controller ** only 1 controller per round **
+
+```bash 
+
+python3 pid_yawrate.py
+
+python3 pp_yawrate.py  
+
+python3 stanlee_yawrate.py
+
+
+```
+
+
+step 3.1 : if you lauch launch localization_ekf ekf-singletrack.launch.py  then use 
+
+```bash 
+
+cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/singletrack
+
+```
+
+step 3.2 then select 1 controller ** only 1 controller per round **
+
+```bash 
+
+python3 pid_singletrack.py
+
+python3 pp_singletrack.py  
+
+python3 stanlee_singletrack.py
+
+
+```
+step 3.1 : if you lauch launch localization_ekf ekf-doubletrack.launch.py  then use 
+
+```bash 
+
+cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/doubletrack
+
+```
+
+step 3.2 then select 1 controller ** only 1 controller per round **
+
+```bash 
+
+python3 pid_doubletrack.py
+
+python3 pp_doubletrack.py  
+
+python3 stanlee_doubletrack.py
+
+
+```
+
+
+
+
+
+
+
+
+```bash 
+
+cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/yawrate
+
+python3 pp_yawrate.py  
+
+ctrl + shift + z  [ for close ]
+
+```
+
+step5 : [optional visualyzed data]
+
+``` bash 
+
+cd FRA532_LAB1_6702_6703/localization_ekf/scripts/Visualization_test.py
+
+python3 Visualization_test.py
+
+```
+
+
+
+### 2 if launch file didn't work try to run manually
 
 frist go to 
 
@@ -1336,4 +1444,29 @@ image
 - [Stanley Controller](https://www.ri.cmu.edu/pub_files/2009/2/Automatic_Steering_Methods_for_Autonomous_Automobile_Path_Tracking.pdf)
 
 
+### Summary of EKF Localization Performance
 
+-This table presents the Root Mean Squared Error (RMSE) and Mean Absolute Error (MAE)
+
+| Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
+|-------------|----------------|----------------------|----------------------|
+| **PID** | 10.0114 | 12.8260 | CRASH!|
+| **PUREPURSUIT** | 11.7663 | 13.3210 | CRASH! |
+| **STANLEE** |11.6688 |13.2063 |!CRASH |
+
+
+
+| Model Type  | Yaw Rate (MAE) | Single Track (MAE) | Double Track (MAE) |
+|-------------|----------------|----------------------|----------------------|
+| **PID** | 9.9287 | 13.0974 | CRASH!|
+| **PUREPURSUIT** | 12.2698 | 14.5055 | CRASH! |
+| **STANLEE** |12.9098 |13.7231 |!CRASH |
+
+
+- PID performs the best in both Yaw Rate and Single Track models, making it the most reliable option
+
+- Pure Pursuit has the worst accuracy (highest RMSE & MAE)
+
+-All models failed on the Double Track setup because heading from odom not percise i try too increase R in odom and lower R from imu and i still error
+
+- Stanley performs slightly better than Pure Pursuit but still struggles in Single Track
