@@ -322,7 +322,6 @@ ros2 launch robot_controller ackerman_yaw_rate_odom.py
 ```bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
-5) Use the odometry recording and plotting tool to compare results.
 
 #### Single Track Model
 For the single track model the translation motion is determined by average velocity of the rear wheels and for the roation is determind by use $$δ$$ front to calculate rotation rate $$ω$$
@@ -377,7 +376,6 @@ ros2 launch robot_controller ackerman_odom_single_track.py
 ```bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
-5) Use the odometry recording and plotting tool to compare results.
 
 #### Double Track Model
 For double track model are determines the pose by suing basic of two single wheel velocities, For translation motion is calculate by average of the velocities of the two wheels and the roatation is determined on the basic of the velocity difference with respect to the single wheel angle and wheel contact points
@@ -443,8 +441,6 @@ where:
 
 
 
-
-
 #### Running Double Track Model
 Try running the following commands to test the double track model:
 
@@ -461,7 +457,6 @@ ros2 launch robot_controller ackerman_odom_double_track.py
 ```bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
-5) Use the odometry recording and plotting tool to compare results.
 
 ### Methodology and Results lab 1.1
 
@@ -486,10 +481,25 @@ ros2 launch robot_controller basic_model+all_odom.launch.py
 ros2 launch robot_controller noslip_model+all_odom.launch.py
 ```
 
-3) Use the odometry recording  `record_odom_all.py` and plotting `plot_all.py` to compare results.
+3) Use the odometry recording  `record_odom_all.py` and plotting tool `plot_all.py` to compare results.
+
+cd to folder `data_analysis`
+```bash
+cd ~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller/scripts/data_analysis/
+```
+
+run record odom for collect data
+```bash
+python3 record_odom_all.py
+```
+
+run plot all for plot data
+```bash
+python3 plot_all.py
+```
 
 > [!WARNING] 
-> the data will be overwrite if you run the launch file again.
+> the data will be overwrite if you run odometry recording  `record_odom_all.py` file again.
 
 ### **Results**
 We tested the system by making the robot move in a **circular left turn** using different kinematic models.
