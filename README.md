@@ -1322,16 +1322,17 @@ ros2 run localization_ekf Visualization_test.py
 
 ### Summary of EKF Localization Performance
 
--This table presents the Root Mean Squared Error (RMSE) and Mean Absolute Error (MAE)
+This table presents the **Root Mean Squared Error (RMSE)** and **Mean Absolute Error (MAE)** values, which measure localization accuracy. Lower values indicate better performance.
 
+RMSE Results (Lower is Better)
 | Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
 |-------------|----------------|----------------------|----------------------|
 | **PID**         | 10.01   | 12.83  | Failure |
-| **Pure Pursuit**| 11.77  | 13.32**  | Failure |
+| **Pure Pursuit**| 11.77  | 13.32  | Failure |
 | **Stanley**     | 11.67  | 13.21 | Failure |
 
 
-
+MAE Results (Lower is Better)
 | Model Type  | Yaw Rate (MAE) | Single Track (MAE) | Double Track (MAE) |
 |-------------|----------------|----------------------|----------------------|
 | **PID** | 9.9287 | 13.0974 | Failure |
@@ -1341,13 +1342,12 @@ ros2 run localization_ekf Visualization_test.py
 
 #### Observations
 
-- PID performs the best in both Yaw Rate and Single Track scenarios, providing the most accurate and stable localization results
-
-- Pure Pursuit has the worst performance in both RMSE and MAE, suggesting poor localization accuracy.
-
-- All models fail in the Double Track setup, indicating instability in handling a more complex trajectory.
-
-- Stanley performs slightly better than Pure Pursuit but still struggles in Single Track
+- **PID achieves the lowest RMSE (10.01) in Yaw Rate and 12.83 in Single Track**, indicating the **most accurate and stable localization** among all models.  
+- **Pure Pursuit has the highest RMSE (11.77 Yaw Rate, 13.32 Single Track)**, showing **significant deviation from the ground truth path**, making it the **least accurate**.  
+- **Stanley performs slightly better than Pure Pursuit (RMSE: 11.67 Yaw Rate, 13.21 Single Track)**, but **still exhibits errors in the Single Track scenario**.  
+- **Double Track consistently fails for all models**, suggesting that **the localization system cannot handle this complex trajectory properly**, potentially due to **sensor fusion inaccuracies or an unstable model configuration**.  
+- **MAE values follow a similar trend to RMSE**, reinforcing that **PID is the most stable and Pure Pursuit is the least stable**.  
+- **Across all models, Yaw Rate errors are lower than Single Track errors**, indicating that the **Yaw Rate configuration provides more reliable localization than the Single Track model**.  
 
 ## Our Team
 - **67340700402** พงษ์พัฒน์ วงศ์กำแหงหาญ
