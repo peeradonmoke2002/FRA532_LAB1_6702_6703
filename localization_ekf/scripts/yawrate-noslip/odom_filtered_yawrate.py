@@ -2,33 +2,37 @@
 import rclpy
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import PoseStamped, Quaternion
+from sensor_msgs.msg import Imu
 from tf_transformations import quaternion_from_euler, euler_from_quaternion
 import numpy as np
 import math
 
+
+
 # -----------------------------
 # Define Noise Covariances
 # -----------------------------
-# Process noise covariance Q (15x15)
+# Process noise covariance Q (15x15) decrease value = high precision 
+#initial noise
 Q = np.diag([
-    0.01, 0.01, 0.01,            # position noise
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),  # orientation noise (roll, pitch, yaw)
+    0.02, 0.02, 0.02,            # position noise
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),  # orientation noise (rad) roll pitch yaw
     0.1, 0.1, 0.1,               # linear velocity noise
-    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),  # angular velocity noise
-    0.1, 0.1, 0.1                # linear acceleration noise
+    np.deg2rad(0.1), np.deg2rad(0.1), np.deg2rad(0.1),  # angular velocity noise (rad/s)
+    0.2, 0.2, 0.2                # linear acceleration noise
 ]) ** 2
-
-
 
 # Measurement noise covariance for odometry (6x6): [p (3), v (3)]
-R_odom = np.diag([
-    0.05, 0.05, 0.05,  # Position noise (x, y, z)
-    0.05, 0.05, 0.05   # Velocity noise (vx, vy, vz)
-]) ** 2
+R_odom = np.diag([0.1, 0.1, 0.1,# Position noise (x, y, z)
+                   0.1, 0.1, 0.1]) ** 2 # Velocity noise (vx, vy, vz)
 
-# Measurement noise covariance for GPS (3x3): [position (3)]
-R_gps = np.diag([0.025, 0.05, 0.05]) ** 2
+
+# Measurement noise covariance for IMU (9x9): [orientation (3), angular velocity (3), linear acceleration (3)]
+R_imu = np.diag([
+    np.deg2rad(1.0), np.deg2rad(1.0), np.deg2rad(1.0),# Orientation noise (roll, pitch, yaw)
+    np.deg2rad(0.5), np.deg2rad(0.5), np.deg2rad(0.5),# Angular velocity noise (ωx, ωy, ωz)
+    0.2, 0.2, 0.2 # Linear acceleration noise (ax, ay, az)
+]) ** 2
 
 print('Noise covariances defined.')
 
@@ -69,7 +73,7 @@ def dR_droll(roll, pitch, yaw):
                    [0,   0,  1]])
     Ry = np.array([[cp, 0, sp],
                    [0,  1, 0],
-                   [-sp, 0, cp]])
+                   [-sp,0, cp]])
     dRx = np.array([[0, 0, 0],
                     [0, -sr, -cr],
                     [0, cr, -sr]])
@@ -84,25 +88,25 @@ def dR_dpitch(roll, pitch, yaw):
                    [0,   0,  1]])
     dRy = np.array([[-sp, 0, cp],
                     [0, 0, 0],
-                    [-cp, 0, -sp]])
-    Rx = np.array([[1, 0, 0],
-                   [0, cr, -sr],
-                   [0, sr, cr]])
+                    [-cp,0, -sp]])
+    Rx = np.array([[1,0,0],
+                   [0,cr,-sr],
+                   [0,sr,cr]])
     return Rz @ dRy @ Rx
 
 def dR_dyaw(roll, pitch, yaw):
-    # Fixed derivative of rotation matrix with respect to yaw.
     cr = math.cos(roll); sr = math.sin(roll)
     cp = math.cos(pitch); sp = math.sin(pitch)
-    dRz = np.array([[-math.sin(yaw), -math.cos(yaw), 0],
-                    [ math.cos(yaw), -math.sin(yaw), 0],
+    cy = math.cos(yaw); sy = math.sin(yaw)
+    dRz = np.array([[-sy, -cy, 0],
+                    [cy, -sy, 0],
                     [0, 0, 0]])
-    Ry = np.array([[cp, 0, sp],
-                   [0, 1, 0],
-                   [-sp, 0, cp]])
-    Rx = np.array([[1, 0, 0],
-                   [0, cr, -sr],
-                   [0, sr, cr]])
+    Ry = np.array([[cp,0,sp],
+                   [0,1,0],
+                   [-sp,0,cp]])
+    Rx = np.array([[1,0,0],
+                   [0,cr,-sr],
+                   [0,sr,cr]])
     return dRz @ Ry @ Rx
 
 def dJ_droll(roll, pitch, yaw):
@@ -201,40 +205,43 @@ def ekf_update_odom(xEst, PEst, z, R_odom):
     PEst_new = (np.eye(15) - K @ H) @ PEst
     return xEst_new, PEst_new
 
-def ekf_update_gps(xEst, PEst, z, R_gps):
-    # z: measurement vector [p_x, p_y, p_z]^T from GPS
-    H = np.zeros((3, 15))
-    H[0:3, 0:3] = np.eye(3)  # only position measurement
+def ekf_update_imu(xEst, PEst, z, R_imu):
+    # z: measurement vector [roll, pitch, yaw, ω_x, ω_y, ω_z, a_x, a_y, a_z]^T
+    H = np.zeros((9, 15))
+    H[0:3, 3:6] = np.eye(3)      # orientation
+    H[3:6, 9:12] = np.eye(3)     # angular velocity
+    H[6:9, 12:15] = np.eye(3)    # linear acceleration
     zPred = H @ xEst
     y = z - zPred
-    S = H @ PEst @ H.T + R_gps
+    for i in range(3):
+        y[i, 0] = normalize_angle(y[i, 0])
+    S = H @ PEst @ H.T + R_imu
     K = PEst @ H.T @ np.linalg.inv(S)
     xEst_new = xEst + K @ y
     PEst_new = (np.eye(15) - K @ H) @ PEst
+    for i in range(3):
+        xEst_new[3+i,0] = normalize_angle(xEst_new[3+i,0])
     return xEst_new, PEst_new
 
 print('EKF functions defined.')
 
 # -----------------------------
-# EKF Node: Odom Filtered (using GPS instead of IMU)
+# EKF Node: Odom Filtered
 # -----------------------------
 class OdomFilteredNode(Node):
     def __init__(self):
         super().__init__('odom_filtered_node')
-        # Initialize state (15x1 vector): [p, r, v, ω, a]
-        # For example, you can initialize with a nonzero state if desired.
+        # Initialize state (15x1 vector): [p(3), r(3), v(3), ω(3), a(3)]
         self.xEst = np.zeros((15,1))
-        # Optionally, you might set an initial state here:
-        # self.xEst[0,0] = 9.0735  # x position, etc.
         self.PEst = np.eye(15) * 1e-3
         # Control input (for angular acceleration update); assume zero control here.
         self.u_alpha = np.zeros((3,1))
         self.last_time = self.get_clock().now()
-        self.dt = 0.05  # 100 Hz prediction rate
+        self.dt = 0.02  # 50 Hz prediction rate
 
-        # Subscribers for raw odometry and GPS measurements
+        # Subscribers for raw odometry and IMU measurements
         self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
-        self.create_subscription(Odometry, '/gps', self.odom_callback, 10)
+        self.create_subscription(Imu, '/imu', self.imu_callback, 10)
 
         # Publisher for filtered odometry
         self.odom_pub = self.create_publisher(Odometry, '/odometry/filtered', 10)
@@ -264,21 +271,31 @@ class OdomFilteredNode(Node):
         # EKF update with odometry measurement
         self.xEst, self.PEst = ekf_update_odom(self.xEst, self.PEst, z, R_odom)
 
-    def gps_callback(self, msg):
-        # Extract GPS measurement: position only.
-        z = np.zeros((3,1))
-        z[0,0] = msg.pose.position.x
-        z[1,0] = msg.pose.position.y
-        z[2,0] = msg.pose.position.z
-        # EKF update with GPS measurement
-        self.xEst, self.PEst = ekf_update_gps(self.xEst, self.PEst, z, R_gps)
+    def imu_callback(self, msg):
+        # Extract IMU measurement: orientation, angular velocity, and linear acceleration.
+        z = np.zeros((9,1))
+        # Orientation: convert quaternion to Euler angles (roll, pitch, yaw)
+        q = msg.orientation
+        roll, pitch, yaw = euler_from_quaternion([q.x, q.y, q.z, q.w])
+        z[0,0] = roll
+        z[1,0] = pitch
+        z[2,0] = yaw
+        # Angular velocity:
+        z[3,0] = msg.angular_velocity.x
+        z[4,0] = msg.angular_velocity.y
+        z[5,0] = msg.angular_velocity.z
+        # Linear acceleration:
+        z[6,0] = msg.linear_acceleration.x
+        z[7,0] = msg.linear_acceleration.y
+        z[8,0] = msg.linear_acceleration.z
+        # EKF update with IMU measurement
+        self.xEst, self.PEst = ekf_update_imu(self.xEst, self.PEst, z, R_imu)
 
     def publish_filtered_odom(self):
         odom_msg = Odometry()
         odom_msg.header.stamp = self.get_clock().now().to_msg()
         odom_msg.header.frame_id = 'odom'
-        # Correct child_frame_id typo if needed:
-        odom_msg.child_frame_id = 'base_footprint'
+        odom_msg.child_frame_id = 'base_footorint'
         # Position from state (first three entries)
         odom_msg.pose.pose.position.x = self.xEst[0,0]
         odom_msg.pose.pose.position.y = self.xEst[1,0]
@@ -289,30 +306,21 @@ class OdomFilteredNode(Node):
         odom_msg.pose.pose.orientation.y = quat[1]
         odom_msg.pose.pose.orientation.z = quat[2]
         odom_msg.pose.pose.orientation.w = quat[3]
-        # Fill the pose covariance (6x6 flattened)
-        pose_cov = [0.05]*36
-        pose_cov[0]  = self.PEst[0,0]  # x
-        pose_cov[7]  = self.PEst[1,1]  # y
-        pose_cov[14] = self.PEst[2,2]  # z
-        pose_cov[21] = self.PEst[3,3]  # roll
-        pose_cov[28] = self.PEst[4,4]  # pitch
-        pose_cov[35] = self.PEst[5,5]  # yaw
-        odom_msg.pose.covariance = pose_cov
-
-        # Fill the twist covariance (6x6 flattened)
-        twist_cov = [0.05]*36
-        twist_cov[0]  = self.PEst[6,6]   # vx
-        twist_cov[7]  = self.PEst[7,7]   # vy
-        twist_cov[14] = self.PEst[8,8]   # vz
-        twist_cov[21] = self.PEst[9,9]   # ωx
-        twist_cov[28] = self.PEst[10,10] # ωy
-        twist_cov[35] = self.PEst[11,11] # ωz
-        odom_msg.twist.covariance = twist_cov
-
-        # For simplicity, we fill twist.linear from the state (indices 6-8)
+        # Optionally, fill the pose covariance (6x6 flattened)
+        cov = [0.0]*36
+        cov[0] = self.PEst[0,0]
+        cov[7] = self.PEst[1,1]
+        cov[14] = self.PEst[2,2]
+        cov[21] = self.PEst[3,3]
+        cov[28] = self.PEst[4,4]
+        cov[35] = self.PEst[5,5]
+        odom_msg.pose.covariance = cov
+        # Use the estimated linear velocity from state (entries 6-8)
         odom_msg.twist.twist.linear.x = self.xEst[6,0]
         odom_msg.twist.twist.linear.y = self.xEst[7,0]
         odom_msg.twist.twist.linear.z = self.xEst[8,0]
+        # For simplicity, twist covariance is set to zero.
+        odom_msg.twist.covariance = [0.0]*36
         self.odom_pub.publish(odom_msg)
 
 def main(args=None):

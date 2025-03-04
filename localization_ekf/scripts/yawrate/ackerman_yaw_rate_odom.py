@@ -16,7 +16,7 @@ class YawrateOdom(Node):
     def __init__(self):
         super().__init__('YawrateOdom')
         queue_size = 10
-        self.dt_loop = 1 / 100.0  # 100 Hz update rate
+        self.dt_loop = 1 / 150  # 100 Hz update rate
 
         # Robot parameters
         self.wheel_base = 0.2         # meters

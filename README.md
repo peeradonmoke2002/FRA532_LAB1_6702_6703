@@ -1479,6 +1479,15 @@ R_imu = np.diag([
 #### Observations
 
 
+- PID outperforms other models in both Yaw Rate and Single Track scenarios, making it the most accurate and stable controller
+
+- PPure Pursuit has the worst performance in both RMSE and MAE, suggesting poor localization accuracy.
+
+- All models fail in the Double Track setup, indicating instability in handling a more complex trajectory.
+
+- Stanley performs slightly better than Pure Pursuit but still struggles in Single Track
+
+
 ## Our Team
 - **67340700402** พงษ์พัฒน์ วงศ์กำแหงหาญ
 - **67340700403** พีรดนย์ เรืองแก้ว
@@ -1509,11 +1518,3 @@ R_imu = np.diag([
 
 [EKF-package](https://github.com/cra-ros-pkg/robot_localization)
 
-
-- PID outperforms other models in both Yaw Rate and Single Track scenarios, making it the most accurate and stable controller
-
-- PPure Pursuit has the worst performance in both RMSE and MAE, suggesting poor localization accuracy.
-
-- All models fail in the Double Track setup, indicating instability in handling a more complex trajectory.
-
-- Stanley performs slightly better than Pure Pursuit but still struggles in Single Track

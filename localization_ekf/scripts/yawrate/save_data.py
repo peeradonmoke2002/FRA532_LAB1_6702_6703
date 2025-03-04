@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-import numpy as np
-import matplotlib.pyplot as plt
 from nav_msgs.msg import Odometry
+from geometry_msgs.msg import PoseStamped, Quaternion, Point, Twist, Vector3
+import matplotlib.pyplot as plt
+import numpy as np
 import csv
 
 class EKFVisualization(Node):
     def __init__(self):
         super().__init__('ekf_visualization')
 
-        # Subscribe to odometry topics
+        # Subscribe to odometry topics (dead reckoning and EKF estimated)
         self.sub_dead_reckoning = self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
-        self.sub_gps = self.create_subscription(Odometry, '/odom_noisy', self.gps_callback, 10)
         self.sub_ekf = self.create_subscription(Odometry, '/odometry/filtered', self.ekf_callback, 10)
+        # Subscribe to GPS observations as PoseStamped
+        self.sub_gps = self.create_subscription(PoseStamped, '/gps', self.gps_callback, 10)
 
         # Store trajectory data
         self.true_traj = []  # Blue: True trajectory (if available)
@@ -21,16 +23,13 @@ class EKFVisualization(Node):
         self.gps_obs = []    # Green: GPS observations
         self.ekf_traj = []   # Red: EKF estimated trajectory
 
-        # Open CSV files in write mode and create CSV writer objects.
-        # Files will be saved in the directory where you launch this node.
+        # Open CSV files for logging trajectories
         self.f_dr = open("dead_reckoning.csv", "w", newline="")
         self.f_gps = open("gps_obs.csv", "w", newline="")
         self.f_ekf = open("ekf_estimated.csv", "w", newline="")
         self.writer_dr = csv.writer(self.f_dr)
         self.writer_gps = csv.writer(self.f_gps)
         self.writer_ekf = csv.writer(self.f_ekf)
-
-        # Write headers to the CSV files.
         self.writer_dr.writerow(["x", "y"])
         self.writer_gps.writerow(["x", "y"])
         self.writer_ekf.writerow(["x", "y"])
@@ -40,25 +39,23 @@ class EKFVisualization(Node):
         self.timer = self.create_timer(0.1, self.plot_trajectory)  # Update every 100ms
 
     def odom_callback(self, msg):
-        """Store dead reckoning trajectory from odometry and save immediately."""
-        x = msg.pose.pose.position.x
-        y = msg.pose.pose.position.y
+        """Store dead reckoning trajectory from odometry and log to CSV."""
+        x, y = msg.pose.pose.position.x, msg.pose.pose.position.y
         self.dr_traj.append((x, y))
         self.writer_dr.writerow([x, y])
-        self.f_dr.flush()  # Flush to write to disk immediately
+        self.f_dr.flush()
 
     def gps_callback(self, msg):
-        """Store noisy GPS observations and save immediately."""
-        x = msg.pose.pose.position.x
-        y = msg.pose.pose.position.y
+        """Store noisy GPS observations from PoseStamped and log to CSV."""
+        # Since msg is PoseStamped, position is in msg.pose.position
+        x, y = msg.pose.position.x, msg.pose.position.y
         self.gps_obs.append((x, y))
         self.writer_gps.writerow([x, y])
         self.f_gps.flush()
 
     def ekf_callback(self, msg):
-        """Store EKF estimated trajectory and save immediately."""
-        x = msg.pose.pose.position.x
-        y = msg.pose.pose.position.y
+        """Store EKF estimated trajectory and log to CSV."""
+        x, y = msg.pose.pose.position.x, msg.pose.pose.position.y
         self.ekf_traj.append((x, y))
         self.writer_ekf.writerow([x, y])
         self.f_ekf.flush()
@@ -88,10 +85,10 @@ class EKFVisualization(Node):
         self.ax.legend()
         self.ax.grid(True)
 
-        plt.pause(0.01)  # Pause for live update
+        plt.pause(0.01)
 
     def destroy_node(self):
-        # Close file handles when the node is destroyed.
+        # Close CSV files upon shutdown
         self.f_dr.close()
         self.f_gps.close()
         self.f_ekf.close()

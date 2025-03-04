@@ -34,6 +34,7 @@ install(PROGRAMS
   scripts/yawrate/pid_yawrate.py
   scripts/yawrate/stanlee_yawrate.py
   scripts/yawrate/pp_yawrate.py
+  scripts/yawrate/ekf.py
 
   scripts/double_track/odom_filtered_doubletrack.py
   scripts/double_track/gps.py
