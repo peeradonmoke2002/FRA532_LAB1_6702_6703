@@ -8,7 +8,6 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-
     package_name = "localization_ekf"
 
     # Declare a launch argument to choose which EKF configuration file to use
@@ -18,19 +17,22 @@ def generate_launch_description():
         description='Select EKF configuration file: ekf.yaml, ekf-doubletrack.yaml, ekf-singletrack.yaml, ekf-yawrate.yaml'
     )
 
-    # Get the selected EKF configuration file from the launch argument
+    # Correctly set up the parameter as a dictionary
     ekf_config_path = os.path.join(
-        get_package_share_directory(package_name), "config",  # Config folder path
-        LaunchConfiguration('config_file')  # Select file dynamically
+        get_package_share_directory(package_name), "config"
     )
 
     # EKF Localization Node
     ekf_localization = Node(
-        package="robot_localization",
-        executable="ekf_node",
+        package=package_name,
+        executable="ekf.py",
         name="ekf_localization",
         output="screen",
-        parameters=[{'use_sim_time': True}, ekf_config_path]
+        parameters=[
+            {'use_sim_time': True},
+            {"ekf_config_file": LaunchConfiguration('config_file')},  # Pass as a ROS2 parameter
+            {"ekf_config_path": ekf_config_path}  # Pass the folder path separately
+        ]
     )
 
     # Create LaunchDescription
