@@ -17,13 +17,13 @@
 - [LAB 1.3](#lab-13)
     - [State Vector Representation](#state-vector-representation)
     - [State Transition Equations](#state-transition-equations)
-    - [How EKF Handles Nonlinearity](#how-ekf-hanles-nonlinearity)
+    - [How EKF Handles Nonlinearity](#how-ekf-handles-nonlinearity)
     - [Design the Process Noise Matrix](#design-the-process-noise-matrix)
     - [Design the Control Function](#design-the-control-function)
     - [Design the Measurement Function](#design-the-measurement-function)
     - [Design the Measurement Noise Matrix](#design-the-measurement-noise-matrix)
     - [Explain the Kalman Gain Computation](#explain-the-kalman-gain-computation)
-    - [YAW rate Q and R tuning](#yaw-rate-q-and-r-tuning)
+    - [Imprementation](#imprementation)
     - [Methodology and Results lab 1.3](#methodology-and-results-lab-13)
 
 
@@ -1109,7 +1109,7 @@ S = H P H^T + R is the innovation covariance.
 T
  +R$$
 
-### imprementation
+### Imprementation
 
 
 
@@ -1341,6 +1341,13 @@ ros2 run localization_ekf Visualization_test.py
 
 #### Observations
 
+- PID outperforms other models in both Yaw Rate and Single Track scenarios, making it the most accurate and stable controller
+
+- PPure Pursuit has the worst performance in both RMSE and MAE, suggesting poor localization accuracy.
+
+- All models fail in the Double Track setup, indicating instability in handling a more complex trajectory.
+
+- Stanley performs slightly better than Pure Pursuit but still struggles in Single Track
 
 ## Our Team
 - **67340700402** พงษ์พัฒน์ วงศ์กำแหงหาญ
@@ -1373,10 +1380,4 @@ ros2 run localization_ekf Visualization_test.py
 [EKF-package](https://github.com/cra-ros-pkg/robot_localization)
 
 
-- PID outperforms other models in both Yaw Rate and Single Track scenarios, making it the most accurate and stable controller
 
-- PPure Pursuit has the worst performance in both RMSE and MAE, suggesting poor localization accuracy.
-
-- All models fail in the Double Track setup, indicating instability in handling a more complex trajectory.
-
-- Stanley performs slightly better than Pure Pursuit but still struggles in Single Track
