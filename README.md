@@ -1153,11 +1153,11 @@ cd ..
 
 colcon build 
 
-source isntall/setup.bash
+source install/setup.bash
 
 cd 
 
-export ROS_WORKSPACE=~/ros2_ws
+export ROS_WORKSPACE=~/ROS_WORKSPACE
 
 source  ~/.bashrc
 
