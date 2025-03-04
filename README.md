@@ -344,7 +344,7 @@ where:
 - $$\( \omega_k \)$$ is the angular velocity.
 - $$\( \delta_{F,k} \)$$ is the front steering angle.
 - $$\( r_b \)$$ is the wheelbase.
-- \( \tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times \) are the left and right rear wheel velocities.
+- $`(\tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times)`$ are the left and right rear wheel velocities.
 - $$\( \Delta t \)$$ is the time step.
 
 
@@ -398,7 +398,7 @@ where:
 - $$\( \beta_k \)$$ is the slip angle.
 - $$\( v_k \)$$ is the linear velocity.
 - $$\( \omega_k \)$$ is the angular velocity.
-- $$\( \tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times \)$$ are the left and right rear wheel velocities.
+- $`(\tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times)`$ are the left and right rear wheel velocities.
 - $$\( \Delta t \)$$ is the time step.
 
 
@@ -421,7 +421,7 @@ where:
 - $$\( \beta_k \)$$ is the slip angle.
 - $$\( v_k \)$$ is the linear velocity.
 - $$\( \omega_k \)$$ is the angular velocity.
-- $$\( \tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times \)$$ are the left and right rear wheel velocities.
+- $`( \tilde{v}_{RL,k}^\times, \tilde{v}_{RR,k}^\times)`$ are the left and right rear wheel velocities.
 - $$\( \Delta t \)$$ is the time step.
 - $$\( \omega \)$$ is the calculated angular velocity.
 - $$\( \delta_1, \delta_2 \)$$ are the front wheel steering angles.
@@ -861,7 +861,7 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 
 The system state is defined as:
 
-$$
+```math
 X_k =
 \begin{bmatrix}
 p_{x,k} \\
@@ -880,17 +880,14 @@ a_{x,k} \\
 a_{y,k} \\
 a_{z,k}
 \end{bmatrix}
-$$
+```
+where:
+- $`p_{x,k}, p_{y,k}, p_{z,k}`$ represent the **position**.
+- $`\text{roll}_k, \text{pitch}_k, \text{yaw}_k`$ represent the **orientation**.
+- $`v_{x,k}, v_{y,k}, v_{z,k}`$ represent the **linear velocity**.
+- $`\omega_{x,k}, \omega_{y,k}, \omega_{z,k}`$ represent the **angular velocity**.
+- $`a_{x,k}, a_{y,k}, a_{z,k}`$ represent the **linear acceleration**.
 
-$$
-\begin{aligned}
-p_{x,k}, p_{y,k}, p_{z,k} & \quad \text{represent the position.} \\
-\text{roll}_k, \text{pitch}_k, \text{yaw}_k & \quad \text{represent the orientation.} \\
-v_{x,k}, v_{y,k}, v_{z,k} & \quad \text{represent the linear velocity.} \\
-\omega_{x,k}, \omega_{y,k}, \omega_{z,k} & \quad \text{represent the angular velocity.} \\
-a_{x,k}, a_{y,k}, a_{z,k} & \quad \text{represent the linear acceleration.}
-\end{aligned}
-$$
 
 
 ## State Transition Equations
@@ -938,7 +935,7 @@ H = \frac{\partial h}{\partial X}
 $$
 
 where:
-- \( h(X) \) is the nonlinear measurement function
+- $`( h(X) )`$ is the nonlinear measurement function
 
 
 
@@ -1032,9 +1029,7 @@ S = H P H^T + R is the innovation covariance.
 - Lower \( R \) → Higher trust in sensor.  
 - Lower \( Q \) → Higher trust in model.  
 -  Start with large Q R and gradually decrease while monitoring performance.
-- Check innovation covariance $$ S=HPH 
-T
- +R$$
+- Check innovation covariance $` S=HPH T+R`$
 
 ### imprementation
 
