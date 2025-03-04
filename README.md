@@ -560,7 +560,6 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 |-------------|----------------|----------------------|----------------------|
 | **Basic Model** | 0.0026 | 1.5300 | 2.3891 |
 | **No-Slip** | 0.1350 | 1.8313 | 0.3017 |
----
 
 - at speed `v = 0.72 m/s`
 
@@ -901,6 +900,7 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
   </tbody>
 </table>
 
+---
 ### **Observations**
 
 1. **Overall Tracking Accuracy**  
