@@ -903,26 +903,15 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 ---
 ### **Observations**
 
-1. **Overall Tracking Accuracy**  
-   - **Stanley** consistently achieves the **lowest overall RMSE** (0.030 m) for both Basic and Noslip models.  
-   - **PID** is next best, with overall RMSEs around **0.035–0.036 m**.  
-   - **Pure Pursuit** has a slightly higher overall RMSE at **0.038–0.039 m**.
+- The **Stanley Controller** achieves the **lowest overall RMSE** (0.030 m) for both Basic and Noslip models, making it the most precise in terms of path tracking.
+- The **PID Controller** follows closely behind, with overall RMSE values between **0.035–0.036 m**, showing reliable performance.
+- The **Pure Pursuit Controller** has a slightly higher RMSE (**0.038–0.039 m**), indicating minor deviations from the reference path.
+- **Basic vs. Noslip Models** show only **small differences in RMSE** (within 0.001–0.002 m), suggesting that both inverse kinematics models perform similarly in this scenario.
+- The **x and y RMSE values are nearly equal**, indicating that all controllers maintain **balanced tracking in both axes**, without favoring one direction.
+- **Speed profiles remain stable** around their set values, with minor fluctuations occurring when the controllers adjust for **tight turns or larger steering corrections**.
+- Overall, **all three controllers track the reference path effectively**, with only small deviations. However, the **Stanley Controller stands out for its more precise path-following**, and the differences between **Noslip and Basic models are minimal**, likely due to limited wheel slip at these speeds.
 
-2. **Basic vs. Noslip Models**  
-   - For all controllers, **Basic** and **Noslip** models show **very similar** RMSE values.  
-   - The differences in overall RMSE between Basic and Noslip are generally **within 0.001–0.002 m**, suggesting only a minor advantage for one model over the other in these tests.
 
-3. **X vs. Y Errors**  
-   - The **x** and **y** components of the RMSE are close in magnitude for each controller–model pair. This indicates **balanced tracking** in both axes rather than a bias in one direction.
-
-4. **Speed Profiles**  
-   - The speed remains relatively **stable** around the commanded velocity in all tests.  
-   - Minor dips in speed (visible in the plots) often occur when the controller makes **larger steering corrections** (e.g., tight turns).
-
-5. **Practical Implications**  
-   - All three controllers (PID, Pure Pursuit, Stanley) **closely follow** the reference path, with errors on the order of a few centimeters.  
-   - The **Stanley controller** stands out for its slightly **tighter path-following** in these particular tests.  
-   - The **Noslip** vs. **Basic** inverse kinematics models do not produce drastically different results in this scenario, likely because wheel slip is minimal or well-managed by the controllers at these speeds.
 
 
 ## LAB 1.3
