@@ -928,6 +928,8 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 
 
 ## LAB 1.3
+> [!NOTE]  
+> The lab 1.3 package folder is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/localization_ekf`
 ## State Vector Representation
 
 The system state is defined as:
