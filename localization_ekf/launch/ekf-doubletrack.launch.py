@@ -13,7 +13,7 @@ def generate_launch_description():
 
     ekf_config_arg = DeclareLaunchArgument(
         'config_file',
-        default_value='ekf-singletrack.yaml',
+        default_value='ekf-doubletrack.yaml',
         description='Select EKF configuration file'
     )
 

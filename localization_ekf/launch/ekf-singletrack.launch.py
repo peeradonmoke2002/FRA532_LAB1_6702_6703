@@ -27,7 +27,7 @@ def generate_launch_description():
         parameters=[{"use_sim_time": True, "ekf_config_path": ekf_config_path}]
     )
 
-    yawrate_script_path = os.path.join(get_package_share_directory(package_name), "scripts/singletrack")
+    yawrate_script_path = os.path.join(get_package_share_directory(package_name), "scripts/single_track")
 
     gps_node = Node(
         package="localization_ekf",

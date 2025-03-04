@@ -55,6 +55,7 @@ def generate_launch_description():
     return LaunchDescription([
         ekf_config_arg,
         ekf_localization,
+        ekf_node,
         gps_node,
         ackerman_odom_node,
     ])
