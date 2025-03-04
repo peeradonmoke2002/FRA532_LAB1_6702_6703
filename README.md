@@ -23,7 +23,7 @@
     - [Design the Measurement Function](#design-the-measurement-function)
     - [Design the Measurement Noise Matrix](#design-the-measurement-noise-matrix)
     - [Explain the Kalman Gain Computation](#explain-the-kalman-gain-computation)
-    - [Imprementation](#imprementation)
+    - [Implementation](#implementation)
     - [Methodology and Results lab 1.3](#methodology-and-results-lab-13)
 
 
@@ -993,7 +993,7 @@ $$
 EKF is designed to work with nonlinear systems by approximating them linearly at each time step using Jacobian matrices.
 
 ### **Jacobian of the State Transition:**
-To approximate the system dynamics, EKF computes the Jacobian matrix of the state transition function:
+To approximate the system dynamics, EKF computes the Jacobian matrix of the state transition function. These Jacobian matrices help linearize the nonlinear motion and measurement models so that EKF can estimate the state accurately.
 
 $$
 F = \frac{\partial f}{\partial X}
@@ -1045,7 +1045,7 @@ $$
 ## Design the Measurement Function
 
 
-This function `ekf_update_odom(...)` processes a **6D measurement** vector:
+The function `ekf_update_odom(...)` processes a 6D measurement vector, which is then used in the Kalman Gain computation to correct the state estimate.
 
 $$
 \mathbf{z} =
@@ -1109,7 +1109,7 @@ S = H P H^T + R is the innovation covariance.
 T
  +R$$
 
-### Imprementation
+### Implementation
 
 
 
@@ -1326,24 +1326,24 @@ ros2 run localization_ekf Visualization_test.py
 
 | Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
 |-------------|----------------|----------------------|----------------------|
-| **PID** | 10.0114 | 12.8260 | CRASH!|
-| **PUREPURSUIT** | 11.7663 | 13.3210 | CRASH! |
-| **STANLEE** |11.6688 |13.2063 | CRASH! |
+| **PID**         | 10.01   | 12.83  | Failure |
+| **Pure Pursuit**| 11.77  | 13.32**  | Failure |
+| **Stanley**     | 11.67  | 13.21 | Failure |
 
 
 
 | Model Type  | Yaw Rate (MAE) | Single Track (MAE) | Double Track (MAE) |
 |-------------|----------------|----------------------|----------------------|
-| **PID** | 9.9287 | 13.0974 | CRASH!|
-| **PUREPURSUIT** | 12.2698 | 14.5055 | CRASH! |
-| **STANLEE** |12.9098 |13.7231 | CRASH! |
+| **PID** | 9.9287 | 13.0974 | Failure |
+| **Pure Pursuit** | 12.2698 | 14.5055 | Failure |
+| **Stanley** |12.9098 |13.7231 | Failure |
 
 
 #### Observations
 
-- PID outperforms other models in both Yaw Rate and Single Track scenarios, making it the most accurate and stable controller
+- PID performs the best in both Yaw Rate and Single Track scenarios, providing the most accurate and stable localization results
 
-- PPure Pursuit has the worst performance in both RMSE and MAE, suggesting poor localization accuracy.
+- Pure Pursuit has the worst performance in both RMSE and MAE, suggesting poor localization accuracy.
 
 - All models fail in the Double Track setup, indicating instability in handling a more complex trajectory.
 
@@ -1375,9 +1375,8 @@ ros2 run localization_ekf Visualization_test.py
 
 ### EKF References
 
-[EFK2](https://github.com/AtsushiSakai/PythonRobotics/blob/master/docs/modules/2_localization/extended_kalman_filter_localization_files/extended_kalman_filter_localization_main.rst)
-
-[EKF-package](https://github.com/cra-ros-pkg/robot_localization)
+- [EFK2](https://github.com/AtsushiSakai/PythonRobotics/blob/master/docs/modules/2_localization/extended_kalman_filter_localization_files/extended_kalman_filter_localization_main.rst)
+- [EKF-package](https://github.com/cra-ros-pkg/robot_localization)
 
 
 
