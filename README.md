@@ -482,33 +482,92 @@ ros2 launch robot_controller noslip_model+all_odom.launch.py
 We tested the system by making the robot move in a **circular left turn** using different kinematic models.
 
 #### **Basic Model Output**
+- at speed `v = 0.5 m/s`
 <p align="center">
   <img src="./results_data/lab1.1/basic_odom_all_3.png" alt="Basic Model Odom" width="35%"/>
   <img src="./results_data/lab1.1/basic_odom_all_3_yaw.png" alt="Basic Model Yaw Odom" width="47%"/>
 </p>
 
+- at speed `v = 0.32 m/s`
+<p align="center">
+  <img src="./results_data/lab1.1/basic_odom_all_speed(0.32).png" alt="Basic Model Odom" width="35%"/>
+  <img src="./results_data/lab1.1/basic_odom_all_speed(0.32)_yaw.png" alt="Basic Model Yaw Odom" width="47%"/>
+</p>
+
+- at speed `v = 0.72 m/s`
+<p align="center">
+  <img src="./results_data/lab1.1/basic_odom_all_speed(0.72).png" alt="Basic Model Odom" width="35%"/>
+  <img src="./results_data/lab1.1/basic_odom_all_speed(0.72)_yaw.png" alt="Basic Model Yaw Odom" width="47%"/>
+</p>
+
 #### **No-Slip Model Output**
+- at speed `v = 0.5 m/s`
 <p align="center">
   <img src="./results_data/lab1.1/noslip_odom_all_3.png" alt="No-Slip Model Odom" width="35%"/>
   <img src="./results_data/lab1.1/noslip_odom_all_3_yaw.png" alt="No-Slip Model Yaw Odom" width="47%"/>
 </p>
+
+- at speed `v = 0.32 m/s`
+<p align="center">
+  <img src="./results_data/lab1.1/noslip_odom_all_speed(0.32).png" alt="Basic Model Odom" width="35%"/>
+  <img src="./results_data/lab1.1/noslip_odom_all_speed(0.32)_yaw.png" alt="Basic Model Yaw Odom" width="47%"/>
+</p>
+
+- at speed `v = 0.72 m/s`
+<p align="center">
+  <img src="./results_data/lab1.1/noslip_odom_all_speed(0.72).png" alt="Basic Model Odom" width="35%"/>
+  <img src="./results_data/lab1.1/noslip_odom_all_speed(0.72)_yaw.png" alt="Basic Model Yaw Odom" width="47%"/>
+</p>
+
 
 ### **RMSE Results**
 The following table presents the **Root Mean Square Error (RMSE)** values comparing the odometry performance across different models.  
 Lower RMSE values indicate **better accuracy** in following the expected trajectory.
 
 #### **XY Position RMSE Data**
+- at speed `v = 0.5 m/s`
+
 | Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
 |-------------|----------------|----------------------|----------------------|
 | **Basic Model** | 0.1187 | 0.2372 | 0.7821 |
 | **No-Slip** | 0.1143 | 0.4142 | 0.1599 |
 
+- at speed `v = 0.32 m/s`
+
+| Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
+|-------------|----------------|----------------------|----------------------|
+| **Basic Model** | 0.1736 | 0.4021 | 0.7766 |
+| **No-Slip** | 0.1335 | 0.3486 | 0.1296 |
+
+- at speed `v = 0.72 m/s`
+
+| Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
+|-------------|----------------|----------------------|----------------------|
+| **Basic Model** | 0.1250 | 0.4048 | 0.7455 |
+| **No-Slip** | 0.1745 | 1.4030 | 2.3143 |
+
 #### **Yaw Orientation RMSE Data (Radians)**
+- at speed `v = 0.5 m/s`
+
 | Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
 |-------------|----------------|----------------------|----------------------|
 | **Basic Model** | 0.1256 | 0.9162 | 2.2293 |
 | **No-Slip** | 0.0037 | 2.4682 | 0.6105 |
 
+- at speed `v = 0.32 m/s`
+
+| Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
+|-------------|----------------|----------------------|----------------------|
+| **Basic Model** | 0.0026 | 1.5300 | 2.3891 |
+| **No-Slip** | 0.1350 | 1.8313 | 0.3017 |
+---
+
+- at speed `v = 0.72 m/s`
+
+| Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
+|-------------|----------------|----------------------|----------------------|
+| **Basic Model** | 0.1143 | 0.3979 | 0.8415 |
+| **No-Slip** | 0.2185 | 1.8949 | 1.9204 |
 ---
 
 ### **Observations**
