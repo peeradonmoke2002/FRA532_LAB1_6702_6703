@@ -17,13 +17,13 @@
 - [LAB 1.3](#lab-13)
     - [State Vector Representation](#state-vector-representation)
     - [State Transition Equations](#state-transition-equations)
-    - [How EKF Handles Nonlinearity](#how-ekf-hanles-nonlinearity)
+    - [How EKF Handles Nonlinearity](#how-ekf-handles-nonlinearity)
     - [Design the Process Noise Matrix](#design-the-process-noise-matrix)
     - [Design the Control Function](#design-the-control-function)
     - [Design the Measurement Function](#design-the-measurement-function)
     - [Design the Measurement Noise Matrix](#design-the-measurement-noise-matrix)
     - [Explain the Kalman Gain Computation](#explain-the-kalman-gain-computation)
-    - [YAW rate Q and R tuning](#yaw-rate-q-and-r-tuning)
+    - [Implementation](#implementation)
     - [Methodology and Results lab 1.3](#methodology-and-results-lab-13)
 
 
@@ -322,7 +322,6 @@ ros2 launch robot_controller ackerman_yaw_rate_odom.py
 ```bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
-5) Use the odometry recording and plotting tool to compare results.
 
 #### Single Track Model
 For the single track model the translation motion is determined by average velocity of the rear wheels and for the roation is determind by use $$δ$$ front to calculate rotation rate $$ω$$
@@ -377,7 +376,6 @@ ros2 launch robot_controller ackerman_odom_single_track.py
 ```bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
-5) Use the odometry recording and plotting tool to compare results.
 
 #### Double Track Model
 For double track model are determines the pose by suing basic of two single wheel velocities, For translation motion is calculate by average of the velocities of the two wheels and the roatation is determined on the basic of the velocity difference with respect to the single wheel angle and wheel contact points
@@ -443,8 +441,6 @@ where:
 
 
 
-
-
 #### Running Double Track Model
 Try running the following commands to test the double track model:
 
@@ -461,7 +457,6 @@ ros2 launch robot_controller ackerman_odom_double_track.py
 ```bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
-5) Use the odometry recording and plotting tool to compare results.
 
 ### Methodology and Results lab 1.1
 
@@ -486,10 +481,25 @@ ros2 launch robot_controller basic_model+all_odom.launch.py
 ros2 launch robot_controller noslip_model+all_odom.launch.py
 ```
 
-3) Use the odometry recording  `record_odom_all.py` and plotting `plot_all.py` to compare results.
+3) Use the odometry recording  `record_odom_all.py` and plotting tool `plot_all.py` to compare results.
+
+- cd to folder `data_analysis`
+```bash
+cd ~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller/scripts/data_analysis/
+```
+
+- run record odom for collect data
+```bash
+python3 record_odom_all.py
+```
+
+- run plot all for plot data
+```bash
+python3 plot_all.py
+```
 
 > [!WARNING] 
-> the data will be overwrite if you run the launch file again.
+> the data will be overwrite if you run odometry recording  `record_odom_all.py` file again.
 
 ### **Results**
 We tested the system by making the robot move in a **circular left turn** using different kinematic models.
@@ -834,7 +844,8 @@ For case don't want record data comment the following line in each launch file:
 it will show the result in the `path_tracking/path_data/record_data` folder use the `plot_data_path` to plot the result.
 
 > [!WARNING] 
-> the data will be overwrite if you run the launch file again.
+> Running a launch file without commenting out the recording line will overwrite previous data.
+> If you want to keep existing data, make sure to disable recording before running a new test.
 
 ### **Results**
 We conducted tests on the tracking controllers by making the robot complete one full round and analyzed the results.
@@ -928,8 +939,10 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 
 
 ## LAB 1.3
+> [!NOTE]  
+> The lab 1.3 package folder is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/localization_ekf`
 
-
+In this lab, we extend the odometry models from LAB 1.1 by fusing GPS data using an Extended Kalman Filter (EKF). The EKF output provides a pose estimate, which we then use as the input for path tracking, similar to LAB 1.2, but now relying on the EKF-estimated pose instead of raw odometry data.
 
 ## State Vector Representation
 
@@ -993,15 +1006,15 @@ $$
 EKF is designed to work with nonlinear systems by approximating them linearly at each time step using Jacobian matrices.
 
 ### **Jacobian of the State Transition:**
-To approximate the system dynamics, EKF computes the Jacobian matrix of the state transition function:
+To approximate the system dynamics, EKF computes the Jacobian matrix of the state transition function. These Jacobian matrices help linearize the nonlinear motion and measurement models so that EKF can estimate the state accurately.
 
 $$
 F = \frac{\partial f}{\partial X}
 $$
 
 where:
-- \( X \) is the state vector
-- \( f(X) \) is the nonlinear motion model
+- $`( X )`$ is the state vector
+- $`( f(X) )`$ is the nonlinear motion model
 
 ### **Jacobian of the Measurement Model:**
 Similarly, the measurement function is linearized using the Jacobian:
@@ -1011,7 +1024,7 @@ H = \frac{\partial h}{\partial X}
 $$
 
 where:
-- \( h(X) \) is the nonlinear measurement function
+- $`( h(X) )`$ is the nonlinear measurement function
 
 
 
@@ -1045,7 +1058,7 @@ $$
 ## Design the Measurement Function
 
 
-This function `ekf_update_odom(...)` processes a **6D measurement** vector:
+The function `ekf_update_odom(...)` processes a 6D measurement vector, which is then used in the Kalman Gain computation to correct the state estimate.
 
 $$
 \mathbf{z} =
@@ -1102,14 +1115,14 @@ S = H P H^T + R is the innovation covariance.
 
 
 ### How to Tune \( K \)
-- Lower \( R \) → Higher trust in sensor.  
-- Lower \( Q \) → Higher trust in model.  
+- Lower $`( R )`$ → Higher trust in sensor.  
+- Lower $`( Q )`$ → Higher trust in model.  
 -  Start with large Q R and gradually decrease while monitoring performance.
-- Check innovation covariance $$ S=HPH 
+- Check innovation covariance $` S=HPH 
 T
- +R$$
+ +R`$
 
-### imprementation
+### Implementation
 
 
 
@@ -1131,232 +1144,6 @@ imu0_config:  [false, false, false,  # Ignore x, y, z position
                false, false, false]  # Ignore linear acceleration
 
 
-
-```
-
-### Methodology 
-
-## use launch file
-
-### 1. create workspace n clone 
-
-``` bash
-mkdir ROS_WORKSPACE
-
-cd ROS_WORKSPACE && mkdir src && cd src 
-
-git clone https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703.git -b robot-controller
-
-cd ..
-
-colcon build 
-
-source install/setup.bash
-
-cd 
-
-export ROS_WORKSPACE=~/ROS_WORKSPACE
-
-source  ~/.bashrc
-
-
-```
-
-### 1.1 run file using launch 
-
-step 1: select only one to launch ekf **dont run this launch together**
-
-```bash 
-
-ros2 launch localization_ekf ekf-yawrate.launch.py  
-
-ros2 launch localization_ekf ekf-singletrack.launch.py
-
-ros2 launch localization_ekf ekf-doubletrack.launch.py
-```
-
-step 2.1 : if you use launch localization_ekf ekf-yawrate.launch.py  **select only one**
-
-
-```bash 
-
-ros2 run localization_ekf pid_yawrate.py
-
-ros2 run localization_ekf pp_yawrate.py
-
-ros2 run localization_ekf stanlee_yawrate.py
-
-
-```
-
-
-step 2.2 : if you use launch localization_ekf ros2 launch localization_ekf ekf-singletrack.launch.py  **select only one**
-
-```bash 
-
-ros2 run localization_ekf pid_singletrack.py
-
-ros2 run localization_ekf pp_singletrack.py
-
-ros2 run localization_ekf stanlee_singletrack.py
-
-
-```
-
-step 2.3 : if you use ros2 launch localization_ekf ekf-doubletrack.launch.py  **select only one**
-
-```bash 
-
-ros2 run localization_ekf pid_singletrack.py
-
-ros2 run localization_ekf pp_singletrack.py
-
-ros2 run localization_ekf stanlee_singletrack.py
-
-
-```
-
-
-
-
-### manual run [ alternative ]
-
-
-step 2 : if you lauch launch localization_ekf ekf-yawrate.launch.py  then use 
-
-```bash 
-
-cd ROS_WORKSPACE/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/yawrate
-
-```
-
-step 2.2 then select 1 controller ** only 1 controller per round **
-
-```bash 
-
-python3 pid_yawrate.py
-
-python3 pp_yawrate.py  
-
-python3 stanlee_yawrate.py
-
-
-```
-
-
-step 3.1 : if you lauch launch localization_ekf ekf-singletrack.launch.py  then use 
-
-```bash 
-
-cd ROS_WORKSPACE/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/singletrack
-
-```
-
-step 3.2 then select 1 controller ** only 1 controller per round **
-
-```bash 
-
-python3 pid_singletrack.py
-
-python3 pp_singletrack.py  
-
-python3 stanlee_singletrack.py
-
-
-```
-step 3.1 : if you lauch launch localization_ekf ekf-doubletrack.launch.py  then use 
-
-```bash 
-
-cd ROS_WORKSPACE/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/doubletrack
-
-```
-
-step 3.2 then select 1 controller ** only 1 controller per round **
-
-```bash 
-
-python3 pid_doubletrack.py
-
-python3 pp_doubletrack.py  
-
-python3 stanlee_doubletrack.py
-
-
-```
-
-
-```bash 
-
-cd ROS_WORKSPACE/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/yawrate
-
-python3 pp_yawrate.py  
-
-ctrl + shift + z  [ for close ]
-
-```
-
-step5 : [optional visualyzed data]
-
-``` bash 
-
-cd FRA532_LAB1_6702_6703/localization_ekf/scripts/Visualization_test.py
-
-python3 Visualization_test.py
-
-```
-
-
-
-### 2 if launch file didn't work try to run manually
-
-frist go to 
-
-```bash
-
-cd ROS_WORKSPACE/src/FRA532_LAB1_6702_6703/localization_ekf/scripts
-
-```
-for yawrate there is 4 main file you need to run
-
-step 1: this odom_filter node [ekf]
-
-``` bash 
-
-cd yawrate 
-
-python3 odom_filtered_yawrate.py
-
-```
-step 2:  in another tab 
-
-``` bash
-
-python3 gps.py
-
-```
-
-step 3: another tab 
-
-```bash 
-
-python3 ackerman_yaw_rate_odom.py
-
-```
-
-step 4: choose 1 controlller eg. pid  [ if you want to change controller you need to close all step 1-3 and run again before change controller] also repeat step 1-3 again if you want to run single track but change name to match with single track folder
-
-``` bash
-
-python3 pid_yawrate.py
-
-```
-
-step5 : [optional visualyzed data]
-
-``` bash 
-
-python3 Visualization_test.py
 
 ```
 
@@ -1387,11 +1174,6 @@ R_imu = np.diag([
     0.2, 0.2, 0.2 # Linear acceleration noise (ax, ay, az)
 ]) ** 2
 ``` 
-
-###  Results lab 1.3
-
-
-
 ## Single track Q and R tuning [ bicyble model ]
 
 ```bash 
@@ -1416,13 +1198,6 @@ R_imu = np.diag([
 ]) ** 2
 
 ```
-![PID-single ](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/single_track/PID/PID-singletrack.png)
-
-![pp-single](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/single_track/purepursuit/purepursuit_singletrack.png) 
-
-![stanle-single](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/single_track/stanlee/stanlee_singletrack.png)
-
-
 ## Double  track Q and R tuning [ bicyble model ]
 
 ```bash 
@@ -1447,6 +1222,104 @@ R_imu = np.diag([
 ]) ** 2
 ```
 
+### Methodology and Results lab 1.3
+
+#### Steps for Testing
+
+#### **Step 1: Launch EKF (Select Only One)**  
+Select the kinematic model you want to test:
+
+For `yaw rate`:  
+```bash
+ros2 launch localization_ekf ekf-yawrate.launch.py  
+```
+For `single track`:  
+```bash
+ros2 launch localization_ekf ekf-singletrack.launch.py
+```
+For `double track`:  
+```bash
+ros2 launch localization_ekf ekf-doubletrack.launch.py
+```
+
+---
+
+#### **Step 2: Run Control Method (Select Only One)**
+
+##### **For `ekf-yawrate.launch.py`**
+Select the path tracking controller you want to test:
+
+Case PID:
+```bash
+ros2 run localization_ekf pid_yawrate.py
+```
+
+Case Pure Pursuit:
+```bash
+ros2 run localization_ekf pp_yawrate.py
+```
+
+Case Stanley:
+```bash
+ros2 run localization_ekf stanlee_yawrate.py
+```
+
+##### **For `ekf-singletrack.launch.py`**
+Select the path tracking controller you want to test:
+
+Case PID:
+```bash
+ros2 run localization_ekf pid_singletrack.py
+```
+
+Case Pure Pursuit:
+```bash
+ros2 run localization_ekf pp_singletrack.py
+```
+
+Case Stanley:
+```bash
+ros2 run localization_ekf stanlee_singletrack.py
+```
+
+##### **For `ekf-doubletrack.launch.py`**
+Select the path tracking controller you want to test:
+
+Case PID:
+```bash
+ros2 run localization_ekf pid_doubletrack.py
+```
+
+Case Pure Pursuit:
+```bash
+ros2 run localization_ekf pp_doubletrack.py
+```
+
+Case Stanley:
+```bash
+ros2 run localization_ekf stanlee_doubletrack.py
+```
+
+---
+
+#### **Step 3: [Optional] Visualize Data**
+```bash
+ros2 run localization_ekf Visualization_test.py
+```
+
+
+
+
+### **Results**
+
+
+
+![PID-single ](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/single_track/PID/PID-singletrack.png)
+
+![pp-single](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/single_track/purepursuit/purepursuit_singletrack.png) 
+
+![stanle-single](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/single_track/stanlee/stanlee_singletrack.png)
+
 ![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/PID/PID-doubletrack-crash.png)
 ![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/pp/purepursuit-doubletrack.png)
 ![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/stanlee/stanlee-doubletrack.png)
@@ -1459,21 +1332,22 @@ R_imu = np.diag([
 
 ### Summary of EKF Localization Performance
 
--This table presents the Root Mean Squared Error (RMSE) and Mean Absolute Error (MAE)
+This table presents the **Root Mean Squared Error (RMSE)** and **Mean Absolute Error (MAE)** values, which measure localization accuracy. Lower values indicate better performance.
 
+RMSE Results (Lower is Better)
 | Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
 |-------------|----------------|----------------------|----------------------|
-| **PID** | 10.0114 | 12.8260 | CRASH!|
-| **PUREPURSUIT** | 11.7663 | 13.3210 | CRASH! |
-| **STANLEE** |11.6688 |13.2063 | CRASH! |
+| **PID**         | 10.01   | 12.83  | Failure |
+| **Pure Pursuit**| 11.77  | 13.32  | Failure |
+| **Stanley**     | 11.67  | 13.21 | Failure |
 
 
-
+MAE Results (Lower is Better)
 | Model Type  | Yaw Rate (MAE) | Single Track (MAE) | Double Track (MAE) |
 |-------------|----------------|----------------------|----------------------|
-| **PID** | 9.9287 | 13.0974 | CRASH!|
-| **PUREPURSUIT** | 12.2698 | 14.5055 | CRASH! |
-| **STANLEE** |12.9098 |13.7231 | CRASH! |
+| **PID** | 9.9287 | 13.0974 | Failure |
+| **Pure Pursuit** | 12.2698 | 14.5055 | Failure |
+| **Stanley** |12.9098 |13.7231 | Failure |
 
 
 #### Observations
@@ -1487,6 +1361,12 @@ R_imu = np.diag([
 
 - Stanley performs slightly better than Pure Pursuit but still struggles in Single Track
 
+- **PID achieves the lowest RMSE (10.01) in Yaw Rate and 12.83 in Single Track**, indicating the **most accurate and stable localization** among all models.  
+- **Pure Pursuit has the highest RMSE (11.77 Yaw Rate, 13.32 Single Track)**, showing **significant deviation from the ground truth path**, making it the **least accurate**.  
+- **Stanley performs slightly better than Pure Pursuit (RMSE: 11.67 Yaw Rate, 13.21 Single Track)**, but **still exhibits errors in the Single Track scenario**.  
+- **Double Track consistently fails for all models**, suggesting that **the localization system cannot handle this complex trajectory properly**, potentially due to **sensor fusion inaccuracies or an unstable model configuration**.  
+- **MAE values follow a similar trend to RMSE**, reinforcing that **PID is the most stable and Pure Pursuit is the least stable**.  
+- **Across all models, Yaw Rate errors are lower than Single Track errors**, indicating that the **Yaw Rate configuration provides more reliable localization than the Single Track model**.  
 
 ## Our Team
 - **67340700402** พงษ์พัฒน์ วงศ์กำแหงหาญ
@@ -1514,7 +1394,15 @@ R_imu = np.diag([
 
 ### EKF References
 
-[EFK2](https://github.com/AtsushiSakai/PythonRobotics/blob/master/docs/modules/2_localization/extended_kalman_filter_localization_files/extended_kalman_filter_localization_main.rst)
+- [EFK2](https://github.com/AtsushiSakai/PythonRobotics/blob/master/docs/modules/2_localization/extended_kalman_filter_localization_files/extended_kalman_filter_localization_main.rst)
+- [EKF-package](https://github.com/cra-ros-pkg/robot_localization)
 
-[EKF-package](https://github.com/cra-ros-pkg/robot_localization)
 
+
+- PID outperforms other models in both Yaw Rate and Single Track scenarios, making it the most accurate and stable controller
+
+- PPure Pursuit has the worst performance in both RMSE and MAE, suggesting poor localization accuracy.
+
+- All models fail in the Double Track setup, indicating instability in handling a more complex trajectory.
+
+- Stanley performs slightly better than Pure Pursuit but still struggles in Single Track

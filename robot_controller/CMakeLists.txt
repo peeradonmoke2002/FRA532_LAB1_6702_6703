@@ -34,6 +34,8 @@ install(PROGRAMS
   scripts/ackerman_odom_single_track.py
   scripts/ackerman_yaw_rate_odom.py
   scripts/track_follower.py
+  scripts/data_analysis/record_odom_all.py
+  scripts/data_analysis/plot_all.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

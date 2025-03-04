@@ -51,6 +51,10 @@ install(PROGRAMS
   scripts/single_track/stanlee_singletrack.py
   scripts/single_track/pp_singletrack.py
 
+  scripts/gps.py
+  scripts/plot_data.py
+  scripts/save_data.py
+  scripts/Visualization_test.py
 
   DESTINATION lib/${PROJECT_NAME}
 )
