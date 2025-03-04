@@ -1134,35 +1134,12 @@ imu0_config:  [false, false, false,  # Ignore x, y, z position
 
 ```
 
-### Methodology 
+### Methodology and Results lab 1.3
 
-## use launch file
-
-### 1. create workspace n clone 
-
-``` bash
-mkdir ROS_WORKSPACE
-
-cd ROS_WORKSPACE && mkdir src && cd src 
-
-git clone https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703.git -b robot-controller
-
-cd ..
-
-colcon build 
-
-source install/setup.bash
-
-cd 
-
-export ROS_WORKSPACE=~/ROS_WORKSPACE
-
-source  ~/.bashrc
+#### Steps for Testing
 
 
-```
-
-### 1.1 run file using launch 
+##### 1.1 Run file using launch 
 
 step 1: select only one to launch ekf **dont run this launch together**
 
@@ -1219,7 +1196,7 @@ ros2 run localization_ekf stanlee_singletrack.py
 
 
 
-### manual run [ alternative ]
+##### manual run [ alternative ]
 
 
 step 2 : if you lauch launch localization_ekf ekf-yawrate.launch.py  then use 
@@ -1308,7 +1285,7 @@ python3 Visualization_test.py
 
 
 
-### 2 if launch file didn't work try to run manually
+##### 2 if launch file didn't work try to run manually
 
 frist go to 
 
@@ -1388,7 +1365,7 @@ R_imu = np.diag([
 ]) ** 2
 ``` 
 
-###  Results lab 1.3
+### **Results**
 
 
 
