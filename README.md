@@ -915,7 +915,85 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 
 
 ## LAB 1.3
+
+## Installation
+
+### 1. create workspace n clone 
+
+``` bash
+mkdir ros2_ws
+
+cd ros2_ws && mkdir src && cd src 
+
+git clone https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703.git -b robot-controller
+
+cd ..
+
+colcon build 
+
+source isntall/setup.bash
+
+cd 
+
+export ROS_WORKSPACE=~/ros2_ws
+
+source  ~/.bashrc
+
+
+```
+
+### 2. how to run file yawrate  
+
+frist go to 
+
+```bash
+
+cd ros2_ws/src/FRA532_LAB1_6702_6703/localization_ekf/scripts
+
+```
+for yawrate there is 4 main file you need to run
+
+step 1: this odom_filter node [ekf]
+
+``` bash 
+
+cd yawrate 
+
+python3 odom_filtered_yawrate.py
+
+```
+step 2:  in another tab 
+
+``` bash
+
+python3 gps.py
+
+```
+
+step 3: another tab 
+
+```bash 
+
+python3 
+
+python3 ackerman_yaw_rate_odom.py
+
+```
+
+step 4: choose 1 controlller eg. pid  [ if you want to change controller you need to close all step 1-3 and run again before change controller] also repeat step 1-3 again if you want to run single track but change name to match with single track folder
+
+``` bash
+
+python3 pid_yawrate.py
+
+```
+
+
+
+
 ## State Vector Representation
+
+
 
 The system state is defined as:
 
@@ -1206,9 +1284,6 @@ R_imu = np.diag([
 ![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/pp/purepursuit-doubletrack.png)
 ![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/stanlee/stanlee-doubletrack.png)
 
-image
-image
-image
 
 
 

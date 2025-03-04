@@ -12,8 +12,8 @@ import matplotlib.pyplot as plt
 import os
 
 
-k = 0.08   # Look forward gain
-Lfc = 0.6  # [m] Lookahead distance
+k = 0.3   # Look forward gain
+Lfc = 1.2  # [m] Lookahead distance
 Kp = 12.2  # Speed proportional gain
 WB = 0.2   # [m] Wheelbase of the robot
 
@@ -26,7 +26,7 @@ class PurePursuitROS(Node):
         self.create_subscription(Odometry, '/odometry/filtered', self.odom_callback, 10)
 
         # Load waypoints from YAML file
-        self.waypoints = self.load_path("path.yaml")
+        self.waypoints = self.load_path("path2.yaml")
 
         # Publishers for control commands
         self.pub_steering = self.create_publisher(
@@ -57,7 +57,7 @@ class PurePursuitROS(Node):
                 script_dir = os.path.dirname(os.path.realpath(__file__))
                 ros_workspace = script_dir.split('/src/')[0]
 
-            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "data", filename)
+            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "path_data", filename)
         
         with open(filename, 'r') as file:
             data = yaml.safe_load(file)

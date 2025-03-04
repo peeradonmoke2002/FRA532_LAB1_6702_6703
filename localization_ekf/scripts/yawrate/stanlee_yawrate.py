@@ -1,12 +1,11 @@
 #!/usr/bin/python3
-
 import os
 import math
 import yaml
 import numpy as np
 import rclpy
 from rclpy.node import Node
-from nav_msgs.msg import Path, Odometry  # Only used for publishing path and receiving odometry
+from nav_msgs.msg import  Odometry  # Only used for publishing path and receiving odometry
 from std_msgs.msg import Float64MultiArray
 from geometry_msgs.msg import PoseStamped, Quaternion
 from tf_transformations import quaternion_from_euler, euler_from_quaternion
@@ -32,10 +31,10 @@ class StanleyNode(Node):
             10
         )
         # Publisher for path (for visualization)
-        self.path_pub = self.create_publisher(Path, "/path", 10)
+
 
         # Load the path from YAML; each row: [x, y]
-        self.path = self.load_path("path.yaml")
+        self.path = self.load_path("path2.yaml")
         if self.path is not None:
             self.get_logger().info(f"Loaded path with {self.path.shape[0]} points.")
         else:
@@ -45,7 +44,7 @@ class StanleyNode(Node):
         self.path_yaw = self.compute_path_yaw(self.path)
         # Combine into a full path: [x, y, yaw]
         self.path_full = np.hstack((self.path, self.path_yaw.reshape(-1, 1)))
-        self.publish_path()
+
 
         # Vehicle parameters
         self.L = 1.0   # Front axle offset [m] used in Stanley control
@@ -71,7 +70,7 @@ class StanleyNode(Node):
             if ros_workspace is None:
                 script_dir = os.path.dirname(os.path.realpath(__file__))
                 ros_workspace = script_dir.split('/src/')[0]
-            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "data", filename)
+            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "path_data", filename)
         try:
             with open(filename, 'r') as file:
                 data = yaml.safe_load(file)
@@ -94,24 +93,7 @@ class StanleyNode(Node):
         yaws[-1] = yaws[-2] if n > 1 else 0.0
         return yaws
 
-    def publish_path(self):
-        """
-        Publishes the full path as a nav_msgs/Path message.
-        """
-        path_msg = Path()
-        path_msg.header.stamp = self.get_clock().now().to_msg()
-        path_msg.header.frame_id = "map"
-        for point in self.path_full:
-            pose_stamped = PoseStamped()
-            pose_stamped.header.stamp = self.get_clock().now().to_msg()
-            pose_stamped.header.frame_id = "map"
-            pose_stamped.pose.position.x = point[0]
-            pose_stamped.pose.position.y = point[1]
-            pose_stamped.pose.position.z = 0.0
-            q = quaternion_from_euler(0, 0, point[2])
-            pose_stamped.pose.orientation = Quaternion(x=q[0], y=q[1], z=q[2], w=q[3])
-            path_msg.poses.append(pose_stamped)
-        self.path_pub.publish(path_msg)
+
 
     def normalize_angle(self, angle):
         """Normalize angle to the range [-pi, pi]."""
@@ -220,10 +202,7 @@ class StanleyNode(Node):
         self.set_velocity(wheel_speed, wheel_speed)
     
     def timer_callback(self):
-        """
-        Periodic timer callback that republishes the path and runs the Stanley controller.
-        """
-        self.publish_path()
+
         self.stanley_controller()
 
     def odom_callback(self, msg: Odometry):

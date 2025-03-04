@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 import rclpy
 from rclpy.node import Node
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
@@ -39,7 +38,7 @@ class PIDBicycleController(Node):
         self.max_speed = 8.0  # m/s
 
         # Load the path from YAML file (each waypoint: [x, y, yaw])
-        self.waypoints = self.load_path("path.yaml")
+        self.waypoints = self.load_path("path2.yaml")
 
         self.pub_steering = self.create_publisher(
             Float64MultiArray,
@@ -64,7 +63,7 @@ class PIDBicycleController(Node):
             if ros_workspace is None:
                 script_dir = os.path.dirname(os.path.realpath(__file__))
                 ros_workspace = script_dir.split('/src/')[0]
-            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "data", filename)
+            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "path_data", filename)
         with open(filename, 'r') as file:
             data = yaml.safe_load(file)
         # Expect each point has keys 'x', 'y', and 'yaw'

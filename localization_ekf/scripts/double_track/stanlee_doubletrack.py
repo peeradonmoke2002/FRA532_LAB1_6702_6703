@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 import os
 import math
 import yaml
@@ -34,7 +35,7 @@ class StanleyNode(Node):
 
 
         # Load the path from YAML; each row: [x, y]
-        self.path = self.load_path("path.yaml")
+        self.path = self.load_path("path2.yaml")
         if self.path is not None:
             self.get_logger().info(f"Loaded path with {self.path.shape[0]} points.")
         else:
@@ -70,7 +71,7 @@ class StanleyNode(Node):
             if ros_workspace is None:
                 script_dir = os.path.dirname(os.path.realpath(__file__))
                 ros_workspace = script_dir.split('/src/')[0]
-            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "data", filename)
+            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "path_data", filename)
         try:
             with open(filename, 'r') as file:
                 data = yaml.safe_load(file)

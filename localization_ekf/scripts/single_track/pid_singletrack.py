@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 import rclpy
 from rclpy.node import Node
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
@@ -13,20 +14,18 @@ import os
 class PIDBicycleController(Node):
     def __init__(self):
         super().__init__('pid_bicycle_controller')
-        self.dt_loop = 1 / 50.0  # Loop time in seconds (50 Hz)
-
+        self.dt_loop = 1 / 100  
         self.wheel_base = 0.2      # Distance between front and rear axles (meters)
         self.wheel_radius = 0.045  # Rear wheel radius (meters)
-        self.max_steering_angle = 0.523598767 / 2  # Limit steering angle
+        self.max_steering_angle = 0.523598767  # Limit steering angle
 
-        # PID gains for steering
-        self.kp_steer = 0.15  
-        self.ki_steer = 0.01
-        self.kd_steer = 0.005
+        self.kp_steer = 0.25  # Increased for better response
+        self.ki_steer = 0.01  # Small integral gain to reduce steady-state error
+        self.kd_steer = 0.005  # Increased to reduce overshoot
 
-        # PID gains for speed
-        self.kp_speed = 5.5  
-        self.ki_speed = 1.05
+        # PID gains for speed.
+        self.kp_speed = 20.5  # Increased speed gain
+        self.ki_speed = 10.05
         self.kd_speed = 0.05  # Small derivative gain to smooth speed control
 
         self.integral_steer = 0.0
@@ -38,7 +37,7 @@ class PIDBicycleController(Node):
         self.max_speed = 8.0  # m/s
 
         # Load the path from YAML file (each waypoint: [x, y, yaw])
-        self.waypoints = self.load_path("path.yaml")
+        self.waypoints = self.load_path("path2.yaml")
 
         self.pub_steering = self.create_publisher(
             Float64MultiArray,
@@ -63,7 +62,7 @@ class PIDBicycleController(Node):
             if ros_workspace is None:
                 script_dir = os.path.dirname(os.path.realpath(__file__))
                 ros_workspace = script_dir.split('/src/')[0]
-            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "data", filename)
+            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "path_data", filename)
         with open(filename, 'r') as file:
             data = yaml.safe_load(file)
         # Expect each point has keys 'x', 'y', and 'yaw'

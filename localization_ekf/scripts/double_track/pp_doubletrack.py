@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 import rclpy
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
@@ -11,8 +12,8 @@ import matplotlib.pyplot as plt
 import os
 
 
-k = 0.1   # Look forward gain
-Lfc = 1.0  # [m] Lookahead distance
+k = 0.08   # Look forward gain
+Lfc = 0.6  # [m] Lookahead distance
 Kp = 12.2  # Speed proportional gain
 WB = 0.2   # [m] Wheelbase of the robot
 
@@ -25,10 +26,14 @@ class PurePursuitROS(Node):
         self.create_subscription(Odometry, '/odometry/filtered', self.odom_callback, 10)
 
         # Load waypoints from YAML file
-        self.waypoints = self.load_path("path.yaml")
+        self.waypoints = self.load_path("path2.yaml")
 
         # Publishers for control commands
-        self.pub_steering = self.create_publisher(JointTrajectory, '/joint_trajectory_position_controller/joint_trajectory', 10)
+        self.pub_steering = self.create_publisher(
+            Float64MultiArray,
+            "/position_controllers/commands",
+            10
+        )
         self.pub_wheel_spd = self.create_publisher(Float64MultiArray, '/velocity_controllers/commands', 10)
 
         # Robot state variables (will be updated from filtered odometry)
@@ -52,7 +57,7 @@ class PurePursuitROS(Node):
                 script_dir = os.path.dirname(os.path.realpath(__file__))
                 ros_workspace = script_dir.split('/src/')[0]
 
-            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "data", filename)
+            filename = os.path.join(ros_workspace, "src", "FRA532_LAB1_6702_6703", "path_tracking", "path_data", filename)
         
         with open(filename, 'r') as file:
             data = yaml.safe_load(file)
@@ -123,7 +128,8 @@ class PurePursuitROS(Node):
         self.v = min(self.v, 15.5)  # Limit maximum speed
 
         # Publish control commands
-        self.publish_steering(steering_cmd)
+        self.publish_steering(steering_cmd, steering_cmd)
+
         self.publish_wheel_speed(self.v)
 
         self.get_logger().info(f"Pose: x={self.x:.3f}, y={self.y:.3f}, yaw={math.degrees(self.yaw):.2f}° | Steering: {math.degrees(steering_cmd):.2f}° | Speed: {self.v:.2f} m/s")
@@ -133,21 +139,18 @@ class PurePursuitROS(Node):
         self.robot_y.append(self.y)
         self.update_plot()
 
-    def publish_steering(self, steering):
-        """Publish steering commands."""
-        traj_msg = JointTrajectory()
-        traj_msg.joint_names = ['front_left_steering', 'front_right_steering']
-        point = JointTrajectoryPoint()
-        point.positions = [steering, steering]
-        traj_msg.points.append(point)
-        self.pub_steering.publish(traj_msg)
+        
+    def publish_steering(self, front_left_steering, front_right_steering):
+        """Publish steering angles using Float64MultiArray."""
+        steering_msg = Float64MultiArray()
+        steering_msg.data = [front_left_steering, front_right_steering]  # Array of steering angles
+        self.pub_steering.publish(steering_msg)
 
     def publish_wheel_speed(self, speed):
         """Publish wheel speed commands."""
         wheel_msg = Float64MultiArray()
         wheel_msg.data = [speed, speed]
         self.pub_wheel_spd.publish(wheel_msg)
-
 
     def update_plot(self):
         pass
