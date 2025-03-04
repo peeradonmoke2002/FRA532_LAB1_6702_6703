@@ -1213,204 +1213,90 @@ R_imu = np.diag([
 
 #### Steps for Testing
 
+#### **Step 1: Launch EKF (Select Only One)**  
+> [!WARNING]  
+> **Do not run these launch files together. Choose only one.**
 
-##### 1.1 Run file using launch 
+Select the kinematic model you want to test:
 
-step 1: select only one to launch ekf **dont run this launch together**
-
-```bash 
-
+For `yaw rate`:  
+```bash
 ros2 launch localization_ekf ekf-yawrate.launch.py  
-
+```
+For `single track`:  
+```bash
 ros2 launch localization_ekf ekf-singletrack.launch.py
-
+```
+For `double track`:  
+```bash
 ros2 launch localization_ekf ekf-doubletrack.launch.py
 ```
 
-step 2.1 : if you use launch localization_ekf ekf-yawrate.launch.py  **select only one**
+---
 
+#### **Step 2: Run Control Method (Select Only One)**
 
-```bash 
+##### **For `ekf-yawrate.launch.py`**
+Select the path tracking controller you want to test:
 
-ros2 run localization_ekf pid_yawrate.py
-
-ros2 run localization_ekf pp_yawrate.py
-
-ros2 run localization_ekf stanlee_yawrate.py
-
-
-```
-
-
-step 2.2 : if you use launch localization_ekf ros2 launch localization_ekf ekf-singletrack.launch.py  **select only one**
-
-```bash 
-
-ros2 run localization_ekf pid_singletrack.py
-
-ros2 run localization_ekf pp_singletrack.py
-
-ros2 run localization_ekf stanlee_singletrack.py
-
-
-```
-
-step 2.3 : if you use ros2 launch localization_ekf ekf-doubletrack.launch.py  **select only one**
-
-```bash 
-
-ros2 run localization_ekf pid_singletrack.py
-
-ros2 run localization_ekf pp_singletrack.py
-
-ros2 run localization_ekf stanlee_singletrack.py
-
-
-```
-
-
-
-
-##### manual run [ alternative ]
-
-
-step 2 : if you lauch launch localization_ekf ekf-yawrate.launch.py  then use 
-
-```bash 
-
-cd ROS_WORKSPACE/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/yawrate
-
-```
-
-step 2.2 then select 1 controller ** only 1 controller per round **
-
-```bash 
-
-python3 pid_yawrate.py
-
-python3 pp_yawrate.py  
-
-python3 stanlee_yawrate.py
-
-
-```
-
-
-step 3.1 : if you lauch launch localization_ekf ekf-singletrack.launch.py  then use 
-
-```bash 
-
-cd ROS_WORKSPACE/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/singletrack
-
-```
-
-step 3.2 then select 1 controller ** only 1 controller per round **
-
-```bash 
-
-python3 pid_singletrack.py
-
-python3 pp_singletrack.py  
-
-python3 stanlee_singletrack.py
-
-
-```
-step 3.1 : if you lauch launch localization_ekf ekf-doubletrack.launch.py  then use 
-
-```bash 
-
-cd ROS_WORKSPACE/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/doubletrack
-
-```
-
-step 3.2 then select 1 controller ** only 1 controller per round **
-
-```bash 
-
-python3 pid_doubletrack.py
-
-python3 pp_doubletrack.py  
-
-python3 stanlee_doubletrack.py
-
-
-```
-
-
-```bash 
-
-cd ROS_WORKSPACE/src/FRA532_LAB1_6702_6703/localization_ekf/scripts/yawrate
-
-python3 pp_yawrate.py  
-
-ctrl + shift + z  [ for close ]
-
-```
-
-step5 : [optional visualyzed data]
-
-``` bash 
-
-cd FRA532_LAB1_6702_6703/localization_ekf/scripts/Visualization_test.py
-
-python3 Visualization_test.py
-
-```
-
-
-
-##### 2 if launch file didn't work try to run manually
-
-frist go to 
-
+Case PID:
 ```bash
-
-cd ROS_WORKSPACE/src/FRA532_LAB1_6702_6703/localization_ekf/scripts
-
-```
-for yawrate there is 4 main file you need to run
-
-step 1: this odom_filter node [ekf]
-
-``` bash 
-
-cd yawrate 
-
-python3 odom_filtered_yawrate.py
-
-```
-step 2:  in another tab 
-
-``` bash
-
-python3 gps.py
-
+ros2 run localization_ekf pid_yawrate.py
 ```
 
-step 3: another tab 
-
-```bash 
-
-python3 ackerman_yaw_rate_odom.py
-
+Case Pure Pursuit:
+```bash
+ros2 run localization_ekf pp_yawrate.py
 ```
 
-step 4: choose 1 controlller eg. pid  [ if you want to change controller you need to close all step 1-3 and run again before change controller] also repeat step 1-3 again if you want to run single track but change name to match with single track folder
-
-``` bash
-
-python3 pid_yawrate.py
-
+Case Stanley:
+```bash
+ros2 run localization_ekf stanlee_yawrate.py
 ```
 
-step5 : [optional visualyzed data]
+##### **For `ekf-singletrack.launch.py`**
+Select the path tracking controller you want to test:
 
-``` bash 
-
-python3 Visualization_test.py
-
+Case PID:
+```bash
+ros2 run localization_ekf pid_singletrack.py
 ```
+
+Case Pure Pursuit:
+```bash
+ros2 run localization_ekf pp_singletrack.py
+```
+
+Case Stanley:
+```bash
+ros2 run localization_ekf stanlee_singletrack.py
+```
+
+##### **For `ekf-doubletrack.launch.py`**
+Select the path tracking controller you want to test:
+
+Case PID:
+```bash
+ros2 run localization_ekf pid_doubletrack.py
+```
+
+Case Pure Pursuit:
+```bash
+ros2 run localization_ekf pp_doubletrack.py
+```
+
+Case Stanley:
+```bash
+ros2 run localization_ekf stanlee_doubletrack.py
+```
+
+---
+
+#### **Step 3: [Optional] Visualize Data**
+```bash
+ros2 run localization_ekf Visualization_test.py
+```
+
 
 
 
