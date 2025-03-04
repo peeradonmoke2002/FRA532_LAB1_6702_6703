@@ -1320,11 +1320,6 @@ python3 Visualization_test.py
 
 ```
 
-
-![PID Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/PID/pid-yawrate.png)
-![Purepursuit Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/purepursuit/purepursuit_yawrate.png)
-![Stanlee Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/stanlee/stanlee-yawrate.png) 
-
 ## YAW rate Q and R tuning
 - becase odom forn yaw rate it are very percise so we can lower R odom for make it trust odom more then imu 
 
@@ -1352,6 +1347,10 @@ R_imu = np.diag([
     0.2, 0.2, 0.2 # Linear acceleration noise (ax, ay, az)
 ]) ** 2
 ``` 
+
+### Methodology and Results lab 1.3
+
+
 
 ## Single track Q and R tuning
 
