@@ -1302,56 +1302,108 @@ ros2 launch localization_ekf ekf-doubletrack.launch.py
 
 
 
-### **Results**
+### Control Results
 
+**Figure 1: PID Yaw Basic Control**  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pid-yawrate-basic.png?raw=true" width="300px" alt="PID Yaw Basic Control">  
 
+**Figure 2: Stanley Yaw Basic Control**  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/stanlee-yawrate-basic.png?raw=true" width="300px" alt="Stanley Yaw Basic Control">  
 
-![PID-single ](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/single_track/PID/PID-singletrack.png)
+**Figure 3: PID Single Track Basic Control**  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pid-single-basic.png?raw=true" width="300px" alt="PID Single Track Basic Control">  
 
-![pp-single](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/single_track/purepursuit/purepursuit_singletrack.png) 
+**Figure 4: Pure Pursuit Single Track Basic Control**  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pp-single-basic.png?raw=true" width="300px" alt="Pure Pursuit Single Track Basic Control">  
 
-![stanle-single](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/single_track/stanlee/stanlee_singletrack.png)
+**Figure 5: Stanley Single Track Basic Control**  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/stanlee-sinlge-basic.png?raw=true" width="300px" alt="Stanley Single Track Basic Control">  
 
-![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/PID/PID-doubletrack-crash.png)
-![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/pp/purepursuit-doubletrack.png)
-![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/stanlee/stanlee-doubletrack.png)
+**Figure 6: PID Yaw Noslip Control**  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pid-yawrate-noslip.png?raw=true" width="300px" alt="PID Yaw Noslip Control">  
 
+**Figure 7: Pure Pursuit Yaw Noslip Control**  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pp_yawrate_noslip.png?raw=true" width="300px" alt="Pure Pursuit Yaw Noslip Control">  
 
-## YAW rate Q and R tuning [ noslip model ]
-## Single track Q and R tuning [ noslip model ]
-## Double  track Q and R tuning [ noslip model ]
+**Figure 8: Stanley Yaw Noslip Control**  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/stanlee-yawrate-noslip.png?raw=true" width="300px" alt="Stanley Yaw Noslip Control">  
+
+**Figure 9: Pure Pursuit Single Track Noslip Control**  
+<img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pp-single-noslip.png?raw=true" width="300px" alt="Pure Pursuit Single Track Noslip Control">  
+
 
 
 ### Summary of EKF Localization Performance
 
 This table presents the **Root Mean Squared Error (RMSE)** and **Mean Absolute Error (MAE)** values, which measure localization accuracy. Lower values indicate better performance.
 
-RMSE Results (Lower is Better)
+RMSE Results (Lower is Better) 
 | Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
 |-------------|----------------|----------------------|----------------------|
-| **PID**         | 10.01   | 12.83  | Failure |
-| **Pure Pursuit**| 11.77  | 13.32  | Failure |
-| **Stanley**     | 11.67  | 13.21 | Failure |
+| **PID-basic**         | 0.397  | 1.441  | Failure |
+| **PID-noslip**         |  0.070 |   | Failure |
+| **Pure Pursuit-basic**| 0.397  | 0.397 | Failure |
+| **Pure Pursuit-noslip**| 0.070  |  0.263  | Failure |
+| **Stanley-basic**     | 0.445  | 0.386 | Failure |
+| **Stanley-noslip**     | 0.202  |  | Failure |
 
 
-MAE Results (Lower is Better)
+
+MAE Results (Lower is Better) 
 | Model Type  | Yaw Rate (MAE) | Single Track (MAE) | Double Track (MAE) |
 |-------------|----------------|----------------------|----------------------|
-| **PID** | 9.9287 | 13.0974 | Failure |
-| **Pure Pursuit** | 12.2698 | 14.5055 | Failure |
-| **Stanley** |12.9098 |13.7231 | Failure |
+| **PID-basic**         | 0.483  | 1.770  | Failure |
+| **PID-noslip**         | 0.084  | Failure  | Failure |
+| **Pure Pursuit-basic**| 0.483  | 0.490 | Failure |
+| **Pure Pursuit-noslip**| 0.084  | 0.259 | Failure |
+| **Stanley-basic**     | 0.520  | 0.482 | Failure |
+| **Stanley-noslip**     | 0.206  | Failure | Failure |
+
+
+Avg left angle % change Results (Lower is Better) 
+| Model Type  | Yaw Rate  | Single Track  | Double Track  |
+|-------------|----------------|----------------------|----------------------|
+| **PID-basic**         | 288.7 %  | 251.5%  | Failure |
+| **PID-noslip**         | 180.5%  | Failure  | Failure |
+| **Pure Pursuit-basic**| 325.1%  |  170.2 % | Failure |
+| **Pure Pursuit-noslip**| 180.5%  | 93.2 %  | Failure |
+| **Stanley-basic**     | 282.0 %  | 266.1 % | Failure |
+| **Stanley-noslip**     | 192.2%  |  | Failure |
+
+
+Avg  right angle % change  Results (Lower is Better) 
+| Model Type  | Yaw Rate  | Single Track  | Double Track  |
+|-------------|----------------|----------------------|----------------------|
+| **PID-basic**         | 325.1 %  | 250.7 %  | Failure |
+| **PID-noslip**         | 176.6%  | Failure  | Failure |
+| **Pure Pursuit-basic**| 288.7 %  | 149.5 %  | Failure |
+| **Pure Pursuit-noslip**| 176.6 %  | 85.1 %  | Failure |
+| **Stanley-basic**     | 249.1 %  | 252.3 % | Failure |
+| **Stanley-noslip**     | 159.4 %  | Failure | Failure |
+
+
+
+Avg % rear wheel slip Results (Lower is Better) 
+| Model Type  | Yaw Rate (Avg) | Single Track (Avg) | Double Track (Avg) |
+|-------------|----------------|----------------------|----------------------|
+| **PID-basic**         | 1.4 %  | 1.3%  | Failure |
+| **PID-noslip**         | 1.4 %  | Failure  | Failure |
+| **Pure Pursuit-basic**| 1.4 %  | 1.5 %  | Failure |
+| **Pure Pursuit-noslip**| 1.4 %  |  1.6 % | Failure |
+| **Stanley-basic**     | 1.6 %  | 1.5 % | Failure |
+| **Stanley-noslip**     | 1.6 %  | Failure | Failure |
+
+
+
+
+
+
 
 
 #### Observations
 
 
-- PID outperforms other models in both Yaw Rate and Single Track scenarios, making it the most accurate and stable controller
 
-- PPure Pursuit has the worst performance in both RMSE and MAE, suggesting poor localization accuracy.
-
-- All models fail in the Double Track setup, indicating instability in handling a more complex trajectory.
-
-- Stanley performs slightly better than Pure Pursuit but still struggles in Single Track
 
 - **PID achieves the lowest RMSE (10.01) in Yaw Rate and 12.83 in Single Track**, indicating the **most accurate and stable localization** among all models.  
 - **Pure Pursuit has the highest RMSE (11.77 Yaw Rate, 13.32 Single Track)**, showing **significant deviation from the ground truth path**, making it the **least accurate**.  
