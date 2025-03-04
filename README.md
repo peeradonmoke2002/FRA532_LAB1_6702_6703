@@ -15,6 +15,19 @@
     - [Methodology and Results lab 1.2](#methodology-and-results-lab-12)
 
 - [LAB 1.3](#lab-13)
+    - [State Vector Representation](#state-vector-representation)
+    - [State Transition Equations](#state-transition-equations)
+    - [How EKF Handles Nonlinearity](#how-ekf-hanles-nonlinearity)
+    - [Design the Process Noise Matrix](#design-the-process-noise-matrix)
+    - [Design the Control Function](#design-the-control-function)
+    - [Design the Measurement Function](#design-the-measurement-function)
+    - [Design the Measurement Noise Matrix](#design-the-measurement-noise-matrix)
+    - [Explain the Kalman Gain Computation](#explain-the-kalman-gain-computation)
+    - [YAW rate Q and R tuning](#yaw-rate-q-and-r-tuning)
+    - [Methodology and Results lab 1.3](#methodology-and-results-lab-13)
+
+
+
 
 - [Our Team](#our-team)
 - [References](#references)
@@ -1142,7 +1155,7 @@ R_imu = np.diag([
     0.2, 0.2, 0.2 # Linear acceleration noise (ax, ay, az)
 ]) ** 2
 ``` 
-### RESULT
+### Methodology and Results lab 1.3
 
 ![PID Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/PID/pid-yawrate.png)
 ![Purepursuit Yaw Rate](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/yawrate/purepursuit/purepursuit_yawrate.png)
@@ -1205,10 +1218,6 @@ R_imu = np.diag([
 ![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/PID/PID-doubletrack-crash.png)
 ![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/pp/purepursuit-doubletrack.png)
 ![image](https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/Path-Tracking-Controller/localization_ekf/result/doubletrack/stanlee/stanlee-doubletrack.png)
-
-image
-image
-image
 
 
 
