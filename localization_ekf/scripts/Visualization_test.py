@@ -1,26 +1,29 @@
-#!/usr/bin/python3
-
+#!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-import numpy as np
-import matplotlib.pyplot as plt
 from nav_msgs.msg import Odometry
+from geometry_msgs.msg import PoseStamped, Quaternion
+import matplotlib.pyplot as plt
+import numpy as np
 
 class EKFVisualization(Node):
     def __init__(self):
         super().__init__('ekf_visualization')
 
         # Subscribe to odometry topics
-        self.sub_dead_reckoning = self.create_subscription(Odometry, '/odom', self.odom_callback, 10)
-        self.sub_gps = self.create_subscription(Odometry, '/odom_noisy', self.gps_callback, 10)
-        self.sub_ekf = self.create_subscription(Odometry, '/odometry/filtered', self.ekf_callback, 10)
+        self.sub_dead_reckoning = self.create_subscription(
+            Odometry, '/odom', self.odom_callback, 10)
+        # Subscribe to GPS as PoseStamped
+        self.sub_gps = self.create_subscription(
+            PoseStamped, '/gps', self.gps_callback, 10)
+        self.sub_ekf = self.create_subscription(
+            Odometry, '/odometry/filtered', self.ekf_callback, 10)
 
         # Store trajectory data
         self.true_traj = []  # Blue: True trajectory (if available)
         self.dr_traj = []    # Black: Dead reckoning
         self.gps_obs = []    # Green: GPS observations
         self.ekf_traj = []   # Red: EKF estimated trajectory
-        self.covariances = []  # (No longer used for plotting ellipses)
 
         # Initialize live plotting
         self.fig, self.ax = plt.subplots(figsize=(10, 6))
@@ -32,17 +35,15 @@ class EKFVisualization(Node):
         self.dr_traj.append((x, y))
 
     def gps_callback(self, msg):
-        """Store noisy GPS observations."""
-        x, y = msg.pose.pose.position.x, msg.pose.pose.position.y
+        """Store noisy GPS observations (from PoseStamped)."""
+        # Since msg is PoseStamped, position is in msg.pose.position
+        x, y = msg.pose.position.x, msg.pose.position.y
         self.gps_obs.append((x, y))
 
     def ekf_callback(self, msg):
         """Store EKF estimated trajectory."""
         x, y = msg.pose.pose.position.x, msg.pose.pose.position.y
         self.ekf_traj.append((x, y))
-        # Optionally, if you want to store covariances, you can keep this:
-        # cov_matrix = np.array(msg.pose.covariance).reshape(6, 6)[:2, :2]
-        # self.covariances.append(cov_matrix)
 
     def plot_trajectory(self):
         """Real-time plotting of the EKF localization results."""
@@ -63,22 +64,19 @@ class EKFVisualization(Node):
             ekf_x, ekf_y = zip(*self.ekf_traj)
             self.ax.plot(ekf_x, ekf_y, 'r-', label="EKF Estimated Trajectory")
 
-        # (Covariance ellipses removed.)
-
-        # Configure plot
         self.ax.set_xlabel("X Position")
         self.ax.set_ylabel("Y Position")
         self.ax.set_title("Sensor Fusion Localization with EKF")
         self.ax.legend()
         self.ax.grid(True)
 
-        plt.pause(0.01)  # Pause for live update
+        plt.pause(0.01)
 
 def main(args=None):
     rclpy.init(args=args)
     node = EKFVisualization()
     try:
-        plt.ion()  # Enable interactive mode for real-time plotting
+        plt.ion()  # Enable interactive mode for live plotting
         rclpy.spin(node)
     except KeyboardInterrupt:
         print("Shutting down EKF visualization node.")

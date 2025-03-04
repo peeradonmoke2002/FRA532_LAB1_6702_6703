@@ -34,13 +34,14 @@ install(PROGRAMS
   scripts/yawrate/pid_yawrate.py
   scripts/yawrate/stanlee_yawrate.py
   scripts/yawrate/pp_yawrate.py
-  scripts/yawrate/gps.py
+
   scripts/yawrate/ekf.py
+  scripts/gps.py
 
 
   scripts/single_track/ekf-single.py
   scripts/double_track/ekf-double.py
-  scripts/double_track/odom_filtered_doubletrack.py
+
 
   scripts/double_track/ackerman_odom_double_track.py
   scripts/double_track/pid_doubletrack.py
@@ -48,7 +49,6 @@ install(PROGRAMS
   scripts/double_track/pp_doubletrack.py
   
 
-  scripts/single_track/odom_filtered_singletrack.py
 
   scripts/single_track/ackerman_odom_single_track.py
   scripts/single_track/pid_singletrack.py

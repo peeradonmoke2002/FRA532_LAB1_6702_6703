@@ -51,7 +51,7 @@ class SingleTrackOdom(Node):
         self.odom_pub = self.create_publisher(Odometry, '/odom', 10)
 
         # Timer for Odometry Updates
-        self.dt_loop = 1 / 15 
+        self.dt_loop = 1 / 50
         self.timer = self.create_timer(self.dt_loop, self.timer_callback)
 
         self.v_rl = 0.0
