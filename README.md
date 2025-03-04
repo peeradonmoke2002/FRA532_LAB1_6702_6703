@@ -1339,11 +1339,11 @@ RMSE Results (Lower is Better)
 | Model Type  | Yaw Rate (RMSE) | Single Track (RMSE) | Double Track (RMSE) |
 |-------------|----------------|----------------------|----------------------|
 | **PID-basic**         | 0.397  | 1.441  | Failure |
-| **PID-noslip**         |  0.070 |   | Failure |
+| **PID-noslip**         |  0.070 | Failure  | Failure |
 | **Pure Pursuit-basic**| 0.397  | 0.397 | Failure |
 | **Pure Pursuit-noslip**| 0.070  |  0.263  | Failure |
 | **Stanley-basic**     | 0.445  | 0.386 | Failure |
-| **Stanley-noslip**     | 0.202  |  | Failure |
+| **Stanley-noslip**     | 0.202  | Failure | Failure |
 
 
 
@@ -1366,7 +1366,7 @@ Avg left angle % change Results (Lower is Better)
 | **Pure Pursuit-basic**| 325.1%  |  170.2 % | Failure |
 | **Pure Pursuit-noslip**| 180.5%  | 93.2 %  | Failure |
 | **Stanley-basic**     | 282.0 %  | 266.1 % | Failure |
-| **Stanley-noslip**     | 192.2%  |  | Failure |
+| **Stanley-noslip**     | 192.2%  | Failure | Failure |
 
 
 Avg  right angle % change  Results (Lower is Better) 
