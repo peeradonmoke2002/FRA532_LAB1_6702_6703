@@ -40,28 +40,33 @@
 
 ### Step 1: Create Workspace
 ```bash
-mkdir -p ~/FRA532_MobileRobot/src
+mkdir -p ~/FRA532_MobileRobot_LAB1_6702_6703/src
 ```
 
 ### Step 2: Clone the Repository
 ```bash
-cd ~/FRA532_MobileRobot/src
+cd ~/FRA532_MobileRobot_LAB1_6702_6703/src
 git clone https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703.git
 ```
 
 ### Step 3: Build Workspace
 ```bash
-cd ~/FRA532_MobileRobot
-colcon build
+cd ~/FRA532_MobileRobot_LAB1_6702_6703
+
+rosdep install --from-paths src --ignore-src -r -y
+
+colcon build --symlink-install
+
 source install/setup.bash
 ```
+
 
 ### Testing Rviz View and Gazebo Simulation
 
 1) Build workspace
 
 ```bash
-cd ~/FRA532_MobileRobot
+cd ~/FRA532_MobileRobot_LAB1_6702_6703
 
 sudo apt update
 
@@ -69,9 +74,9 @@ sudo apt install -y python3-rosdep
 
 rosdep update --rosdistro=humble
 
-rosdep install --from-paths src --ignore-src -r -y --rosdistro humble
+rosdep install --from-paths src --ignore-src -r -y
 
-colcon build
+colcon build --symlink-install
 
 source install/setup.bash
 ```
