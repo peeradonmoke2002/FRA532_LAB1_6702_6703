@@ -1431,7 +1431,7 @@ Avg % rear wheel slip Results (Lower is Better)
 
 ---
 
-### Key Takeaway
+#### Key Takeaway
 - Use Noslip mode for better accuracy, smoother steering, and improved localization performance.
 
 
