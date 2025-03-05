@@ -1280,58 +1280,6 @@ T
 
 ### Methodology and Results lab 1.3
 
-select only one launch
-
-```bash
-
-ros2 launch localization_ekf ekf-yawrate.launch.py 
-
-ros2 launch localization_ekf ekf-singletrack.launch.py 
-
-ros2 launch localization_ekf ekf-doubletrack.launch.py 
-
-
-```
-select only one controller
-
-pp = purepursuit
-
-basic = bicycle model
-
-```bash
-
-ros2 run localization_ekf pid-basic.py
-
-ros2 run localization_ekf pp-basic.py
-
-ros2 run localization_ekf stanlee-basic.py
-
-ros2 run localization_ekf pid-noslip.py
-
-ros2 run localization_ekf pp-noslip.py
-
-ros2 run localization_ekf stanlee-noslip.py
-
-
-```
-* optinal run save data for visualized and save data 
-
-```bash
-
-ros2 run localization_ekf save_data.py
-
-```
-
-then use this command after we want to know result
-
-```bash
-
-ros2 run localization_ekf plot_daat.py
-
-```
-
-
-
 #### Steps for Testing
 
 #### **Step 1: Launch EKF (Select Only One)**  
@@ -1354,8 +1302,45 @@ ros2 launch localization_ekf ekf-doubletrack.launch.py
 
 #### **Step 2: Run Control Method (Select Only One)**
 
+select controller 
 
+After selecting the EKF model, choose only one controller from the following options:
 
+* PID Controller for the bicycle model.
+```bash 
+ros2 run localization_ekf pid-basic.py
+```
+* Pure Pursuit Controller for the bicycle model.
+```bash 
+ros2 run localization_ekf pp-basic.py
+```
+* Stanley Controller for the bicycle model.
+```bash
+ros2 run localization_ekf stanlee-basic.py
+```
+* PID Controller for a no-slip model (no wheel slip considered).
+```bash
+ros2 run localization_ekf pid-noslip.py
+```
+* Pure Pursuit Controller for a no-slip model.
+```bash
+ros2 run localization_ekf pp-noslip.py
+```
+* Stanley Controller for a no-slip model.
+```bash
+ros2 run localization_ekf stanlee-noslip.py
+```
+
+#### **Step 3: Save Data for Analysis and Visualization
+If you want to record the data for later visualization and analysis, run this command:
+```bash
+ros2 run localization_ekf save_data.py
+```
+#### **Step 4: Analyze the Results
+Once the experiment is completed, you can visualize the recorded data using:
+```bash
+ros2 run localization_ekf plot_daat.py
+```
 
 ### **Results**
 
