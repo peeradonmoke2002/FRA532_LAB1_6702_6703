@@ -19,7 +19,6 @@
     - [State Transition Equations](#state-transition-equations)
     - [How EKF Handles Nonlinearity](#how-ekf-handles-nonlinearity)
     - [Design the Process Noise Matrix](#design-the-process-noise-matrix)
-    - [Design the Control Function](#design-the-control-function)
     - [Design the Measurement Function](#design-the-measurement-function)
     - [Design the Measurement Noise Matrix](#design-the-measurement-noise-matrix)
     - [Explain the Kalman Gain Computation](#explain-the-kalman-gain-computation)
@@ -946,17 +945,15 @@ In this lab, we extend the odometry models from LAB 1.1 by fusing GPS data using
 
 ## State Vector Representation
 
-$$
+```math
 x= 
 ​
   
 x
 y
 θ
-​
-  
-​
-$$
+
+```
 
 
 - x, y: Position coordinates
@@ -968,36 +965,36 @@ $$
 
 The state transition (or motion) model follows a simple kinematic model for a mobile robot. Given a control input:
 
-$$
+```math
 \mathbf{u} =
 \begin{bmatrix}
 v \\
 \omega
 \end{bmatrix}
-$$
+```
 
 where:
-- \( v \) is the linear velocity
-- \( \omega \) is the angular velocity
+- $`( v )`$ is the linear velocity
+- $`( \omega )`$ is the angular velocity
 
 The state update equations are:
 
-$$
+```math
 x_{k+1} = x_k + v \cos(\theta_k) \Delta t
-$$
+```
 
-$$
+```math
 y_{k+1} = y_k + v \sin(\theta_k) \Delta t
-$$
+```
 
-$$
+```math
 \theta_{k+1} = \theta_k + \omega \Delta t
-$$
+```
 
 where:
-- \( x_k, y_k \) are the position coordinates at time step \( k \),
-- \( \theta_k \) is the orientation (heading angle),
-- \( \Delta t \) is the time step.
+- $`( x_k, y_k )`$ are the position coordinates at time step $`( k )`$,
+- $`( \theta_k )`$ is the orientation (heading angle),
+- $`( \Delta t )`$ is the time step.
 
 
 - This is implemented in the motion_model function:
@@ -1066,47 +1063,46 @@ def jacobian_F(self, x, u):
 
 ## Design the Process Noise Matrix
 
-The process noise covariance matrix 
-𝑄
-Q represents the uncertainty in the state prediction. This uncertainty can come from model imperfections or unmodeled dynamics. In our implementation, 
+The process noise covariance matrix $`Q`$ represents the uncertainty in the state prediction. This uncertainty arises due to model imperfections or unmodeled dynamics.
+In our implementation, we define:
+
 ```bash 
-
 self.Q = np.diag([0.015, 0.015, 0.015])
-
 ```
 
 ## Design the Measurement Function
 
 The measurement function maps the state vector into the measurement space. In our implementation, the measurement function is assumed to be:
 
-$$
+```math
 \mathbf{z} =
 \begin{bmatrix}
 x \\
 y
 \end{bmatrix}
-$$
+```
 
-This means that our sensor (e.g., GPS) provides only the \(x\) and \(y\) positions. Since the measurement model is linear, its Jacobian \( \mathbf{H} \) is constant:
+This means that our sensor (e.g., GPS) provides only the $`(x)`$ and $`(y)`$ positions. Since the measurement model is linear, its Jacobian $`( \mathbf{H} )`$ is constant:
 
-$$
+```math
 \mathbf{H} =
 \begin{bmatrix}
 1 & 0 & 0 \\
 0 & 1 & 0 \\
 0 & 0 & 0
 \end{bmatrix}
-$$
+```
 
-*Note:* In our EKF update step for GPS, only \(x\) and \(y\) are used, so \( \mathbf{H} \) is effectively:
+> [!NOTE]
+> In our EKF update step for GPS, only $`(x)`$ and $`(y)`$ are used, so $`( \mathbf{H} )`$ is effectively:
 
-$$
+```math
 \mathbf{H} =
 \begin{bmatrix}
 1 & 0 & 0 \\
 0 & 1 & 0
 \end{bmatrix}
-$$
+```
 
 This measurement function is used directly in the EKF update step to compare the predicted state with the sensor measurements.
 
@@ -1116,17 +1112,17 @@ This measurement function is used directly in the EKF update step to compare the
 
 Two measurement noise covariance matrices are defined to model the uncertainty of our sensors:
 
-1. **For GPS (which measures \(x\) and \(y\)):**
+1. **For GPS (which measures $`(x)`$ and $`(y)`$):**
 
-$$
-\mathbf{R} = \operatorname{diag}(0.025,\ 0.025)
-$$
+```math
+\mathbf{R} = \text{diag}(0.025, 0.025)
+```
 
-2. **For odometry (which is assumed to provide the full state \(x\), \(y\), and \(\theta\)):**
+2. **For odometry (which is assumed to provide the full state $`(x)`$, $`(y)`$, and $`(\theta)`$):**
 
-$$
-\mathbf{R}_{odom} = \operatorname{diag}(0.055,\ 0.055,\ 0.055)
-$$
+```math
+\mathbf{R}_{odom} = \text{diag}(0.055,\ 0.055,\ 0.055)
+```
 
 These matrices are designed based on the expected noise characteristics of the sensors.
 
@@ -1150,9 +1146,9 @@ self.R_odom = np.diag([0.055, 0.055, 0.055])
 T
  +R`$
 
-### Implementation
+## Implementation
 
-## YAW rate Q and R tuning [ PID - purepursuit - stanlee bicyble model ]
+### YAW rate Q and R tuning [ PID - purepursuit - stanlee bicyble model ]
 - becase odom forn yaw rate it are very percise so we can lower R odom for make it trust odom more then imu 
 
 ```bash
@@ -1175,7 +1171,7 @@ T
         self.dt = 0.01
 
 ``` 
-## Single track Q and R tuning [ PID - bicyble model ]
+### Single track Q and R tuning [ PID - bicyble model ]
 
 - Different control strategies (PID-based and pure pursuit/Stanley) require slight adjustments in these matrices to balance the trust between model prediction and sensor measurement
 
@@ -1199,7 +1195,7 @@ T
         self.dt = 0.01
 
 ```
-## Single track Q and R tuning [ purepursuit and stanley - ]
+### Single track Q and R tuning [ purepursuit and stanley]
 
 ```bash
 
@@ -1302,7 +1298,7 @@ ros2 launch localization_ekf ekf-doubletrack.launch.py
 
 
 
-### Control Results
+### **Results**
 
 **Figure 1: PID Yaw Basic Control**  
 <img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pid-yawrate-basic.png?raw=true" width="900px" alt="PID Yaw Basic Control">  
@@ -1332,6 +1328,7 @@ ros2 launch localization_ekf ekf-doubletrack.launch.py
 <img src="https://github.com/peeradonmoke2002/FRA532_LAB1_6702_6703/blob/robot-controller/results_data/lab1.3/img/pp-single-noslip.png?raw=true" width="900px" alt="Pure Pursuit Single Track Noslip Control">  
 
 
+### **RMSE Results** and **MAE Results**
 
 This table presents the **Root Mean Squared Error (RMSE)** and **Mean Absolute Error (MAE)** values, which measure localization accuracy. Lower values indicate better performance.
 
@@ -1392,41 +1389,41 @@ Avg % rear wheel slip Results (Lower is Better)
 | **Stanley-noslip**     | 1.6 %  | Failure | Failure |
 
 
-# Summary of EKF Localization Performance
+#### Summary of EKF Localization Performance
 
-## 1. Noslip vs. Basic
+#### 1. Noslip vs. Basic
 - Noslip mode provides better accuracy:
   - Lower RMSE and MAE compared to Basic, indicating improved trajectory tracking.
   - Lower steering angle percent changes, meaning smoother steering corrections and less abrupt movements.
 
 ---
 
-## 2. Double Track
+#### 2. Double Track
 - All Double Track models failed due to:
   - Heading estimation errors, leading to the robot crashing into walls.
   - Suggests further improvements needed for handling heading estimation.
 
 ---
 
-## 3. Single Track vs. Yaw Rate
+#### 3. Single Track vs. Yaw Rate
 - Performance varies:
   - Sometimes Single Track RMSE/MAE is higher than Yaw Rate, sometimes lower.
   - Noslip consistently improves Single Track performance compared to Basic.
 
 ---
 
-## 4. RMSE and MAE (Lower is Better)
-### Lowest RMSE  
+#### 4. RMSE and MAE (Lower is Better)
+##### Lowest RMSE  
 - 0.07 for Yaw Rate with Noslip (PID-noslip, Pure Pursuit-noslip)  
 - 0.263 for Single Track (Pure Pursuit-noslip)  
 
-### Lowest MAE  
+##### Lowest MAE  
 - 0.08 for some Noslip Yaw Rate models (PID-noslip, Pure Pursuit-noslip).
 - Single Track MAE is generally higher but still improves with Noslip.
 
 ---
 
-## 5. Conclusion
+##### 5. Conclusion
 - Noslip mode outperforms Basic in minimizing RMSE/MAE:
   - Works better in both Yaw Rate and Single Track setups.
   - Reduces steering oscillations, leading to smoother control.
@@ -1440,9 +1437,6 @@ Avg % rear wheel slip Results (Lower is Better)
 
 
 #### Observations
-
-
-
 
 - **PID achieves the lowest RMSE (10.01) in Yaw Rate and 12.83 in Single Track**, indicating the **most accurate and stable localization** among all models.  
 - **Pure Pursuit has the highest RMSE (11.77 Yaw Rate, 13.32 Single Track)**, showing **significant deviation from the ground truth path**, making it the **least accurate**.  
