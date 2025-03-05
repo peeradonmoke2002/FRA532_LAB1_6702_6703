@@ -37,6 +37,10 @@
 ![Personal diagram - FRA532 Mobile Robot-3](https://github.com/user-attachments/assets/10c20c86-fc86-4021-bdda-3a982760244b)
 
 ## Installation
+> [!WARNING]  
+> Make sure you have installed **ROS 2 Humble**.  
+> If not, please visit the official ROS 2 installation guide:  
+> [ROS 2 Humble Installation](https://docs.ros.org/en/humble/Installation.html)
 
 ### Step 1: Create Workspace
 ```bash
