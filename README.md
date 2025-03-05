@@ -146,8 +146,8 @@ It should show the Rviz view and Gazebo simulation as seen in the figure below:
 
 ## LAB 1.1
 > [!NOTE]  
-> - The lab 1.1 package folder is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller`
-> - For Robot Model package are locate at `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/limo_description`
+> - The lab 1.1 package folder is `~/FRA532_MobileRobot_LAB1_6702_6703/src/FRA532_LAB1_6702_6703/robot_controller`
+> - For Robot Model package are locate at `~/FRA532_MobileRobot_LAB1_6702_6703/src/FRA532_LAB1_6702_6703/limo_description`
 
 ### Create Robot Model
 
@@ -543,7 +543,7 @@ ros2 launch robot_controller noslip_model+all_odom.launch.py
 
 - cd to folder `data_analysis`
 ```bash
-cd ~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller/scripts/data_analysis/
+cd ~/FRA532_MobileRobot_LAB1_6702_6703/src/FRA532_LAB1_6702_6703/robot_controller/scripts/data_analysis/
 ```
 
 - run record odom for collect data
@@ -662,7 +662,7 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 
 ## LAB 1.2
 > [!NOTE]  
-> The lab 1.2 package folder is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/path_tracking`
+> The lab 1.2 package folder is `~/FRA532_MobileRobot_LAB1_6702_6703/src/FRA532_LAB1_6702_6703/path_tracking`
 
 In this lab, we have used three traking controller to compare the performance and accuracy of each model:
 - [PID Controller](#pid-controller)
@@ -998,7 +998,7 @@ Lower RMSE values indicate **better accuracy** in following the expected traject
 
 ## LAB 1.3
 > [!NOTE]  
-> The lab 1.3 package folder is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/localization_ekf`
+> The lab 1.3 package folder is `~/FRA532_MobileRobot_LAB1_6702_6703/src/FRA532_LAB1_6702_6703/localization_ekf`
 
 In this lab, we extend the odometry models from LAB 1.1 by fusing GPS data using an Extended Kalman Filter (EKF). The EKF output provides a pose estimate, which we then use as the input for path tracking, similar to LAB 1.2, but now relying on the EKF-estimated pose instead of raw odometry data.
 
