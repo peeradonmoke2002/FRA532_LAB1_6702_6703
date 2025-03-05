@@ -48,7 +48,7 @@ def calculate_rms_errors(waypoints, robot_path):
 
 def main():
     base_dir = os.path.expanduser(
-        "~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/path_tracking/"
+        "~/FRA532_MobileRobot_LAB1_6702_6703/src/FRA532_LAB1_6702_6703/path_tracking/"
     )
     csv_filename = os.path.join(base_dir, "path_data/record_data/robot_path_data.csv")
     times = []

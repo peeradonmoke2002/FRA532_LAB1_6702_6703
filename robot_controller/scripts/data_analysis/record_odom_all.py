@@ -13,7 +13,7 @@ class OdomRecorderNode(Node):
     def __init__(self):
         super().__init__('odom_recorder')
         # Define the output directory and ensure it exists.
-        self.output_dir = os.path.expanduser("~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller/scripts/data_analysis/record_data")
+        self.output_dir = os.path.expanduser("~/FRA532_MobileRobot_LAB1_6702_6703/src/FRA532_LAB1_6702_6703/robot_controller/scripts/data_analysis/record_data")
         os.makedirs(self.output_dir, exist_ok=True)
         # Open a single CSV file to record all messages.
         csv_file_path = os.path.join(self.output_dir, 'odometry_data.csv')

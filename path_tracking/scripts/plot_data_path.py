@@ -104,14 +104,14 @@ def plot_trajectory(model_states_csv, ref_path_yaml=None):
 def main():
     # Base directory where the recorder node saved CSV files.
     base_dir = os.path.expanduser(
-        "~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/path_tracking/path_data/record_data"
+        "~/FRA532_MobileRobot_LAB1_6702_6703/src/FRA532_LAB1_6702_6703/path_tracking/path_data/record_data"
     )
     joint_states_csv = os.path.join(base_dir, 'joint_states_data.csv')
     model_states_csv = os.path.join(base_dir, 'model_states_data.csv')
     
     # Reference path YAML file.
     ref_path_yaml = os.path.join(
-        os.path.expanduser("~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/path_tracking/path_data"),
+        os.path.expanduser("~/FRA532_MobileRobot_LAB1_6702_6703/src/FRA532_LAB1_6702_6703/path_tracking/path_data"),
         'path.yaml'
     )
 

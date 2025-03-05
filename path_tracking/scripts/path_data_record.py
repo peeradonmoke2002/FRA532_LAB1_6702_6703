@@ -87,7 +87,7 @@ class PathDataRecord(Node):
     def save_data_to_file(self):
         """Save the collected data to CSV files for later plotting."""
         # Get the package share directory (adjust if needed)
-        save_dir = os.path.expanduser("~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/path_tracking/path_data/record_data")
+        save_dir = os.path.expanduser("~/FRA532_MobileRobot_LAB1_6702_6703/src/FRA532_LAB1_6702_6703/path_tracking/path_data/record_data")
         print(save_dir)
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)

@@ -16,7 +16,7 @@ class SpeedCSV(Node):
         self.create_subscription(ModelStates, '/gazebo/model_states', self.gazebo_callback, 10)
 
         # Setup CSV file for saving speed data
-        save_dir = os.path.expanduser("~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/path_tracking/path_data/record_data")
+        save_dir = os.path.expanduser("~/FRA532_MobileRobot_LAB1_6702_6703/src/FRA532_LAB1_6702_6703/path_tracking/path_data/record_data")
         os.makedirs(save_dir, exist_ok=True)
         self.csv_file = open(os.path.join(save_dir, "speed_data.csv"), "w", newline="")
         self.csv_writer = csv.writer(self.csv_file)

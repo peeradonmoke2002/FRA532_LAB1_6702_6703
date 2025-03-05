@@ -28,7 +28,7 @@ def compute_rmse(odo_df, gt_df):
 
 def main():
     # Update the CSV file path
-    csv_file_path = os.path.expanduser("~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller/scripts/data_analysis/record_data/odometry_data.csv")
+    csv_file_path = os.path.expanduser("~/FRA532_MobileRobot_LAB1_6702_6703/src/FRA532_LAB1_6702_6703/robot_controller/scripts/data_analysis/record_data/odometry_data.csv")
     
     if not os.path.exists(csv_file_path):
         print(f"CSV file not found: {csv_file_path}")

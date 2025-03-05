@@ -41,7 +41,7 @@ def compute_rms_error(est_x, est_y, gt_x, gt_y):
     return rms_error, errors
 
 def main(): 
-    path = os.path.expanduser("~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/path_tracking/path_data/record_data")
+    path = os.path.expanduser("~/FRA532_MobileRobot_LAB1_6702_6703/src/FRA532_LAB1_6702_6703/path_tracking/path_data/record_data")
     # Load estimated odometry data from CSV
     est_time, est_x, est_y = load_csv(f"{path}/odom_estimated.csv")
     # Load Gazebo ground truth data
