@@ -1,5 +1,5 @@
 # FRA532 Mobile Robot
-This lab repository is used in the FRA532 Mobile Robot class at FIBO. It covers kinematics, path-tracking algorithms, and state estimation.
+This Lab 1 repository is used in the FRA532 Mobile Robot class at FIBO. It covers kinematics, path-tracking algorithms, and state estimation.
 
 ## Table of Contents
 - [System Overview](#system-overview)
