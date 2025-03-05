@@ -90,6 +90,56 @@ It should show the Rviz view and Gazebo simulation as seen in the figure below:
 
 ![Simulation Screenshot](https://github.com/user-attachments/assets/e245c9de-abda-4360-9457-68f8df1d112a)
 
+> [!IMPORTANT]  
+> If you can't run any code or build the workspace, follow these steps:
+>#### Install Required Python Packages
+>Ensure that you have installed the necessary Python packages used in this lab.
+>##### 1. Install `numpy`
+>```bash
+>pip3 install numpy
+>```
+>##### 2. Install `matplotlib`
+>```bash
+>pip3 install matplotlib
+>```
+>##### 3. Install `tf_transformations`
+>```bash
+>pip3 install tf_transformations 
+>```
+>##### 4. Install `pyyaml`
+>```bash
+>pip3 install pyyaml
+>```
+>#### 5. Install `transforms3d`
+> ```bash
+> pip3 install transforms3d
+>```
+>#### Install Required ROS2 Packages
+> Ensure that you have installed the necessary ROS2 packages used in this lab.
+>##### 1. robot state publisher
+>    ```bash
+>    sudo apt install ros-humble-robot-state-publisher
+>    ```
+>##### 2. ros2 control
+>    ```bash
+>    sudo apt install ros-humble-ros2-control
+>    ```
+>##### 3. ros2 controllers
+>    ```bash
+>    sudo apt install ros-humble-ros2-controllers
+>   ```
+>##### 4. gazebo ros2 control
+>  ```bash
+>   sudo apt install ros-humble-gazebo-ros2-control
+>    ```
+>##### 5. tf2
+> ```bash
+> sudo apt install ros-humble-tf2-ros
+> ```
+> **If issues persist, follow the official setup guide:**  
+> Refer to [TurtleBot3 eManual](https://emanual.robotis.com/docs/en/platform/turtlebot3/quick-start/#pc-setup) at the section **Install Dependent ROS 2 Packages**.
+
+
 ## LAB 1.1
 > [!NOTE]  
 > - The lab 1.1 package folder is `~/FRA532_MobileRobot/src/FRA532_LAB1_6702_6703/robot_controller`
